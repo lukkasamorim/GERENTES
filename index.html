@@ -1,6 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <style>
 :root{
   --safra-navy:#0D2B55;
@@ -629,10 +628,9 @@ const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',at
 
 const today=new Date().toISOString().split('T')[0];
 
-// ── JSONBIN CONFIG ──
-const BIN_KEY  = '$2a$10$wKivUZlsF.w4A0YnfUDM/.zddIWS2qA9ID3zNr7uuBPRkK9z7N4we';
-const MASTER_KEY = '$2a$10$s4aZlwJDcX2xoWdOP5UceuHqAFni62xxjwVOGAFkybfxYR5lzPqja';
-let BIN_ID = null;
+// ── SUPABASE CONFIG ──
+const SUPABASE_URL = 'https://umiwqmslqalanjwupdlh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
 let regs=[],lvOn=false,viabSel='';
 document.getElementById('f-data').value=today;
 
@@ -645,86 +643,94 @@ function setSyncStatus(msg,cor='var(--safra-text-3)'){
 
 async function carregarDados(){
   setSyncStatus('⏳ Carregando dados...');
-  try{
-    // Lista bins existentes
-    const res=await fetch('https://api.jsonbin.io/v3/b?meta=false',{
-      headers:{'X-Master-Key':MASTER_KEY,'X-Access-Key':BIN_KEY}
-    });
-    // Busca bin chamado painel-safra
-    const bins=await res.json();
-    if(bins&&bins.length){
-      // Usa o primeiro bin encontrado
-      BIN_ID=bins[0].metadata?.id||bins[0].id;
-      await lerDados();
-    } else {
-      await criarBin();
-    }
-  }catch(e){
-    // Se falhar listagem, tenta criar direto
-    await criarBin();
-  }
-}
-
-async function criarBin(){
-  try{
-    const res=await fetch('https://api.jsonbin.io/v3/b',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'X-Master-Key':MASTER_KEY,
-        'X-Access-Key':BIN_KEY,
-        'X-Bin-Name':'painel-safra',
-        'X-Bin-Private':'false'
-      },
-      body:JSON.stringify({regs:[]})
-    });
-    const data=await res.json();
-    BIN_ID=data.metadata?.id||data.record?.id;
-    regs=[];
-    setSyncStatus('✅ Painel pronto',  'var(--green)');
-    renderGG();renderRegional();renderRetornos();
-  }catch(e){
-    setSyncStatus('⚠️ Modo offline','var(--amber)');
-  }
+  await lerDados();
+  setInterval(lerDados, 30000);
 }
 
 async function lerDados(){
   try{
-    const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
-      headers:{'X-Master-Key':MASTER_KEY,'X-Access-Key':BIN_KEY}
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/registros?select=*&order=created_at.asc`,{
+      headers:{
+        'apikey':SUPABASE_KEY,
+        'Authorization':`Bearer ${SUPABASE_KEY}`
+      }
     });
+    if(!res.ok){const err=await res.text();console.error('Supabase erro:',err);setSyncStatus('⚠️ Erro ao carregar','#B02020');return;}
     const data=await res.json();
-    regs=data.record?.regs||[];
-    setSyncStatus('✅ Dados carregados — '+regs.length+' registros','var(--green)');
+    regs=data.map(r=>({
+      _id:r.id,
+      agencia:r.agencia,
+      gerente:r.gerente,
+      data:r.data,
+      contatos:r.contatos||0,
+      efetivos:r.efetivos||0,
+      emails:r.emails||0,
+      visitas:r.visitas||0,
+      agendamentos:r.agendamentos||'',
+      contas:r.contas||0,
+      credenciamentos:r.credenciamentos||0,
+      aguardando:r.aguardando||0,
+      contasLV:r.contas_lv||0,
+      contasSem:r.contas_sem||0,
+      contasDetalhe:r.contas_detalhe||[],
+      retEmpresa:r.ret_empresa||'',
+      retData:r.ret_data||'',
+      retObs:r.ret_obs||'',
+      listaVerde:r.lista_verde||false,
+      viabilizado:r.viabilizado||'',
+    }));
+    setSyncStatus('✅ '+regs.length+' registros','var(--green)');
     renderGG();renderRegional();renderRetornos();
   }catch(e){
+    console.error(e);
     setSyncStatus('⚠️ Erro ao carregar','#B02020');
   }
 }
 
-async function salvarNuvem(){
-  if(!BIN_ID)return;
+async function salvarNuvem(novoReg){
   try{
-    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
-      method:'PUT',
+    const body={
+      agencia:novoReg.agencia,
+      gerente:novoReg.gerente,
+      data:novoReg.data,
+      contatos:novoReg.contatos,
+      efetivos:novoReg.efetivos,
+      emails:novoReg.emails,
+      visitas:novoReg.visitas,
+      agendamentos:novoReg.agendamentos,
+      contas:novoReg.contas,
+      credenciamentos:novoReg.credenciamentos,
+      aguardando:novoReg.aguardando,
+      contas_lv:novoReg.contasLV,
+      contas_sem:novoReg.contasSem,
+      contas_detalhe:novoReg.contasDetalhe,
+      ret_empresa:novoReg.retEmpresa||null,
+      ret_data:novoReg.retData||null,
+      ret_obs:novoReg.retObs||null,
+      lista_verde:novoReg.listaVerde,
+      viabilizado:novoReg.viabilizado||null,
+    };
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/registros`,{
+      method:'POST',
       headers:{
+        'apikey':SUPABASE_KEY,
+        'Authorization':`Bearer ${SUPABASE_KEY}`,
         'Content-Type':'application/json',
-        'X-Master-Key':MASTER_KEY,
-        'X-Access-Key':BIN_KEY
+        'Prefer':'return=minimal'
       },
-      body:JSON.stringify({regs})
+      body:JSON.stringify(body)
     });
-    setSyncStatus('✅ Salvo na nuvem','var(--green)');
+    if(!res.ok){const err=await res.text();console.error('Erro ao salvar:',err);setSyncStatus('⚠️ Erro ao salvar','#B02020');return;}
+    setSyncStatus('✅ Salvo','var(--green)');
+    await lerDados();
   }catch(e){
-    setSyncStatus('⚠️ Erro ao salvar na nuvem','#B02020');
+    console.error(e);
+    setSyncStatus('⚠️ Erro ao salvar','#B02020');
   }
 }
 
 // Carrega dados ao iniciar
 carregarDados();
-
-// Atualiza dados a cada 30 segundos automaticamente
-setInterval(()=>{if(BIN_ID)lerDados();},30000);
 
 function atualizaGerentes(){
   const ag=document.getElementById('f-agencia').value;
@@ -860,14 +866,25 @@ function renderNovoMesResumo(){
     <div style="font-size:11px;color:var(--safra-text-3);">Período: ${fmt(datas[0])} até ${fmt(datas[datas.length-1])}</div>`;
 }
 
-function confirmarNovoMes(){
+async function confirmarNovoMes(){
   if(!confirm('Tem certeza? Todos os registros serão apagados e o painel começará zerado para o novo mês.'))return;
-  regs=[];
-  salvarNuvem();
-  renderGG();renderRegional();renderRetornos();
-  const tabBtn=document.querySelector('.tab');
-  showTab('registrar',tabBtn);
-  alert('✅ Painel zerado! Bom início de mês!');
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/registros?id=neq.00000000-0000-0000-0000-000000000000`,{
+      method:'DELETE',
+      headers:{
+        'apikey':SUPABASE_KEY,
+        'Authorization':`Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if(!res.ok){alert('Erro ao limpar registros. Tente novamente.');return;}
+    regs=[];
+    renderGG();renderRegional();renderRetornos();
+    const tabBtn=document.querySelector('.tab');
+    showTab('registrar',tabBtn);
+    alert('✅ Painel zerado! Bom início de mês!');
+  }catch(e){
+    alert('Erro ao limpar registros.');
+  }
 }
 
 function fmt(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
@@ -938,12 +955,11 @@ function salvar(){
     retObs:document.getElementById('f-ret-obs').value,
     listaVerde:nContasLV>0, viabilizado:viabSelRet,
   };
-  regs.push(reg);
   const msgEl=document.getElementById('msg');
   msgEl.style.display='block';
   setTimeout(()=>msgEl.style.display='none',2500);
   setSyncStatus('⏳ Salvando...','var(--safra-text-3)');
-  salvarNuvem();
+  salvarNuvem(reg);
   renderGG();renderRegional();renderRetornos();
   window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(reg)),'_blank');
   limpar();
@@ -1396,8 +1412,5 @@ function atualizaFiltroRetGer(){
   sel.innerHTML='<option value="">Todos os gerentes</option>'+lista.map(g=>`<option>${g}</option>`).join('');
 }
 
-// Renderiza todas as abas com dados demo ao carregar
-renderGG();
-renderRegional();
-renderRetornos();
+// Dados carregados via carregarDados() acima
 </script>
