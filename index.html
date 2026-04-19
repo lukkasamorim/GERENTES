@@ -389,6 +389,19 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   #ger-editor input[style*="margin:0"]{width:100%!important;}
 }
 
+/* QUARTIS — classificação por contas abertas */
+.q-flag{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:28px;height:20px;padding:0 6px;
+  border-radius:5px;font-size:10px;font-weight:700;
+  font-family:'DM Mono',monospace;letter-spacing:0.02em;
+  border:1px solid transparent;
+}
+.q-flag.q1{background:#E6F5EE;color:#1A7A52;border-color:#A8D4BF;}
+.q-flag.q2{background:#DDEAF8;color:#1A4A8A;border-color:#7AAAD8;}
+.q-flag.q3{background:#FEF3DC;color:#A0620D;border-color:#D4A030;}
+.q-flag.q4{background:#FDEAEA;color:#B02020;border-color:#CC4444;}
+
 /* LOGIN SCREEN */
 #login-screen{
   position:fixed;inset:0;z-index:9999;
@@ -407,17 +420,16 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   background:linear-gradient(135deg,#2563C0,#1A4A8A);
   display:flex;align-items:center;justify-content:center;
   font-family:'DM Mono',monospace;font-size:18px;font-weight:500;
-  color:var(--safra-gold);margin:0 auto 1rem;
+  color:#E8B84B;margin:0 auto 1rem;
 }
-#login-title{font-size:16px;font-weight:700;color:var(--safra-navy);margin-bottom:4px;}
-#login-sub{font-size:12px;color:var(--safra-text-3);margin-bottom:1.5rem;}
+#login-title{font-size:16px;font-weight:700;color:#0D2B55;margin-bottom:4px;}
+#login-sub{font-size:12px;color:#6B83A4;margin-bottom:1.5rem;}
 #login-input{text-align:center;font-size:16px;letter-spacing:0.1em;margin-bottom:8px;}
 #login-erro{font-size:12px;color:#B02020;margin-bottom:8px;display:none;}
 #login-btn{width:100%;padding:12px;font-size:14px;}
 </style>
 
 <h2 class="sr-only">Painel de acompanhamento de gerentes por agência — Banco Safra</h2>
-
 
 <div id="login-screen">
   <div id="login-box">
@@ -429,7 +441,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <button class="btn btn-primary" id="login-btn" onclick="fazerLogin()">Entrar</button>
   </div>
 </div>
-
 <div style="padding:0.5rem 0 0.75rem;">
 
 <div class="safra-header">
@@ -519,23 +530,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <div><label>Credenciamentos</label><input type="number" id="f-credenciamentos" placeholder="0" min="0"></div>
     <div><label>Aguard. documentação</label><input type="number" id="f-aguardando" placeholder="0" min="0"></div>
   </div>
-  <div class="frow">
-    <div><label>Empresa da conta aberta</label><input type="text" id="f-conta-empresa" placeholder="Nome da empresa"></div>
-    <div>
-      <label>Objetivo de viabilização</label>
-      <div class="viab-grid" id="viab-conta-main" style="margin-top:4px;">
-        <button class="viab-btn" onclick="selectViabMain('credito',this)">Crédito</button>
-        <button class="viab-btn" onclick="selectViabMain('safrapay',this)">SafraPay</button>
-        <button class="viab-btn" onclick="selectViabMain('cobranca',this)">Cobrança</button>
-        <button class="viab-btn" onclick="selectViabMain('ativos',this)">Ativos</button>
-        <button class="viab-btn" onclick="selectViabMain('margem',this)">Margem</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Detalhe dinâmico por conta adicional -->
+  <!-- Todas as contas abertas (da 1ª em diante) — campos dinâmicos -->
   <div id="contas-detalhe-wrap" style="display:none;">
-    <div class="stitle" style="margin-top:10px;">Contas adicionais</div>
+    <div class="stitle" style="margin-top:10px;">Detalhe das contas abertas</div>
     <div id="contas-detalhe-lista"></div>
   </div>
 
@@ -543,6 +540,14 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="frow">
     <div><label>Empresa / cliente</label><input type="text" id="f-ret-empresa" placeholder="Nome da empresa"></div>
     <div><label>Data do retorno</label><input type="date" id="f-ret-data"></div>
+  </div>
+  <label>Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
+  <div class="viab-grid" id="viab-ret" style="margin-top:4px;margin-bottom:8px;">
+    <button class="viab-btn" onclick="selectViab('credito',this,'ret')">Crédito</button>
+    <button class="viab-btn" onclick="selectViab('safrapay',this,'ret')">SafraPay</button>
+    <button class="viab-btn" onclick="selectViab('cobranca',this,'ret')">Cobrança</button>
+    <button class="viab-btn" onclick="selectViab('ativos',this,'ret')">Ativos</button>
+    <button class="viab-btn" onclick="selectViab('margem',this,'ret')">Margem</button>
   </div>
   <div><label>Observação</label><textarea id="f-ret-obs" placeholder="Descreva o que foi tratado..."></textarea></div>
 
@@ -646,7 +651,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 </div>
 
 <script>
-
 const SENHA_PAINEL = 'Safra@123';
 
 function fazerLogin(){
@@ -679,6 +683,119 @@ const agencias = {
 const viabColors={credito:'b-blue',safrapay:'b-purple',cobranca:'b-amber',ativos:'b-green',margem:'b-coral'};
 const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Ativos',margem:'Margem'};
 
+// Normaliza viab: aceita string (formato antigo) ou array (novo) → sempre retorna array
+function normViab(v){
+  if(!v) return [];
+  if(Array.isArray(v)) return v.filter(Boolean);
+  return [v];
+}
+// Renderiza badges de múltiplas viabilizações
+function renderViabBadges(v){
+  return normViab(v).map(x=>`<span class="badge ${viabColors[x]||''}">${viabLabels[x]||x}</span>`).join(' ');
+}
+
+// Classifica gerente em quartil pela quantidade de contas abertas
+// Q1: 5+ contas | Q2: 4 contas | Q3: 3 contas | Q4: 0 a 2 contas
+function quartil(contas){
+  if(contas>=5) return 'q1';
+  if(contas===4) return 'q2';
+  if(contas===3) return 'q3';
+  return 'q4';
+}
+function qFlag(contas){
+  const q=quartil(contas);
+  return `<span class="q-flag ${q}">${q.toUpperCase()}</span>`;
+}
+
+// ═══════════════════════════════════════════════
+// METAS DE AGÊNCIA (contas abertas/mês)
+// Valor 0 ou null = calcular automaticamente: 20 × nº de gerentes
+// Quando o usuário enviar as metas reais, basta trocar os números abaixo.
+// ═══════════════════════════════════════════════
+const metasAgencia={
+  'Tatuapé':       null,
+  'Sumaré':        null,
+  'Santo Amaro':   null,
+  'Santana':       null,
+  'JK':            null,
+  'Itaim':         null,
+  'Cidade Jardim': null,
+  'Osasco':        null,
+  'Vila Maria':    null,
+  'Sorocaba':      null,
+  'Lapa':          null,
+  'Alphaville':    null,
+};
+// Retorna meta mensal de contas abertas da agência
+function metaMensal(ag){
+  const m=metasAgencia[ag];
+  if(m&&m>0) return m;
+  const ngers=(agencias[ag]||[]).length;
+  return ngers*5; // meta padrão: 5 contas/gerente/mês
+}
+// Meta semanal = meta mensal / 4
+function metaSemanal(ag){ return metaMensal(ag)/4; }
+
+// Quartil da agência baseado na MÉDIA de contas por gerente
+function quartilAgencia(contas,ngers){
+  if(ngers<=0) return 'q4';
+  const media=contas/ngers;
+  if(media>=5) return 'q1';
+  if(media>=4) return 'q2';
+  if(media>=3) return 'q3';
+  return 'q4';
+}
+function qFlagAgencia(contas,ngers){
+  const q=quartilAgencia(contas,ngers);
+  return `<span class="q-flag ${q}">${q.toUpperCase()}</span>`;
+}
+
+// Relógio / gauge semanal da agência
+// contasSemana = contas abertas NA semana atual
+function relogioAgencia(ag,contasSemana){
+  const metaSem=metaSemanal(ag);
+  if(metaSem<=0){
+    return `<div style="font-size:10px;color:var(--safra-text-3);font-style:italic;">Sem meta configurada</div>`;
+  }
+  const pct=Math.min(Math.round(contasSemana/metaSem*100),100);
+  const cor=pct>=100?'#1A7A52':pct>=60?'#C8922A':'#B02020';
+  const bg =pct>=100?'#E6F5EE':pct>=60?'#FEF3DC':'#FDEAEA';
+  // SVG gauge (semicírculo)
+  const raio=32, cx=40, cy=40;
+  const circ=Math.PI*raio; // metade do círculo
+  const dash=(pct/100)*circ;
+  return `<div style="display:flex;align-items:center;gap:10px;">
+    <svg width="80" height="48" viewBox="0 0 80 48" style="flex-shrink:0;">
+      <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="#E0E8F4" stroke-width="7" stroke-linecap="round"/>
+      <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="${dash} ${circ}" style="transition:stroke-dasharray .4s ease;"/>
+      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pct}%</text>
+    </svg>
+    <div style="font-size:11px;line-height:1.35;">
+      <div style="color:${cor};font-weight:700;">${contasSemana}<span style="color:var(--safra-text-3);font-weight:400;"> / ${metaSem.toFixed(1)}</span></div>
+      <div style="color:var(--safra-text-3);font-size:10px;">meta semana</div>
+    </div>
+  </div>`;
+}
+
+// Retorna segunda-feira da semana de uma data (YYYY-MM-DD → Date)
+function segundaFeiraDa(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  const dow=d.getDay(); // 0=dom ... 6=sab
+  const diff=dow===0?-6:1-dow; // volta pra segunda
+  d.setDate(d.getDate()+diff);
+  return d;
+}
+// Contas abertas da agência na semana atual (seg–dom de hoje)
+function contasSemanaAtual(ag,regs){
+  const seg=segundaFeiraDa(today);
+  const dom=new Date(seg); dom.setDate(dom.getDate()+6);
+  const segStr=seg.toISOString().split('T')[0];
+  const domStr=dom.toISOString().split('T')[0];
+  return regs.filter(r=>r.agencia===ag&&r.data>=segStr&&r.data<=domStr)
+             .reduce((a,r)=>a+(r.contas||0),0);
+}
+
 const today=new Date().toISOString().split('T')[0];
 
 // ── SUPABASE CONFIG ──
@@ -687,15 +804,19 @@ const SUPABASE_KEY = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
 let regs=[],lvOn=false,viabSel='';
 document.getElementById('f-data').value=today;
 
-// Indicador de sync
-function setSyncStatus(msg,cor='var(--safra-text-3)'){
+function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
   let el=document.getElementById('sync-status');
-  if(!el){el=document.createElement('div');el.id='sync-status';el.style.cssText='font-size:11px;text-align:center;padding:4px;color:var(--safra-text-3);';document.querySelector('.safra-header').appendChild(el);}
-  el.textContent=msg;el.style.color=cor;
+  if(!el){
+    el=document.createElement('div');
+    el.id='sync-status';
+    el.style.cssText='font-size:10px;white-space:nowrap;color:rgba(255,255,255,0.6);margin-left:auto;';
+    document.querySelector('.safra-header').appendChild(el);
+  }
+  el.textContent=msg; el.style.color=cor;
 }
 
 async function carregarDados(){
-  setSyncStatus('⏳ Carregando dados...');
+  setSyncStatus('⏳ Carregando...');
   await lerDados();
   setInterval(lerDados, 30000);
 }
@@ -703,86 +824,60 @@ async function carregarDados(){
 async function lerDados(){
   try{
     const res=await fetch(`${SUPABASE_URL}/rest/v1/registros?select=*&order=created_at.asc`,{
-      headers:{
-        'apikey':SUPABASE_KEY,
-        'Authorization':`Bearer ${SUPABASE_KEY}`
-      }
+      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
     });
-    if(!res.ok){const err=await res.text();console.error('Supabase erro:',err);setSyncStatus('⚠️ Erro ao carregar','#B02020');return;}
+    if(!res.ok){const err=await res.text();console.error('Supabase erro:',err);setSyncStatus('⚠️ Erro','#ff6666');return;}
     const data=await res.json();
     regs=data.map(r=>({
       _id:r.id,
-      agencia:r.agencia,
-      gerente:r.gerente,
-      data:r.data,
-      contatos:r.contatos||0,
-      efetivos:r.efetivos||0,
-      emails:r.emails||0,
-      visitas:r.visitas||0,
+      agencia:r.agencia, gerente:r.gerente, data:r.data,
+      contatos:r.contatos||0, efetivos:r.efetivos||0,
+      emails:r.emails||0, visitas:r.visitas||0,
       agendamentos:r.agendamentos||'',
-      contas:r.contas||0,
-      credenciamentos:r.credenciamentos||0,
-      aguardando:r.aguardando||0,
-      contasLV:r.contas_lv||0,
-      contasSem:r.contas_sem||0,
+      contas:r.contas||0, credenciamentos:r.credenciamentos||0, aguardando:r.aguardando||0,
+      contasLV:r.contas_lv||0, contasSem:r.contas_sem||0,
       contasDetalhe:r.contas_detalhe||[],
-      retEmpresa:r.ret_empresa||'',
-      retData:r.ret_data||'',
-      retObs:r.ret_obs||'',
-      listaVerde:r.lista_verde||false,
-      viabilizado:r.viabilizado||'',
+      retEmpresa:r.ret_empresa||'', retData:r.ret_data||'', retObs:r.ret_obs||'',
+      listaVerde:r.lista_verde||false, viabilizado:r.viabilizado||[],
     }));
-    setSyncStatus('✅ '+regs.length+' registros','var(--green)');
+    setSyncStatus('✅ '+regs.length+' reg.','#90EE90');
     renderGG();renderRegional();renderRetornos();
   }catch(e){
     console.error(e);
-    setSyncStatus('⚠️ Erro ao carregar','#B02020');
+    setSyncStatus('⚠️ Erro','#ff6666');
   }
 }
 
 async function salvarNuvem(novoReg){
+  setSyncStatus('⏳ Salvando...','#ffcc00');
   try{
     const body={
-      agencia:novoReg.agencia,
-      gerente:novoReg.gerente,
-      data:novoReg.data,
-      contatos:novoReg.contatos,
-      efetivos:novoReg.efetivos,
-      emails:novoReg.emails,
-      visitas:novoReg.visitas,
+      agencia:novoReg.agencia, gerente:novoReg.gerente, data:novoReg.data,
+      contatos:novoReg.contatos, efetivos:novoReg.efetivos,
+      emails:novoReg.emails, visitas:novoReg.visitas,
       agendamentos:novoReg.agendamentos,
-      contas:novoReg.contas,
-      credenciamentos:novoReg.credenciamentos,
-      aguardando:novoReg.aguardando,
-      contas_lv:novoReg.contasLV,
-      contas_sem:novoReg.contasSem,
+      contas:novoReg.contas, credenciamentos:novoReg.credenciamentos, aguardando:novoReg.aguardando,
+      contas_lv:novoReg.contasLV, contas_sem:novoReg.contasSem,
       contas_detalhe:novoReg.contasDetalhe,
-      ret_empresa:novoReg.retEmpresa||null,
-      ret_data:novoReg.retData||null,
-      ret_obs:novoReg.retObs||null,
-      lista_verde:novoReg.listaVerde,
-      viabilizado:novoReg.viabilizado||null,
+      ret_empresa:novoReg.retEmpresa||null, ret_data:novoReg.retData||null, ret_obs:novoReg.retObs||null,
+      lista_verde:novoReg.listaVerde, viabilizado:novoReg.viabilizado||null,
     };
     const res=await fetch(`${SUPABASE_URL}/rest/v1/registros`,{
       method:'POST',
       headers:{
-        'apikey':SUPABASE_KEY,
-        'Authorization':`Bearer ${SUPABASE_KEY}`,
-        'Content-Type':'application/json',
-        'Prefer':'return=minimal'
+        'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
+        'Content-Type':'application/json','Prefer':'return=minimal'
       },
       body:JSON.stringify(body)
     });
-    if(!res.ok){const err=await res.text();console.error('Erro ao salvar:',err);setSyncStatus('⚠️ Erro ao salvar','#B02020');return;}
-    setSyncStatus('✅ Salvo','var(--green)');
+    if(!res.ok){const err=await res.text();console.error('Erro salvar:',err);setSyncStatus('⚠️ Erro','#ff6666');return;}
+    setSyncStatus('✅ Salvo','#90EE90');
     await lerDados();
   }catch(e){
     console.error(e);
-    setSyncStatus('⚠️ Erro ao salvar','#B02020');
+    setSyncStatus('⚠️ Erro','#ff6666');
   }
 }
-
-// Dados carregados após login
 
 function atualizaGerentes(){
   const ag=document.getElementById('f-agencia').value;
@@ -802,23 +897,27 @@ function atualizaFiltroGer(){
   sel.innerHTML='<option value="">Todos os gerentes</option>'+lista.map(g=>`<option>${g}</option>`).join('');
 }
 
-let viabSelRet='';
-let viabMainSel='';
-const viabSelContas={};
+// Agora são ARRAYS — permitem múltipla seleção
+let viabSelRet=[];
+const viabSelContas={}; // { idx: [v1, v2, ...] }
 
-function selectViabMain(v,el){
-  if(viabMainSel===v){viabMainSel='';el.className='viab-btn';}
-  else{viabMainSel=v;document.querySelectorAll('#viab-conta-main .viab-btn').forEach(b=>b.className='viab-btn');el.className=`viab-btn sel-${v}`;}
+// Toggle: adiciona se não tem, remove se já tem
+function _toggleArr(arr,v){
+  const i=arr.indexOf(v);
+  if(i>=0) arr.splice(i,1); else arr.push(v);
 }
 
 function selectViab(v,el,ctx){
   if(ctx==='ret'){
-    if(viabSelRet===v){viabSelRet='';el.className='viab-btn';}
-    else{viabSelRet=v;document.querySelectorAll('#viab-ret .viab-btn').forEach(b=>b.className='viab-btn');el.className=`viab-btn sel-${v}`;}
+    _toggleArr(viabSelRet,v);
+    if(viabSelRet.includes(v)) el.className=`viab-btn sel-${v}`;
+    else el.className='viab-btn';
   } else {
     const idx=ctx;
-    if(viabSelContas[idx]===v){viabSelContas[idx]='';el.className='viab-btn';}
-    else{viabSelContas[idx]=v;document.querySelectorAll(`#viab-conta-${idx} .viab-btn`).forEach(b=>b.className='viab-btn');el.className=`viab-btn sel-${v}`;}
+    if(!viabSelContas[idx]) viabSelContas[idx]=[];
+    _toggleArr(viabSelContas[idx],v);
+    if(viabSelContas[idx].includes(v)) el.className=`viab-btn sel-${v}`;
+    else el.className='viab-btn';
   }
 }
 
@@ -826,25 +925,23 @@ function atualizaContasDetalhe(){
   const n=parseInt(document.getElementById('f-contas').value)||0;
   const wrap=document.getElementById('contas-detalhe-wrap');
   const lista=document.getElementById('contas-detalhe-lista');
-  // Campos adicionais = contas além da primeira (que já tem campo fixo)
-  const adicionais=Math.max(0,n-1);
-  if(adicionais<=0){wrap.style.display='none';lista.innerHTML='';return;}
+  if(n<=0){wrap.style.display='none';lista.innerHTML='';return;}
   wrap.style.display='block';
   const atual=lista.querySelectorAll('.conta-item').length;
-  if(adicionais>atual){
-    for(let i=atual;i<adicionais;i++){
+  if(n>atual){
+    for(let i=atual;i<n;i++){
       const div=document.createElement('div');
       div.className='conta-item';
       div.style.cssText='border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--safra-light);';
       div.innerHTML=`
-        <div style="font-size:11px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Conta ${i+2}</div>
+        <div style="font-size:11px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Conta ${i+1}</div>
         <div class="frow" style="margin-bottom:6px;">
           <div><label style="margin-top:0;">Empresa</label><input type="text" id="conta-empresa-${i}" placeholder="Nome da empresa"></div>
           <div><label style="margin-top:0;">Lista Verde?</label>
             <select id="conta-lv-${i}"><option value="nao">Não</option><option value="sim">Sim — Lista Verde</option></select>
           </div>
         </div>
-        <label style="margin-top:0;">Objetivo de viabilização</label>
+        <label style="margin-top:0;">Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
         <div class="viab-grid" id="viab-conta-${i}">
           <button class="viab-btn" onclick="selectViab('credito',this,${i})">Crédito</button>
           <button class="viab-btn" onclick="selectViab('safrapay',this,${i})">SafraPay</button>
@@ -855,7 +952,7 @@ function atualizaContasDetalhe(){
       lista.appendChild(div);
     }
   } else {
-    while(lista.querySelectorAll('.conta-item').length>adicionais) lista.removeChild(lista.lastChild);
+    while(lista.querySelectorAll('.conta-item').length>n) lista.removeChild(lista.lastChild);
   }
 }
 
@@ -923,10 +1020,7 @@ async function confirmarNovoMes(){
   try{
     const res=await fetch(`${SUPABASE_URL}/rest/v1/registros?id=neq.00000000-0000-0000-0000-000000000000`,{
       method:'DELETE',
-      headers:{
-        'apikey':SUPABASE_KEY,
-        'Authorization':`Bearer ${SUPABASE_KEY}`
-      }
+      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
     });
     if(!res.ok){alert('Erro ao limpar registros. Tente novamente.');return;}
     regs=[];
@@ -944,6 +1038,7 @@ function initials(s){return s.split(' ').map(w=>w[0]).join('').toUpperCase().sli
 
 function gerarReportWpp(r){
   const vl={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Ativos',margem:'Margem'};
+  const vlist=v=>normViab(v).map(x=>vl[x]||x).join(' + ');
   const dd=r.data?r.data.split('-').reverse().join('/'):'';
   let txt=`📋 *REPORT DO DIA — ${r.agencia.toUpperCase()}*\n`;
   txt+=`👤 *${r.gerente}* | ${dd}\n`;
@@ -956,7 +1051,8 @@ function gerarReportWpp(r){
   txt+=`• Contas abertas: *${r.contas}* (✅ LV: ${r.contasLV} | Sem LV: ${r.contasSem})\n`;
   if(r.contasDetalhe&&r.contasDetalhe.length){
     r.contasDetalhe.forEach((c,i)=>{
-      txt+=`  ${i+1}. *${c.empresa||'—'}*${c.lv?' ✅':''} ${c.viab?'— '+vl[c.viab]:''}\n`;
+      const vtxt=vlist(c.viab);
+      txt+=`  ${i+1}. *${c.empresa||'—'}*${c.lv?' ✅':''}${vtxt?' — '+vtxt:''}\n`;
     });
   }
   txt+=`• Credenciamentos: *${r.credenciamentos}*\n`;
@@ -964,7 +1060,8 @@ function gerarReportWpp(r){
   if(r.retEmpresa){
     txt+=`\n🔁 *Retorno gerado*\n• Empresa: *${r.retEmpresa}*\n`;
     if(r.retData)     txt+=`• Data: *${r.retData.split('-').reverse().join('/')}*\n`;
-    if(r.viabilizado) txt+=`• Objetivo: *${vl[r.viabilizado]}*\n`;
+    const vret=vlist(r.viabilizado);
+    if(vret) txt+=`• Objetivo: *${vret}*\n`;
     if(r.retObs)      txt+=`• Obs: ${r.retObs}\n`;
   }
   txt+=`─────────────────────\n_Enviado via Painel de Gerentes_`;
@@ -978,19 +1075,22 @@ function salvar(){
   if(!agencia||!data){alert('Selecione a agência e a data.');return;}
   if(!gerente||gerente==='Gerentes a definir'){alert('Selecione o gerente.');return;}
   const nContas=parseInt(document.getElementById('f-contas').value)||0;
-  // Primeira conta — campos fixos
+  // Todas as contas — bloco dinâmico (da 1ª em diante)
   const contasDetalhe=[];
-  const empMain=document.getElementById('f-conta-empresa').value;
-  if(nContas>0){
-    contasDetalhe.push({empresa:empMain,lv:false,viab:viabMainSel});
-  }
-  // Contas adicionais — campos dinâmicos (a partir da 2ª)
-  for(let i=0;i<nContas-1;i++){
+  for(let i=0;i<nContas;i++){
     contasDetalhe.push({
       empresa:document.getElementById(`conta-empresa-${i}`)?.value||'',
       lv:document.getElementById(`conta-lv-${i}`)?.value==='sim',
-      viab:viabSelContas[i]||'',
+      viab:[...(viabSelContas[i]||[])],
     });
+  }
+  // Validação: todas as contas precisam de nome da empresa
+  const faltando=contasDetalhe.findIndex(c=>!c.empresa.trim());
+  if(faltando>=0){
+    alert(`Preencha o nome da empresa da Conta ${faltando+1}.`);
+    const el=document.getElementById(`conta-empresa-${faltando}`);
+    if(el) el.focus();
+    return;
   }
   const nContasLV=contasDetalhe.filter(c=>c.lv).length;
   const reg={agencia,gerente,data,
@@ -1005,12 +1105,12 @@ function salvar(){
     retEmpresa:document.getElementById('f-ret-empresa').value,
     retData:document.getElementById('f-ret-data').value,
     retObs:document.getElementById('f-ret-obs').value,
-    listaVerde:nContasLV>0, viabilizado:viabSelRet,
+    listaVerde:nContasLV>0, viabilizado:[...viabSelRet],
   };
   const msgEl=document.getElementById('msg');
   msgEl.style.display='block';
   setTimeout(()=>msgEl.style.display='none',2500);
-  setSyncStatus('⏳ Salvando...','var(--safra-text-3)');
+  setSyncStatus('⏳ Salvando...','#ffcc00');
   salvarNuvem(reg);
   renderGG();renderRegional();renderRetornos();
   window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(reg)),'_blank');
@@ -1018,12 +1118,12 @@ function salvar(){
 }
 
 function limpar(){
-  ['f-contatos','f-efetivos','f-emails','f-visitas','f-agendamentos','f-contas','f-credenciamentos','f-aguardando','f-conta-empresa','f-ret-empresa','f-ret-data','f-ret-obs'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['f-contatos','f-efetivos','f-emails','f-visitas','f-agendamentos','f-contas','f-credenciamentos','f-aguardando','f-ret-empresa','f-ret-data','f-ret-obs'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('f-data').value=today;
   document.getElementById('f-agencia').value='';
   document.getElementById('f-gerente').innerHTML='<option value="">Selecione a agência primeiro</option>';
   document.getElementById('hint-gerente').textContent='';
-  viabSelRet=''; viabMainSel=''; Object.keys(viabSelContas).forEach(k=>delete viabSelContas[k]);
+  viabSelRet.length=0; Object.keys(viabSelContas).forEach(k=>delete viabSelContas[k]);
   document.querySelectorAll('.viab-btn').forEach(b=>b.className='viab-btn');
   document.getElementById('contas-detalhe-wrap').style.display='none';
   document.getElementById('contas-detalhe-lista').innerHTML='';
@@ -1138,7 +1238,7 @@ function renderGG(){
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
               <span style="font-weight:600;color:var(--safra-navy);">${r.retEmpresa}</span>
               ${r.listaVerde?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
-              ${r.viabilizado?`<span class="badge ${viabColors[r.viabilizado]}">${viabLabels[r.viabilizado]}</span>`:''}
+              ${renderViabBadges(r.viabilizado)}
             </div>
             <div class="ret-date">Retorno: ${fmt(r.retData)}${r.retObs?' — '+r.retObs:''}</div>
           </div>`).join('')}
@@ -1269,6 +1369,11 @@ function renderRegional(){
   const pioresContas=[...todos].sort((a,b)=>a.contas-b.contas).slice(0,TOP);
   const pioresCred  =[...todos].sort((a,b)=>a.credenciamentos-b.credenciamentos).slice(0,TOP);
 
+  // Rankings MELHORES — FOCO CONTAS ABERTAS
+  const melhoresContas     =[...todos].filter(g=>g.contas>0).sort((a,b)=>b.contas-a.contas).slice(0,TOP);
+  const melhoresEfetiv     =[...todos].filter(g=>g.efetividade>0).sort((a,b)=>b.efetividade-a.efetividade).slice(0,TOP);
+  const melhoresCred       =[...todos].filter(g=>g.credenciamentos>0).sort((a,b)=>b.credenciamentos-a.credenciamentos).slice(0,TOP);
+
   // Ranking por agência
   const byAg={};
   dadosReg.forEach(r=>{
@@ -1288,7 +1393,7 @@ function renderRegional(){
         <div style="display:flex;align-items:center;gap:7px;">
           <div class="avatar" style="width:26px;height:26px;font-size:10px;background:#B02020;">${initials(g.gerente)}</div>
           <div>
-            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);">${g.gerente}</div>
+            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;">${g.gerente} ${qFlag(g.contas)}</div>
             <div style="font-size:10px;color:var(--safra-text-3);">${g.agencia}</div>
           </div>
         </div>
@@ -1297,6 +1402,29 @@ function renderRegional(){
       <td style="color:var(--safra-text-3);font-size:11px;">${g.contatos} contatos</td>
     </tr>`;
   }
+
+  function medalha(i){return i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;}
+  function melhorRow(g,val,suf='',i=0){
+    const med=medalha(i);
+    const isTop3=i<3;
+    return`<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div style="font-size:${isTop3?'18px':'12px'};width:26px;text-align:center;font-weight:700;color:var(--safra-text-3);">${med}</div>
+          <div class="avatar" style="width:26px;height:26px;font-size:10px;background:#1A7A52;">${initials(g.gerente)}</div>
+          <div>
+            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;">${g.gerente} ${qFlag(g.contas)}</div>
+            <div style="font-size:10px;color:var(--safra-text-3);">${g.agencia}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-weight:700;color:#1A7A52;font-size:14px;">${val}${suf}</td>
+      <td style="color:var(--safra-text-3);font-size:11px;">${g.contatos} contatos</td>
+    </tr>`;
+  }
+
+  // Ranking TOP 5 agências por contas abertas (para destaque)
+  const topAgContas=[...sortedAg].filter(([,v])=>v.contas>0).slice(0,TOP);
 
   let html=`
   <!-- TOTAIS GERAIS -->
@@ -1307,6 +1435,30 @@ function renderRegional(){
     <div class="metric m-green"><div class="mlabel">Credenciamentos</div><div class="mval green">${tot.credenciamentos}</div></div>
     <div class="metric m-amber"><div class="mlabel">Ag. docs</div><div class="mval amber">${tot.aguardando}</div></div>
     <div class="metric m-lv"><div class="mlabel">Contatos LV</div><div class="mval green">${lvTotal}</div></div>
+  </div>
+
+  <!-- 🕐 RELÓGIOS DE META SEMANAL POR AGÊNCIA -->
+  <div class="card" style="margin-bottom:1rem;">
+    <div class="card-title">🕐 Meta da semana · Contas abertas</div>
+    <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:10px;">
+      Progresso da semana atual (seg a dom). Meta padrão: <b>5 contas/gerente/mês</b> (÷4 = semanal).
+      <span style="color:#1A7A52;font-weight:600;margin-left:6px;">■ ≥100%</span>
+      <span style="color:#C8922A;font-weight:600;margin-left:6px;">■ 60–99%</span>
+      <span style="color:#B02020;font-weight:600;margin-left:6px;">■ &lt;60%</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+      ${Object.keys(agencias).map(ag=>{
+        const cs=contasSemanaAtual(ag,regs);
+        const ng=(agencias[ag]||[]).length;
+        return `<div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:12px;color:var(--safra-navy);">${ag}</div>
+            <div style="font-size:10px;color:var(--safra-text-3);">${ng} ger · meta ${metaMensal(ag)}/mês</div>
+          </div>
+          ${relogioAgencia(ag,cs)}
+        </div>`;
+      }).join('')}
+    </div>
   </div>
 
   <!-- TABELA DE METAS — todos os gerentes -->
@@ -1353,6 +1505,59 @@ function renderRegional(){
     </table>
   </div>
 
+  <!-- 🏆 DESTAQUE: CONTAS ABERTAS — FOCO PRINCIPAL -->
+  ${todos.length>=1?`
+  <div style="background:linear-gradient(135deg,#E6F5EE 0%,#F4F7FB 100%);border:1px solid #A8D4BF;border-radius:10px;padding:1rem 1.1rem;margin-bottom:1rem;">
+    <div class="card-title" style="color:#1A7A52;margin-bottom:0.4rem;font-size:14px;">🏆 FOCO — Contas abertas</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.8rem;font-size:10px;color:var(--safra-text-2);align-items:center;">
+      <span style="font-weight:600;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;">Quartis:</span>
+      <span class="q-flag q1">Q1</span><span>5+ contas</span>
+      <span class="q-flag q2">Q2</span><span>4 contas</span>
+      <span class="q-flag q3">Q3</span><span>3 contas</span>
+      <span class="q-flag q4">Q4</span><span>0 a 2 contas</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;">
+      <div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
+        <div class="card-title" style="color:#1A7A52;">🥇 Top gerentes · Contas abertas</div>
+        ${melhoresContas.length>0?`<table class="rtable">
+          <thead><tr><th>Gerente</th><th>Contas</th><th>Base</th></tr></thead>
+          <tbody>${melhoresContas.map((g,i)=>melhorRow(g,g.contas,'',i)).join('')}</tbody>
+        </table>`:'<div class="empty" style="padding:0.6rem 0;">Nenhuma conta aberta no período.</div>'}
+      </div>
+      <div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
+        <div class="card-title" style="color:#1A7A52;">🏢 Top agências · Contas abertas</div>
+        ${topAgContas.length>0?`<table class="rtable">
+          <thead><tr><th>#</th><th>Agência</th><th>Contas</th></tr></thead>
+          <tbody>${topAgContas.map(([ag,v],i)=>{const ng=(agencias[ag]||[]).length;return`<tr>
+            <td style="width:40px;"><span style="font-size:${i<3?'18px':'12px'};font-weight:700;">${medalha(i)}</span></td>
+            <td><strong>${ag}</strong> ${qFlagAgencia(v.contas,ng)} <span style="font-size:10px;color:var(--safra-text-3);">${ng} ger</span></td>
+            <td style="font-weight:700;color:#1A7A52;font-size:14px;">${v.contas}</td>
+          </tr>`}).join('')}</tbody>
+        </table>`:'<div class="empty" style="padding:0.6rem 0;">Nenhuma conta aberta no período.</div>'}
+      </div>
+    </div>
+  </div>`:''}
+
+  <!-- 🥇 DESTAQUES POR ÁREA -->
+  ${todos.length>=2?`
+  <div class="card-title" style="margin-bottom:0.75rem;">🥇 Destaques — Melhores desempenhos</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem;">
+    <div class="card" style="border-color:#A8D4BF;">
+      <div class="card-title" style="color:#1A7A52;">Maior efetividade</div>
+      <table class="rtable">
+        <thead><tr><th>Gerente</th><th>Efetividade</th><th>Base</th></tr></thead>
+        <tbody>${melhoresEfetiv.map((g,i)=>melhorRow(g,g.efetividade,'%',i)).join('')}</tbody>
+      </table>
+    </div>
+    <div class="card" style="border-color:#A8D4BF;">
+      <div class="card-title" style="color:#1A7A52;">Mais credenciamentos</div>
+      <table class="rtable">
+        <thead><tr><th>Gerente</th><th>Credenc.</th><th>Base</th></tr></thead>
+        <tbody>${melhoresCred.map((g,i)=>melhorRow(g,g.credenciamentos,'',i)).join('')}</tbody>
+      </table>
+    </div>
+  </div>`:''}
+
   <!-- DASH PIORES GERENTES -->
   ${todos.length>=2?`
   <div class="card-title" style="margin-bottom:0.75rem;">⚠️ Atenção — Piores desempenhos</div>
@@ -1382,17 +1587,19 @@ function renderRegional(){
 
   <!-- RANKING POR AGÊNCIA -->
   <div class="card">
-    <div class="card-title">Ranking por agência</div>
+    <div class="card-title">Ranking por agência <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(ordenado por contas abertas · Q calculado por média de contas/gerente)</span></div>
     <table class="rtable">
-      <tr><th>#</th><th>Agência</th><th>Contatos</th><th>Efetivos</th><th>Contas</th><th>Credenc.</th><th>Ag.docs</th><th>LV</th></tr>`;
+      <tr><th>#</th><th>Agência</th><th>Q</th><th>Contatos</th><th>Efetivos</th><th style="background:#E6F5EE;color:#1A7A52;">Contas ⭐</th><th>Credenc.</th><th>Ag.docs</th><th>LV</th></tr>`;
 
   sortedAg.forEach(([ag,v],i)=>{
+    const ng=(agencias[ag]||[]).length;
     html+=`<tr>
       <td class="rank-num ${i<3?'top':''}">${i+1}</td>
-      <td><strong>${ag}</strong></td>
+      <td><strong>${ag}</strong> <span style="font-size:10px;color:var(--safra-text-3);">· ${ng} ger</span></td>
+      <td>${qFlagAgencia(v.contas,ng)}</td>
       <td>${v.contatos}</td>
       <td style="color:var(--safra-mid);font-weight:500;">${v.efetivos}</td>
-      <td style="color:var(--green);font-weight:600;">${v.contas}</td>
+      <td style="background:#F0FAF5;color:var(--green);font-weight:700;font-size:13px;">${v.contas}</td>
       <td>${v.credenciamentos}</td>
       <td>${v.aguardando}</td>
       <td>${v.lv>0?`<span class="lv-flag">${v.lv}</span>`:'-'}</td>
@@ -1443,7 +1650,7 @@ function renderRetornos(){
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                   <span style="font-weight:600;color:var(--safra-navy);">${r.retEmpresa}</span>
                   ${r.listaVerde?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
-                  ${r.viabilizado?`<span class="badge ${viabColors[r.viabilizado]}">${viabLabels[r.viabilizado]}</span>`:''}
+                  ${renderViabBadges(r.viabilizado)}
                 </div>
                 ${r.retObs?`<div class="ret-date" style="margin-top:3px;">${r.retObs}</div>`:''}
               </div>
@@ -1464,5 +1671,8 @@ function atualizaFiltroRetGer(){
   sel.innerHTML='<option value="">Todos os gerentes</option>'+lista.map(g=>`<option>${g}</option>`).join('');
 }
 
-// Dados carregados via carregarDados() acima
+// Renderiza todas as abas com dados demo ao carregar
+renderGG();
+renderRegional();
+renderRetornos();
 </script>
