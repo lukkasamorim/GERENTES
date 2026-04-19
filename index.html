@@ -385,8 +385,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   .card[style*="max-width:520px"]{max-width:100%!important;}
 
   /* Gerenciar gerentes */
-  #ger-editor .frow{grid-template-columns:1fr!important;}
-  #ger-editor input[style*="margin:0"]{width:100%!important;}
+  #tab-gerentes .frow{grid-template-columns:1fr!important;}
+  #tab-gerentes input[style*="margin:0"]{width:100%!important;}
 }
 
 /* QUARTIS — classificação por contas abertas */
@@ -401,6 +401,17 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .q-flag.q2{background:#DDEAF8;color:#1A4A8A;border-color:#7AAAD8;}
 .q-flag.q3{background:#FEF3DC;color:#A0620D;border-color:#D4A030;}
 .q-flag.q4{background:#FDEAEA;color:#B02020;border-color:#CC4444;}
+
+/* Badge NOVO — gerente com menos de 12 meses de casa */
+.badge-novo{
+  display:inline-flex;align-items:center;gap:2px;
+  background:#FFE8CC;color:#A0620D;
+  font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:10px;
+  border:1px solid #E8A55D;
+  letter-spacing:0.03em;
+  white-space:nowrap;
+}
 
 /* LOGIN SCREEN */
 #login-screen{
@@ -449,19 +460,22 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <div class="safra-header-title">Painel de Gerentes</div>
     <div class="safra-header-sub">Banco Safra · Acompanhamento de Agências</div>
   </div>
-  <button onclick="toggleGerEditor()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:rgba(255,255,255,0.85);font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">⚙️ Gerentes</button>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <button onclick="showTabById('gerentes')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:7px;color:rgba(255,255,255,0.9);font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">⚙️ Gerentes</button>
+    <button onclick="showTabById('novomes')" style="background:rgba(176,32,32,0.25);border:1px solid rgba(255,150,150,0.4);border-radius:7px;color:#ffcccc;font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🗓 Novo mês</button>
+  </div>
 </div>
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('registrar',this)">Registrar dia</button>
   <button class="tab" onclick="showTab('gg',this)">Visão GG</button>
-  <button class="tab" onclick="showTab('regional',this)">Regional</button>
   <button class="tab" onclick="showTab('retornos',this)">Retornos</button>
-  <button class="tab" onclick="showTab('novomes',this)" style="border-color:#B02020;color:#B02020;">🗓 Novo mês</button>
+  <button class="tab" onclick="showTab('regional',this)">Regional</button>
+  <button class="tab" onclick="showTab('trimestre',this)">📊 Trimestre</button>
 </div>
 
-<!-- GERENCIADOR GLOBAL DE GERENTES -->
-<div id="ger-editor" style="display:none;margin-bottom:1rem;">
+<!-- ABA GERENTES -->
+<div id="tab-gerentes" class="section">
   <div class="card" style="border-color:var(--safra-border-dark);">
     <div class="card-title">⚙️ Gerenciar gerentes por agência</div>
     <div class="frow" style="margin-bottom:10px;">
@@ -469,10 +483,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
         <label>Agência</label>
         <select id="ger-ed-ag" onchange="renderGerList()" style="margin:0;">
           <option value="">Selecione...</option>
-          <option>Tatuapé</option><option>Sumaré</option><option>Santo Amaro</option>
-          <option>Santana</option><option>JK</option><option>Itaim</option>
-          <option>Cidade Jardim</option><option>Osasco</option><option>Vila Maria</option>
-          <option>Sorocaba</option><option>Lapa</option><option>Alphaville</option>
+          <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+          <option>JK</option><option>Lapa</option><option>Osasco</option>
+          <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+          <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
         </select>
       </div>
       <div>
@@ -496,10 +510,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       <label>Agência</label>
       <select id="f-agencia" onchange="atualizaGerentes()">
         <option value="">Selecione...</option>
-        <option>Tatuapé</option><option>Sumaré</option><option>Santo Amaro</option>
-        <option>Santana</option><option>JK</option><option>Itaim</option>
-        <option>Cidade Jardim</option><option>Osasco</option><option>Vila Maria</option>
-        <option>Sorocaba</option><option>Lapa</option><option>Alphaville</option>
+        <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+        <option>JK</option><option>Lapa</option><option>Osasco</option>
+        <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+        <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
       </select>
     </div>
     <div>
@@ -564,10 +578,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="filter-bar">
     <select id="filtro-gg-ag" onchange="atualizaFiltroGer();renderGG();">
       <option value="">Todas as agências</option>
-      <option>Tatuapé</option><option>Sumaré</option><option>Santo Amaro</option>
-      <option>Santana</option><option>JK</option><option>Itaim</option>
-      <option>Cidade Jardim</option><option>Osasco</option><option>Vila Maria</option>
-      <option>Sorocaba</option><option>Lapa</option><option>Alphaville</option>
+      <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+      <option>JK</option><option>Lapa</option><option>Osasco</option>
+      <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+      <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
     </select>
     <select id="filtro-gg-ger" onchange="renderGG()">
       <option value="">Todos os gerentes</option>
@@ -599,10 +613,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <div class="filter-bar">
       <select id="filtro-reg-ag" onchange="renderRegional()" style="max-width:200px;margin:0;">
         <option value="">Todas as agências</option>
-        <option>Tatuapé</option><option>Sumaré</option><option>Santo Amaro</option>
-        <option>Santana</option><option>JK</option><option>Itaim</option>
-        <option>Cidade Jardim</option><option>Osasco</option><option>Vila Maria</option>
-        <option>Sorocaba</option><option>Lapa</option><option>Alphaville</option>
+        <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+        <option>JK</option><option>Lapa</option><option>Osasco</option>
+        <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+        <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
       </select>
       <button class="btn" onclick="bloquearRegional()" style="font-size:12px;padding:6px 12px;">🔒 Bloquear</button>
     </div>
@@ -611,15 +625,37 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 </div>
 
+<!-- TRIMESTRE -->
+<div id="tab-trimestre" class="section">
+  <div id="trimestre-lock" class="card" style="border-color:#D4A030;max-width:480px;margin:1.5rem auto;">
+    <div class="card-title" style="color:#A0620D;">🔒 Aba restrita</div>
+    <p style="font-size:13px;color:var(--safra-text-2);margin-bottom:1rem;line-height:1.5;">
+      A visão trimestral exige senha de autorização.
+    </p>
+    <label style="font-size:12px;color:var(--safra-text-2);font-weight:500;">Senha</label>
+    <input type="password" id="trimestre-senha" placeholder="Digite a senha" style="margin:4px 0 8px;" onkeypress="if(event.key==='Enter')verificarSenhaTrimestre()">
+    <div id="trimestre-senha-erro" style="display:none;color:#B02020;font-size:11px;margin-bottom:8px;">❌ Senha incorreta.</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-primary" onclick="verificarSenhaTrimestre()">Desbloquear</button>
+    </div>
+  </div>
+  <div id="trimestre-desbloqueado" style="display:none;">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+      <button class="btn" onclick="bloquearTrimestre()" style="font-size:11px;padding:5px 10px;">🔒 Bloquear</button>
+    </div>
+    <div id="trimestre-content"></div>
+  </div>
+</div>
+
 <!-- RETORNOS -->
 <div id="tab-retornos" class="section">
   <div class="filter-bar">
     <select id="filtro-ret-ag" onchange="atualizaFiltroRetGer();renderRetornos();">
       <option value="">Todas as agências</option>
-      <option>Tatuapé</option><option>Sumaré</option><option>Santo Amaro</option>
-      <option>Santana</option><option>JK</option><option>Itaim</option>
-      <option>Cidade Jardim</option><option>Osasco</option><option>Vila Maria</option>
-      <option>Sorocaba</option><option>Lapa</option><option>Alphaville</option>
+      <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+      <option>JK</option><option>Lapa</option><option>Osasco</option>
+      <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+      <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
     </select>
     <select id="filtro-ret-ger" onchange="renderRetornos()">
       <option value="">Todos os gerentes</option>
@@ -633,6 +669,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="card" style="border-color:#F5C6C6;max-width:520px;margin:0 auto;">
     <div class="card-title" style="color:#B02020;">🗓 Virada de mês</div>
     <p style="font-size:13px;color:var(--safra-text-2);margin-bottom:1rem;line-height:1.6;">
+      Os dados permanecem <strong>salvos indefinidamente</strong> até que você execute a virada de mês manualmente.
       Esta ação apaga <strong>todos os registros do mês atual</strong> para começar um novo ciclo. Os gerentes cadastrados são mantidos.
     </p>
 
@@ -640,6 +677,12 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
     <div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:8px;padding:10px 14px;font-size:12px;color:#633806;margin-bottom:1.25rem;">
       ⚠️ Essa ação não pode ser desfeita. Certifique-se de ter exportado ou anotado os resultados antes de continuar.
+    </div>
+
+    <div style="background:#FDEAEA;border:1px solid #CC4444;border-radius:8px;padding:12px 14px;margin-bottom:1rem;">
+      <label style="font-weight:600;color:#B02020;font-size:12px;display:block;margin-bottom:6px;">🔒 Senha de autorização</label>
+      <input type="password" id="novomes-senha" placeholder="Digite a senha" style="margin:0;" onkeypress="if(event.key==='Enter')confirmarNovoMes()">
+      <div id="novomes-senha-erro" style="display:none;color:#B02020;font-size:11px;margin-top:6px;">❌ Senha incorreta.</div>
     </div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end;">
@@ -652,48 +695,74 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 <script>
 async function fazerLogin(){
-  const val = document.getElementById('login-input').value;
-  if(!val){return;}
-  const btn = document.getElementById('login-btn');
-  btn.textContent = '...';
-  btn.disabled = true;
+  const val=document.getElementById('login-input').value;
+  if(!val) return;
+  const btn=document.getElementById('login-btn');
+  btn.textContent='...'; btn.disabled=true;
   try{
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/config?chave=eq.senha_painel&select=valor`,{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/config?chave=eq.senha_painel&select=valor`,{
       headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
     });
-    const data = await res.json();
-    const senhaCorreta = data?.[0]?.valor;
-    if(val === senhaCorreta){
-      document.getElementById('login-screen').style.display = 'none';
+    const data=await res.json();
+    const senhaCorreta=(data?.[0]?.valor||'').replace(/^"|"$/g,'');
+    if(val===senhaCorreta){
+      document.getElementById('login-screen').style.display='none';
       carregarDados();
     } else {
-      document.getElementById('login-erro').style.display = 'block';
-      document.getElementById('login-input').value = '';
+      document.getElementById('login-erro').style.display='block';
+      document.getElementById('login-input').value='';
       document.getElementById('login-input').focus();
     }
-  } catch(e){
-    document.getElementById('login-erro').textContent = 'Erro de conexão. Tente novamente.';
-    document.getElementById('login-erro').style.display = 'block';
+  }catch(e){
+    document.getElementById('login-erro').textContent='Erro de conexão. Tente novamente.';
+    document.getElementById('login-erro').style.display='block';
   } finally {
-    btn.textContent = 'Entrar';
-    btn.disabled = false;
+    btn.textContent='Entrar'; btn.disabled=false;
   }
 }
 
-const agencias = {
-  'Tatuapé':       ['Rafael','Caio','Talita','Wellington'],
-  'Sumaré':        ['Stela','Vitor','Andre','Marcelo','Carlos'],
-  'Santo Amaro':   [],
-  'Santana':       ['Paulo','Rafael','Matheus','Paola'],
-  'JK':            ['Ana','Bruna Kelly','Paulo'],
-  'Itaim':         [],
-  'Cidade Jardim': ['Cristiane','Delaine','Camila','Sabrina'],
-  'Osasco':        ['Adriano','Raul','Thiago','Diego'],
-  'Vila Maria':    ['Renata','Rafaela','Adriano','Julia','Matheus'],
-  'Sorocaba':      ['Silvio','Guilherme','Aline','Lia','Josiane','Lucas','Jaine','Fernando'],
-  'Lapa':          ['Marcelo','Daniela','Igor','Pedro','Ruth','Bruna'],
+// Lista padrão de agências e gerentes (usada quando não há dados salvos)
+const agenciasPadrao = {
   'Alphaville':    ['Julio','Murilo','Jarbas','Daniel','Rogerio'],
+  'Cidade Jardim': ['Cristiane','Delaine','Camila','Sabrina'],
+  'Itaim':         [],
+  'JK':            ['Ana','Bruna Kelly','Paulo'],
+  'Lapa':          ['Marcelo','Daniela','Igor','Pedro','Ruth','Bruna'],
+  'Osasco':        ['Adriano','Raul','Thiago','Diego'],
+  'Santana':       ['Paulo','Rafael','Matheus','Paola'],
+  'Santo Amaro':   [],
+  'Sorocaba':      ['Silvio','Guilherme','Aline','Lia','Josiane','Lucas','Jaine','Fernando'],
+  'Sumaré':        ['Stela','Vitor','Andre','Marcelo','Carlos'],
+  'Tatuapé':       ['Rafael','Caio','Talita','Wellington'],
+  'Vila Maria':    ['Renata','Rafaela','Adriano','Julia','Matheus'],
 };
+// Fallback local (para o caso da nuvem não responder ainda)
+let agencias = JSON.parse(JSON.stringify(agenciasPadrao));
+try{
+  const local=localStorage.getItem('safra_agencias');
+  if(local) agencias=JSON.parse(local);
+}catch(e){}
+
+// Lista de gerentes marcados como NOVOS (menos de 12 meses de casa)
+// Formato: Set de strings "Agência||Nome"
+let gerentesNovos=new Set();
+try{
+  const local=localStorage.getItem('safra_gerentes_novos');
+  if(local) gerentesNovos=new Set(JSON.parse(local));
+}catch(e){}
+
+function chaveGerente(ag,nome){ return ag+'||'+nome; }
+function isGerenteNovo(ag,nome){ return gerentesNovos.has(chaveGerente(ag,nome)); }
+function toggleGerenteNovo(ag,nome){
+  const k=chaveGerente(ag,nome);
+  if(gerentesNovos.has(k)) gerentesNovos.delete(k);
+  else gerentesNovos.add(k);
+}
+function badgeNovo(ag,nome){
+  return isGerenteNovo(ag,nome)
+    ? '<span class="badge-novo">🆕 NOVO</span>'
+    : '';
+}
 
 const viabColors={credito:'b-blue',safrapay:'b-purple',cobranca:'b-amber',ativos:'b-green',margem:'b-coral'};
 const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Ativos',margem:'Margem'};
@@ -710,11 +779,11 @@ function renderViabBadges(v){
 }
 
 // Classifica gerente em quartil pela quantidade de contas abertas
-// Q1: 5+ contas | Q2: 4 contas | Q3: 3 contas | Q4: 0 a 2 contas
+// Q1: 5+ contas | Q2: 3-4 contas | Q3: 2 contas | Q4: 0-1 conta
 function quartil(contas){
   if(contas>=5) return 'q1';
-  if(contas===4) return 'q2';
-  if(contas===3) return 'q3';
+  if(contas>=3) return 'q2';
+  if(contas===2) return 'q3';
   return 'q4';
 }
 function qFlag(contas){
@@ -723,23 +792,22 @@ function qFlag(contas){
 }
 
 // ═══════════════════════════════════════════════
-// METAS DE AGÊNCIA (contas abertas/mês)
-// Valor 0 ou null = calcular automaticamente: 20 × nº de gerentes
-// Quando o usuário enviar as metas reais, basta trocar os números abaixo.
+// METAS DE AGÊNCIA — Contas abertas/mês (ABRIL)
+// Fonte: SPC I - Planejamento
 // ═══════════════════════════════════════════════
 const metasAgencia={
-  'Tatuapé':       null,
-  'Sumaré':        null,
-  'Santo Amaro':   null,
-  'Santana':       null,
-  'JK':            null,
-  'Itaim':         null,
-  'Cidade Jardim': null,
-  'Osasco':        null,
-  'Vila Maria':    null,
-  'Sorocaba':      null,
-  'Lapa':          null,
-  'Alphaville':    null,
+  'Alphaville':    28,
+  'Cidade Jardim': 25,
+  'Itaim':         24,
+  'JK':            20,
+  'Lapa':          27,
+  'Osasco':        23,
+  'Santana':       28,
+  'Santo Amaro':   25,
+  'Sorocaba':      43,
+  'Sumaré':        28,
+  'Tatuapé':       23,
+  'Vila Maria':    25,
 };
 // Retorna meta mensal de contas abertas da agência
 function metaMensal(ag){
@@ -748,16 +816,28 @@ function metaMensal(ag){
   const ngers=(agencias[ag]||[]).length;
   return ngers*5; // meta padrão: 5 contas/gerente/mês
 }
-// Meta semanal = meta mensal / 4
-function metaSemanal(ag){ return metaMensal(ag)/4; }
+// Número de semanas do mês atual (inclui frações — ex: abril tem ~4.29 semanas)
+function semanasDoMes(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  const ano=d.getFullYear(), mes=d.getMonth();
+  const dias=new Date(ano,mes+1,0).getDate(); // último dia do mês
+  return dias/7;
+}
+// Meta semanal = meta mensal ÷ semanas do mês (fração exata)
+function metaSemanal(ag){
+  const mm=metaMensal(ag);
+  if(mm<=0) return 0;
+  return mm/semanasDoMes(today);
+}
 
 // Quartil da agência baseado na MÉDIA de contas por gerente
+// Mesma régua do gerente: Q1 ≥5 | Q2 ≥3 | Q3 ≥2 | Q4 <2
 function quartilAgencia(contas,ngers){
   if(ngers<=0) return 'q4';
   const media=contas/ngers;
   if(media>=5) return 'q1';
-  if(media>=4) return 'q2';
-  if(media>=3) return 'q3';
+  if(media>=3) return 'q2';
+  if(media>=2) return 'q3';
   return 'q4';
 }
 function qFlagAgencia(contas,ngers){
@@ -767,28 +847,30 @@ function qFlagAgencia(contas,ngers){
 
 // Relógio / gauge semanal da agência
 // contasSemana = contas abertas NA semana atual
-function relogioAgencia(ag,contasSemana){
+// contasMes    = contas abertas NO MÊS atual (acumulado)
+function relogioAgencia(ag,contasSemana,contasMes){
+  const metaMes=metaMensal(ag);
   const metaSem=metaSemanal(ag);
-  if(metaSem<=0){
+  if(metaMes<=0){
     return `<div style="font-size:10px;color:var(--safra-text-3);font-style:italic;">Sem meta configurada</div>`;
   }
-  const pct=Math.min(Math.round(contasSemana/metaSem*100),100);
-  const cor=pct>=100?'#1A7A52':pct>=60?'#C8922A':'#B02020';
-  const bg =pct>=100?'#E6F5EE':pct>=60?'#FEF3DC':'#FDEAEA';
-  // SVG gauge (semicírculo)
-  const raio=32, cx=40, cy=40;
-  const circ=Math.PI*raio; // metade do círculo
-  const dash=(pct/100)*circ;
+  const pctSem=Math.min(Math.round(contasSemana/metaSem*100),100);
+  const pctMes=Math.min(Math.round(contasMes/metaMes*100),100);
+  const cor=pctSem>=100?'#1A7A52':pctSem>=60?'#C8922A':'#B02020';
+  // SVG gauge (semicírculo) — % da semana
+  const raio=32;
+  const circ=Math.PI*raio;
+  const dash=(pctSem/100)*circ;
   return `<div style="display:flex;align-items:center;gap:10px;">
     <svg width="80" height="48" viewBox="0 0 80 48" style="flex-shrink:0;">
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="#E0E8F4" stroke-width="7" stroke-linecap="round"/>
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round"
             stroke-dasharray="${dash} ${circ}" style="transition:stroke-dasharray .4s ease;"/>
-      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pct}%</text>
+      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pctSem}%</text>
     </svg>
-    <div style="font-size:11px;line-height:1.35;">
-      <div style="color:${cor};font-weight:700;">${contasSemana}<span style="color:var(--safra-text-3);font-weight:400;"> / ${metaSem.toFixed(1)}</span></div>
-      <div style="color:var(--safra-text-3);font-size:10px;">meta semana</div>
+    <div style="font-size:11px;line-height:1.4;flex:1;min-width:0;">
+      <div style="color:${cor};font-weight:700;">${contasSemana}<span style="color:var(--safra-text-3);font-weight:400;"> / ${metaSem.toFixed(1)}</span> <span style="color:var(--safra-text-3);font-size:10px;font-weight:400;">sem</span></div>
+      <div style="color:var(--safra-text-2);font-weight:600;font-size:10px;">${contasMes} / ${metaMes} <span style="color:var(--safra-text-3);font-weight:400;">mês · ${pctMes}%</span></div>
     </div>
   </div>`;
 }
@@ -810,6 +892,12 @@ function contasSemanaAtual(ag,regs){
   return regs.filter(r=>r.agencia===ag&&r.data>=segStr&&r.data<=domStr)
              .reduce((a,r)=>a+(r.contas||0),0);
 }
+// Contas abertas da agência no mês atual
+function contasMesAtual(ag,regs){
+  const mesAno=today.slice(0,7); // YYYY-MM
+  return regs.filter(r=>r.agencia===ag&&r.data.slice(0,7)===mesAno)
+             .reduce((a,r)=>a+(r.contas||0),0);
+}
 
 const today=new Date().toISOString().split('T')[0];
 
@@ -817,6 +905,8 @@ const today=new Date().toISOString().split('T')[0];
 const SUPABASE_URL = 'https://umiwqmslqalanjwupdlh.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
 let regs=[],lvOn=false,viabSel='';
+let historico=[];
+let bloqueioLeitura=false;
 document.getElementById('f-data').value=today;
 
 function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
@@ -833,17 +923,18 @@ function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
 async function carregarDados(){
   setSyncStatus('⏳ Carregando...');
   await lerDados();
-  setInterval(lerDados, 30000);
+  setInterval(()=>{if(!bloqueioLeitura)lerDados();},30000);
 }
 
 async function lerDados(){
+  if(bloqueioLeitura) return;
   try{
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/registros?select=*&order=created_at.asc`,{
+    const resRegs=await fetch(`${SUPABASE_URL}/rest/v1/registros?select=*&order=created_at.asc`,{
       headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
     });
-    if(!res.ok){const err=await res.text();console.error('Supabase erro:',err);setSyncStatus('⚠️ Erro','#ff6666');return;}
-    const data=await res.json();
-    regs=data.map(r=>({
+    if(!resRegs.ok){setSyncStatus('⚠️ Erro','#ff6666');return;}
+    const dataRegs=await resRegs.json();
+    regs=dataRegs.map(r=>({
       _id:r.id,
       agencia:r.agencia, gerente:r.gerente, data:r.data,
       contatos:r.contatos||0, efetivos:r.efetivos||0,
@@ -855,42 +946,85 @@ async function lerDados(){
       retEmpresa:r.ret_empresa||'', retData:r.ret_data||'', retObs:r.ret_obs||'',
       listaVerde:r.lista_verde||false, viabilizado:r.viabilizado||[],
     }));
+
+    const resCfg=await fetch(`${SUPABASE_URL}/rest/v1/config?select=chave,valor`,{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
+    });
+    if(resCfg.ok){
+      const cfgRows=await resCfg.json();
+      cfgRows.forEach(row=>{
+        try{
+          if(row.chave==='agencias'&&row.valor){
+            const ag=JSON.parse(row.valor);
+            if(typeof ag==='object') agencias=ag;
+          }
+          if(row.chave==='gerentes_novos'&&row.valor){
+            gerentesNovos=new Set(JSON.parse(row.valor));
+          }
+          if(row.chave==='historico'&&row.valor){
+            historico=JSON.parse(row.valor);
+          }
+        }catch(e){}
+      });
+    }
+
     setSyncStatus('✅ '+regs.length+' reg.','#90EE90');
-    renderGG();renderRegional();renderRetornos();
+    renderGG();renderRegional();renderRetornos();renderTrimestre();
+    const tabGer=document.getElementById('tab-gerentes');
+    if(tabGer&&tabGer.classList.contains('active')) renderGerList();
   }catch(e){
     console.error(e);
     setSyncStatus('⚠️ Erro','#ff6666');
   }
 }
 
+async function _upsertConfig(chave,valor){
+  await fetch(`${SUPABASE_URL}/rest/v1/config`,{
+    method:'POST',
+    headers:{
+      'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
+      'Content-Type':'application/json',
+      'Prefer':'resolution=merge-duplicates'
+    },
+    body:JSON.stringify({chave,valor:JSON.stringify(valor)})
+  });
+}
+
 async function salvarNuvem(novoReg){
   setSyncStatus('⏳ Salvando...','#ffcc00');
   try{
-    const body={
-      agencia:novoReg.agencia, gerente:novoReg.gerente, data:novoReg.data,
-      contatos:novoReg.contatos, efetivos:novoReg.efetivos,
-      emails:novoReg.emails, visitas:novoReg.visitas,
-      agendamentos:novoReg.agendamentos,
-      contas:novoReg.contas, credenciamentos:novoReg.credenciamentos, aguardando:novoReg.aguardando,
-      contas_lv:novoReg.contasLV, contas_sem:novoReg.contasSem,
-      contas_detalhe:novoReg.contasDetalhe,
-      ret_empresa:novoReg.retEmpresa||null, ret_data:novoReg.retData||null, ret_obs:novoReg.retObs||null,
-      lista_verde:novoReg.listaVerde, viabilizado:novoReg.viabilizado||null,
-    };
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/registros`,{
-      method:'POST',
-      headers:{
-        'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
-        'Content-Type':'application/json','Prefer':'return=minimal'
-      },
-      body:JSON.stringify(body)
-    });
-    if(!res.ok){const err=await res.text();console.error('Erro salvar:',err);setSyncStatus('⚠️ Erro','#ff6666');return;}
+    if(novoReg){
+      const body={
+        agencia:novoReg.agencia, gerente:novoReg.gerente, data:novoReg.data,
+        contatos:novoReg.contatos, efetivos:novoReg.efetivos,
+        emails:novoReg.emails, visitas:novoReg.visitas,
+        agendamentos:novoReg.agendamentos,
+        contas:novoReg.contas, credenciamentos:novoReg.credenciamentos, aguardando:novoReg.aguardando,
+        contas_lv:novoReg.contasLV, contas_sem:novoReg.contasSem,
+        contas_detalhe:novoReg.contasDetalhe,
+        ret_empresa:novoReg.retEmpresa||null, ret_data:novoReg.retData||null, ret_obs:novoReg.retObs||null,
+        lista_verde:novoReg.listaVerde, viabilizado:novoReg.viabilizado||null,
+      };
+      const res=await fetch(`${SUPABASE_URL}/rest/v1/registros`,{
+        method:'POST',
+        headers:{
+          'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
+          'Content-Type':'application/json','Prefer':'return=minimal'
+        },
+        body:JSON.stringify(body)
+      });
+      if(!res.ok){setSyncStatus('⚠️ Erro ao salvar','#ff6666');return false;}
+    }
+    await _upsertConfig('agencias',agencias);
+    await _upsertConfig('gerentes_novos',[...gerentesNovos]);
+    await _upsertConfig('historico',historico);
     setSyncStatus('✅ Salvo','#90EE90');
-    await lerDados();
+    if(novoReg) await lerDados();
+    return true;
   }catch(e){
     console.error(e);
     setSyncStatus('⚠️ Erro','#ff6666');
+    return false;
   }
 }
 
@@ -998,16 +1132,21 @@ function bloquearRegional(){
 function showTab(t,el){
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
+  if(el) el.classList.add('active');
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='gg') renderGG();
   if(t==='regional'){
     if(regionalDesbloqueado) renderRegional();
   }
   if(t==='retornos') renderRetornos();
+  if(t==='trimestre') renderTrimestre();
+  if(t==='gerentes') renderGerList();
   if(t==='novomes') renderNovoMesResumo();
   // Não chama limpar() — o formulário é preservado ao trocar de aba
 }
+
+// Atalho usado pelos botões administrativos do header
+function showTabById(t){ showTab(t,null); }
 
 function renderNovoMesResumo(){
   const el=document.getElementById('novomes-resumo');
@@ -1030,22 +1169,66 @@ function renderNovoMesResumo(){
     <div style="font-size:11px;color:var(--safra-text-3);">Período: ${fmt(datas[0])} até ${fmt(datas[datas.length-1])}</div>`;
 }
 
+// Gera snapshot consolidado por agência a partir dos regs atuais
+function gerarSnapshot(){
+  const mes=today.slice(0,7); // YYYY-MM
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const [ano,m]=mes.split('-');
+  const label=`${meses[parseInt(m)-1]}/${ano}`;
+
+  const porAg={};
+  Object.keys(agencias).forEach(ag=>{
+    porAg[ag]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:agencias[ag].length};
+  });
+  regs.forEach(r=>{
+    if(!porAg[r.agencia]) porAg[r.agencia]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:0};
+    porAg[r.agencia].contas+=r.contas||0;
+    porAg[r.agencia].credenciamentos+=r.credenciamentos||0;
+    porAg[r.agencia].contatos+=r.contatos||0;
+    porAg[r.agencia].efetivos+=r.efetivos||0;
+    if(r.listaVerde)porAg[r.agencia].lv++;
+  });
+
+  return {mes,label,agencias:porAg,totalRegs:regs.length,dataSnapshot:today};
+}
+
 async function confirmarNovoMes(){
-  if(!confirm('Tem certeza? Todos os registros serão apagados e o painel começará zerado para o novo mês.'))return;
+  const senha=document.getElementById('novomes-senha').value;
+  const erroEl=document.getElementById('novomes-senha-erro');
+  if(senha!=='Tais26'){
+    erroEl.style.display='block';
+    document.getElementById('novomes-senha').value='';
+    document.getElementById('novomes-senha').focus();
+    return;
+  }
+  erroEl.style.display='none';
+  if(!confirm('Tem certeza? Todos os registros serão apagados e o painel começará zerado para o novo mês.\n\nOs dados atuais serão salvos no histórico do Trimestre.'))return;
+
+  // Salvar snapshot do mês atual no histórico
+  if(regs.length>0){
+    const snap=gerarSnapshot();
+    // Remove snapshot anterior do mesmo mês (se existir) e adiciona o novo
+    historico=historico.filter(h=>h.mes!==snap.mes);
+    historico.push(snap);
+    // Mantém só os últimos 12 meses no histórico (pra não crescer infinito)
+    historico.sort((a,b)=>a.mes.localeCompare(b.mes));
+    if(historico.length>12) historico=historico.slice(-12);
+  }
+
   try{
     const res=await fetch(`${SUPABASE_URL}/rest/v1/registros?id=neq.00000000-0000-0000-0000-000000000000`,{
       method:'DELETE',
       headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
     });
     if(!res.ok){alert('Erro ao limpar registros. Tente novamente.');return;}
-    regs=[];
-    renderGG();renderRegional();renderRetornos();
-    const tabBtn=document.querySelector('.tab');
-    showTab('registrar',tabBtn);
-    alert('✅ Painel zerado! Bom início de mês!');
-  }catch(e){
-    alert('Erro ao limpar registros.');
-  }
+  }catch(e){alert('Erro ao limpar registros.');return;}
+  regs=[];
+  await salvarNuvem();
+  document.getElementById('novomes-senha').value='';
+  renderGG();renderRegional();renderRetornos();renderTrimestre();
+  const tabBtn=document.querySelector('.tab');
+  showTab('registrar',tabBtn);
+  alert('✅ Painel zerado! Histórico salvo no Trimestre. Bom início de mês!');
 }
 
 function fmt(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
@@ -1146,6 +1329,13 @@ function limpar(){
 
 function calcGerente(rlist){
   const dias=[...new Set(rlist.map(r=>r.data))].sort();
+  // Consolida todas as contas abertas, com referência ao dia
+  const contasAbertas=[];
+  rlist.forEach(r=>{
+    if(r.contasDetalhe&&r.contasDetalhe.length){
+      r.contasDetalhe.forEach(c=>contasAbertas.push({...c,data:r.data}));
+    }
+  });
   return{
     dias,
     contatos:        rlist.reduce((a,r)=>a+r.contatos,0),
@@ -1157,6 +1347,7 @@ function calcGerente(rlist){
     aguardando:      rlist.reduce((a,r)=>a+r.aguardando,0),
     lvCount:         rlist.filter(r=>r.listaVerde).length,
     retornos:        rlist.filter(r=>r.retEmpresa),
+    contasAbertas,
     ultData:         dias[dias.length-1],
   };
 }
@@ -1205,9 +1396,11 @@ function renderGG(){
         <tbody>
           ${nomes.map(g=>{const s=stats[g];return`<tr>
             <td>
-              <div style="display:flex;align-items:center;gap:8px;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <div class="avatar" style="width:28px;height:28px;font-size:10px;">${initials(g)}</div>
                 <span style="font-weight:600;color:var(--safra-navy);">${g}</span>
+                ${badgeNovo(ag,g)}
+                ${qFlag(s.contas)}
                 ${s.lvCount>0?`<span class="lv-flag">${s.lvCount}</span>`:''}
               </div>
             </td>
@@ -1234,20 +1427,44 @@ function renderGG(){
     </div>`;
 
     /* ── CARDS POR GERENTE: consolidado + retornos ── */
-    nomes.filter(g=>stats[g].retornos.length>0).forEach(ger=>{
+    /* ── CARDS POR GERENTE: contas abertas + retornos ── */
+    nomes.filter(g=>stats[g].contas>0||stats[g].retornos.length>0).forEach(ger=>{
       const s=stats[ger];
+      const temContas=s.contasAbertas&&s.contasAbertas.length>0;
+      const temRet=s.retornos.length>0;
       html+=`<div class="card">
         <div class="g-header">
           <div class="avatar">${initials(ger)}</div>
           <div style="flex:1">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               <div class="g-name">${ger}</div>
+              ${badgeNovo(ag,ger)}
+              ${qFlag(s.contas)}
               ${s.lvCount>0?`<span class="lv-flag">LV ${s.lvCount}</span>`:''}
             </div>
-            <div class="agencia-tag">${ag} · ${periodoLabel}</div>
+            <div class="agencia-tag">${ag} · ${periodoLabel} · <b>${s.contas}</b> conta${s.contas!==1?'s':''} · ${s.credenciamentos} credenc. · ${s.retornos.length} retorno${s.retornos.length!==1?'s':''}</div>
           </div>
         </div>
-        <div class="stitle" style="margin-top:0;">Retornos gerados</div>
+
+        ${temContas?`
+        <div class="stitle" style="margin-top:0;">🟢 Contas abertas (${s.contasAbertas.length})</div>
+        ${s.contasAbertas.slice().sort((a,b)=>a.data.localeCompare(b.data)).map(c=>`
+          <div class="retorno-item${c.lv?' lv-border':''}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span style="font-weight:600;color:var(--safra-navy);">${c.empresa||'—'}</span>
+                  ${c.lv?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
+                  ${renderViabBadges(c.viab)}
+                </div>
+              </div>
+              <span style="font-size:10px;color:var(--safra-text-3);font-family:'DM Mono',monospace;white-space:nowrap;">${fmt(c.data)}</span>
+            </div>
+          </div>`).join('')}
+        `:''}
+
+        ${temRet?`
+        <div class="stitle"${temContas?'':' style="margin-top:0;"'}>🔁 Retornos gerados (${s.retornos.length})</div>
         ${s.retornos.map(r=>`
           <div class="retorno-item${r.listaVerde?' lv-border':''}">
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
@@ -1257,15 +1474,11 @@ function renderGG(){
             </div>
             <div class="ret-date">Retorno: ${fmt(r.retData)}${r.retObs?' — '+r.retObs:''}</div>
           </div>`).join('')}
+        `:''}
       </div>`;
     });
   }
   el.innerHTML=html;
-}
-
-function toggleGerEditor(){
-  const ed=document.getElementById('ger-editor');
-  ed.style.display=ed.style.display==='none'?'block':'none';
 }
 
 function renderGerList(){
@@ -1274,49 +1487,188 @@ function renderGerList(){
   if(!ag){el.innerHTML='<div class="empty" style="padding:1rem;">Selecione uma agência.</div>';return;}
   const lista=agencias[ag]||[];
   if(!lista.length){el.innerHTML='<div class="empty" style="padding:1rem;">Nenhum gerente cadastrado.</div>';return;}
-  el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-    ${lista.map((g,i)=>`
-      <div style="display:flex;align-items:center;gap:6px;background:var(--safra-white);border:1px solid var(--safra-border);border-radius:7px;padding:6px 10px;">
-        <span id="ger-nome-${i}" style="font-size:13px;font-weight:500;color:var(--safra-navy);">${g}</span>
-        <button onclick="editarGerente('${ag}',${i})" style="background:none;border:none;cursor:pointer;color:var(--safra-text-3);font-size:13px;padding:0 2px;" title="Renomear">✏️</button>
-        <button onclick="removerGerente('${ag}',${i})" style="background:none;border:none;cursor:pointer;color:#B02020;font-size:13px;padding:0 2px;" title="Remover">✕</button>
-      </div>`).join('')}
+
+  // Monta o HTML com data-attributes (sem onclick inline)
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+    ${lista.map((g,i)=>{
+      const ehNovo=isGerenteNovo(ag,g);
+      return `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--safra-white);border:1px solid ${ehNovo?'#E8A55D':'var(--safra-border)'};border-radius:7px;padding:8px 12px;${ehNovo?'background:#FFF8EE;':''}">
+        <span style="font-size:14px;font-weight:500;color:var(--safra-navy);flex:1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${g} ${badgeNovo(ag,g)}</span>
+        <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;">
+          <button type="button" data-acao="novo" data-idx="${i}" style="background:${ehNovo?'#FFE8CC':'#fff'};border:1px solid ${ehNovo?'#E8A55D':'var(--safra-border)'};cursor:pointer;color:${ehNovo?'#A0620D':'var(--safra-text-3)'};font-size:12px;font-weight:600;padding:8px 10px;border-radius:6px;font-family:'DM Sans',sans-serif;min-height:36px;" title="${ehNovo?'Remover marca de novo':'Marcar como gerente novo (menos de 12 meses)'}">${ehNovo?'✓ Novo':'🆕'}</button>
+          <button type="button" data-acao="editar" data-idx="${i}" style="background:var(--safra-light);border:1px solid var(--safra-border);cursor:pointer;color:var(--safra-text);font-size:12px;font-weight:600;padding:8px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;min-height:36px;">✏️</button>
+          <button type="button" data-acao="remover" data-idx="${i}" style="background:#B02020;border:1px solid #B02020;cursor:pointer;color:#fff;font-size:12px;font-weight:600;padding:8px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;min-height:36px;">🗑</button>
+        </div>
+      </div>`;}).join('')}
   </div>`;
+
+  // Liga os event listeners (funciona mesmo com caracteres especiais no nome)
+  el.querySelectorAll('button[data-acao]').forEach(btn=>{
+    btn.addEventListener('click',(ev)=>{
+      ev.preventDefault();
+      ev.stopPropagation();
+      const acao=btn.getAttribute('data-acao');
+      const idx=parseInt(btn.getAttribute('data-idx'));
+      console.log('[Gerentes] Ação:',acao,'Agência:',ag,'Índice:',idx,'Nome:',agencias[ag][idx]);
+      if(acao==='editar') editarGerente(ag,idx);
+      else if(acao==='remover') removerGerente(ag,idx);
+      else if(acao==='novo') marcarGerenteNovo(ag,idx);
+    });
+  });
 }
 
-function adicionarGerente(){
+async function marcarGerenteNovo(ag,idx){
+  const nome=agencias[ag]&&agencias[ag][idx];
+  if(!nome) return;
+  bloqueioLeitura=true;
+  toggleGerenteNovo(ag,nome);
+  renderGerList();
+  // Atualiza todos os dashboards para refletir o badge
+  renderGG();
+  if(regionalDesbloqueado) renderRegional();
+  renderRetornos();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  if(!ok){
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#FDEAEA;color:#B02020;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent='⚠️ Alteração feita localmente mas falhou na nuvem.';
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),4000);
+    }
+  }
+}
+
+async function adicionarGerente(){
   const ag=document.getElementById('ger-ed-ag').value;
   const nome=document.getElementById('ger-ed-nome').value.trim();
   if(!ag){alert('Selecione a agência.');return;}
   if(!nome){alert('Digite o nome do gerente.');return;}
   if(!agencias[ag])agencias[ag]=[];
   if(agencias[ag].includes(nome)){alert('Gerente já cadastrado.');return;}
+  bloqueioLeitura=true;
   agencias[ag].push(nome);
   document.getElementById('ger-ed-nome').value='';
   renderGerList();
   atualizaGerentes();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  if(!ok) alert('⚠️ Atenção: a alteração foi feita localmente mas não foi possível salvar na nuvem. Verifique sua conexão.');
 }
 
-function removerGerente(ag,idx){
-  const nome=agencias[ag][idx];
-  if(!confirm(`Remover "${nome}" de ${ag}?`))return;
+async function removerGerente(ag,idx){
+  console.log('[Gerentes] removerGerente chamado:',ag,idx);
+  const nome=agencias[ag]&&agencias[ag][idx];
+  if(!nome){console.warn('[Gerentes] Nome não encontrado!');return;}
+
+  // Confirmação INLINE (não depende de confirm do browser, que pode falhar em iframes)
+  const el=document.getElementById('ger-ed-lista');
+  const confirmBox=document.createElement('div');
+  confirmBox.style.cssText='background:#FDEAEA;border:2px solid #B02020;padding:14px;border-radius:8px;margin-top:10px;';
+  confirmBox.innerHTML=`
+    <div style="font-weight:600;color:#B02020;margin-bottom:10px;font-size:13px;">Remover "${nome}" de ${ag}?</div>
+    <div style="display:flex;gap:8px;">
+      <button type="button" id="btn-conf-sim" style="background:#B02020;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Sim, remover</button>
+      <button type="button" id="btn-conf-nao" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Cancelar</button>
+    </div>`;
+  el.appendChild(confirmBox);
+
+  const confirmado=await new Promise(resolve=>{
+    document.getElementById('btn-conf-sim').addEventListener('click',()=>{confirmBox.remove();resolve(true);});
+    document.getElementById('btn-conf-nao').addEventListener('click',()=>{confirmBox.remove();resolve(false);});
+  });
+
+  console.log('[Gerentes] Confirmado?',confirmado);
+  if(!confirmado) return;
+
+  bloqueioLeitura=true;
   agencias[ag].splice(idx,1);
+  // Limpa marca de novo se existir
+  gerentesNovos.delete(chaveGerente(ag,nome));
   renderGerList();
   atualizaGerentes();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  console.log('[Gerentes] Salvou na nuvem?',ok);
+  if(ok){
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#E6F5EE;color:#1A7A52;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent=`✅ "${nome}" removido com sucesso.`;
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),3000);
+    }
+  } else {
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#FDEAEA;color:#B02020;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent=`⚠️ Removido localmente mas falhou na nuvem.`;
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),4000);
+    }
+  }
 }
 
-function editarGerente(ag,idx){
-  const nomeAtual=agencias[ag][idx];
-  const novo=prompt(`Renomear "${nomeAtual}" para:`,nomeAtual);
-  if(!novo||novo.trim()===nomeAtual)return;
+async function editarGerente(ag,idx){
+  console.log('[Gerentes] editarGerente chamado:',ag,idx);
+  const nomeAtual=agencias[ag]&&agencias[ag][idx];
+  if(!nomeAtual){console.warn('[Gerentes] Nome não encontrado!');return;}
+
+  // Input INLINE (não depende de prompt do browser)
+  const el=document.getElementById('ger-ed-lista');
+  const editBox=document.createElement('div');
+  editBox.style.cssText='background:#FEF3DC;border:2px solid #D4A030;padding:14px;border-radius:8px;margin-top:10px;';
+  editBox.innerHTML=`
+    <div style="font-weight:600;color:#A0620D;margin-bottom:8px;font-size:13px;">Renomear "${nomeAtual}" para:</div>
+    <input type="text" id="inp-novo-nome" value="${nomeAtual}" style="margin:0 0 10px;" />
+    <div style="display:flex;gap:8px;">
+      <button type="button" id="btn-edit-ok" style="background:var(--safra-accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Salvar</button>
+      <button type="button" id="btn-edit-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Cancelar</button>
+    </div>`;
+  el.appendChild(editBox);
+  const inp=document.getElementById('inp-novo-nome');
+  inp.focus();inp.select();
+
+  const novo=await new Promise(resolve=>{
+    document.getElementById('btn-edit-ok').addEventListener('click',()=>{const v=inp.value.trim();editBox.remove();resolve(v);});
+    document.getElementById('btn-edit-cancel').addEventListener('click',()=>{editBox.remove();resolve(null);});
+    inp.addEventListener('keypress',(e)=>{if(e.key==='Enter'){const v=inp.value.trim();editBox.remove();resolve(v);}});
+  });
+
+  if(!novo||novo===nomeAtual) return;
+
+  bloqueioLeitura=true;
   // Atualiza registros existentes
-  regs.forEach(r=>{if(r.agencia===ag&&r.gerente===nomeAtual)r.gerente=novo.trim();});
-  agencias[ag][idx]=novo.trim();
+  regs.forEach(r=>{if(r.agencia===ag&&r.gerente===nomeAtual)r.gerente=novo;});
+  agencias[ag][idx]=novo;
+  // Transfere marca de "novo" para o nome atualizado
+  if(gerentesNovos.has(chaveGerente(ag,nomeAtual))){
+    gerentesNovos.delete(chaveGerente(ag,nomeAtual));
+    gerentesNovos.add(chaveGerente(ag,novo));
+  }
   renderGerList();
   atualizaGerentes();
   renderGG();
   renderRegional();
   renderRetornos();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  console.log('[Gerentes] Salvou na nuvem?',ok);
+  if(!ok){
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#FDEAEA;color:#B02020;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent=`⚠️ Renomeado localmente mas falhou na nuvem.`;
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),4000);
+    }
+  }
 }
 
 function renderRegional(){
@@ -1408,7 +1760,7 @@ function renderRegional(){
         <div style="display:flex;align-items:center;gap:7px;">
           <div class="avatar" style="width:26px;height:26px;font-size:10px;background:#B02020;">${initials(g.gerente)}</div>
           <div>
-            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;">${g.gerente} ${qFlag(g.contas)}</div>
+            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${g.gerente} ${badgeNovo(g.agencia,g.gerente)} ${qFlag(g.contas)}</div>
             <div style="font-size:10px;color:var(--safra-text-3);">${g.agencia}</div>
           </div>
         </div>
@@ -1428,7 +1780,7 @@ function renderRegional(){
           <div style="font-size:${isTop3?'18px':'12px'};width:26px;text-align:center;font-weight:700;color:var(--safra-text-3);">${med}</div>
           <div class="avatar" style="width:26px;height:26px;font-size:10px;background:#1A7A52;">${initials(g.gerente)}</div>
           <div>
-            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;">${g.gerente} ${qFlag(g.contas)}</div>
+            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${g.gerente} ${badgeNovo(g.agencia,g.gerente)} ${qFlag(g.contas)}</div>
             <div style="font-size:10px;color:var(--safra-text-3);">${g.agencia}</div>
           </div>
         </div>
@@ -1456,7 +1808,7 @@ function renderRegional(){
   <div class="card" style="margin-bottom:1rem;">
     <div class="card-title">🕐 Meta da semana · Contas abertas</div>
     <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:10px;">
-      Progresso da semana atual (seg a dom). Meta padrão: <b>5 contas/gerente/mês</b> (÷4 = semanal).
+      Relógio = <b>% da semana atual</b> (seg a dom). Linha de baixo = acumulado do mês. Meta semanal = meta mensal ÷ ${semanasDoMes(today).toFixed(2)} semanas do mês.
       <span style="color:#1A7A52;font-weight:600;margin-left:6px;">■ ≥100%</span>
       <span style="color:#C8922A;font-weight:600;margin-left:6px;">■ 60–99%</span>
       <span style="color:#B02020;font-weight:600;margin-left:6px;">■ &lt;60%</span>
@@ -1464,13 +1816,14 @@ function renderRegional(){
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
       ${Object.keys(agencias).map(ag=>{
         const cs=contasSemanaAtual(ag,regs);
+        const cm=contasMesAtual(ag,regs);
         const ng=(agencias[ag]||[]).length;
         return `<div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <div style="font-weight:700;font-size:12px;color:var(--safra-navy);">${ag}</div>
-            <div style="font-size:10px;color:var(--safra-text-3);">${ng} ger · meta ${metaMensal(ag)}/mês</div>
+            <div style="font-size:10px;color:var(--safra-text-3);">${ng} ger</div>
           </div>
-          ${relogioAgencia(ag,cs)}
+          ${relogioAgencia(ag,cs,cm)}
         </div>`;
       }).join('')}
     </div>
@@ -1506,7 +1859,7 @@ function renderRegional(){
             const rowBg=agIdx%2===0?'#fff':'#FAFCFF';
             return`<tr style="background:${rowBg};border-bottom:${isLast?'2px solid var(--safra-border-dark)':'1px solid var(--safra-border)'};">
               ${i===0?`<td rowspan="${gers.length}" style="padding:6px 10px;font-weight:700;font-size:11px;color:var(--safra-navy);vertical-align:middle;border-right:2px solid var(--safra-border-dark);white-space:nowrap;background:${rowBg};">${ag}</td>`:''}
-              <td style="padding:6px 10px;font-weight:500;color:var(--safra-text);white-space:nowrap;">${g.gerente}</td>
+              <td style="padding:6px 10px;font-weight:500;color:var(--safra-text);white-space:nowrap;"><span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">${g.gerente} ${badgeNovo(g.agencia,g.gerente)} ${qFlag(g.contas)}</span></td>
               <td style="padding:6px 10px;color:var(--safra-text-3);font-size:11px;text-align:center;">${d}</td>
               ${celMeta(g.contatos,mC)}
               ${celMeta(g.efetivos,mE)}
@@ -1527,9 +1880,9 @@ function renderRegional(){
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.8rem;font-size:10px;color:var(--safra-text-2);align-items:center;">
       <span style="font-weight:600;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;">Quartis:</span>
       <span class="q-flag q1">Q1</span><span>5+ contas</span>
-      <span class="q-flag q2">Q2</span><span>4 contas</span>
-      <span class="q-flag q3">Q3</span><span>3 contas</span>
-      <span class="q-flag q4">Q4</span><span>0 a 2 contas</span>
+      <span class="q-flag q2">Q2</span><span>3 a 4 contas</span>
+      <span class="q-flag q3">Q3</span><span>2 contas</span>
+      <span class="q-flag q4">Q4</span><span>0 a 1 conta</span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;">
       <div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
@@ -1653,7 +2006,10 @@ function renderRetornos(){
         <div class="g-header">
           <div class="avatar">${initials(ger)}</div>
           <div style="flex:1">
-            <div class="g-name">${ger}</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div class="g-name">${ger}</div>
+              ${badgeNovo(ag,ger)}
+            </div>
             <div class="agencia-tag">${ag} · ${sorted.length} retorno${sorted.length>1?'s':''}</div>
           </div>
         </div>
@@ -1686,8 +2042,183 @@ function atualizaFiltroRetGer(){
   sel.innerHTML='<option value="">Todos os gerentes</option>'+lista.map(g=>`<option>${g}</option>`).join('');
 }
 
-// Renderiza todas as abas com dados demo ao carregar
-renderGG();
-renderRegional();
-renderRetornos();
+let trimestreDesbloqueado=false;
+
+function verificarSenhaTrimestre(){
+  const senha=document.getElementById('trimestre-senha').value;
+  if(senha==='Tais26'){
+    trimestreDesbloqueado=true;
+    document.getElementById('trimestre-lock').style.display='none';
+    document.getElementById('trimestre-desbloqueado').style.display='block';
+    document.getElementById('trimestre-senha-erro').style.display='none';
+    renderTrimestre();
+  } else {
+    document.getElementById('trimestre-senha-erro').style.display='block';
+    document.getElementById('trimestre-senha').value='';
+    document.getElementById('trimestre-senha').focus();
+  }
+}
+
+function bloquearTrimestre(){
+  trimestreDesbloqueado=false;
+  document.getElementById('trimestre-lock').style.display='block';
+  document.getElementById('trimestre-desbloqueado').style.display='none';
+  document.getElementById('trimestre-senha').value='';
+}
+
+// ═══════════════════════════════════════════════
+// ABA TRIMESTRE — comparativo mensal por agência
+// ═══════════════════════════════════════════════
+let trimestreMesesSel=new Set(); // meses selecionados no seletor
+
+function getMesAtualComoSnapshot(){
+  // Gera snapshot do mês atual on-the-fly para aparecer junto com os do histórico
+  if(regs.length===0) return null;
+  const snap=gerarSnapshot();
+  snap.label+=' (atual)';
+  return snap;
+}
+
+function renderTrimestre(){
+  const el=document.getElementById('trimestre-content');
+  if(!el||!trimestreDesbloqueado) return;
+
+  // Lista de todos os meses disponíveis = histórico + mês atual (se houver dados)
+  const todosMeses=[...historico];
+  const atual=getMesAtualComoSnapshot();
+  if(atual){
+    // Se já tem snapshot do mês atual no histórico, substitui pelo "ao vivo"
+    const idx=todosMeses.findIndex(h=>h.mes===atual.mes);
+    if(idx>=0) todosMeses[idx]=atual;
+    else todosMeses.push(atual);
+  }
+  todosMeses.sort((a,b)=>a.mes.localeCompare(b.mes));
+
+  if(todosMeses.length===0){
+    el.innerHTML='<div class="empty">Nenhum mês disponível ainda. Registre atividades ou execute a virada de mês para começar o histórico.</div>';
+    return;
+  }
+
+  // Por padrão, seleciona os 3 últimos meses
+  if(trimestreMesesSel.size===0){
+    todosMeses.slice(-3).forEach(m=>trimestreMesesSel.add(m.mes));
+  }
+  // Remove meses que não existem mais do set
+  [...trimestreMesesSel].forEach(m=>{
+    if(!todosMeses.find(x=>x.mes===m)) trimestreMesesSel.delete(m);
+  });
+
+  const mesesOrdenados=todosMeses.map(m=>m.mes);
+  const selecionados=todosMeses.filter(m=>trimestreMesesSel.has(m.mes));
+
+  let html=`
+  <div class="card">
+    <div class="card-title">📊 Comparativo trimestral · Contas abertas e Credenciamentos</div>
+    <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:10px;">
+      Selecione os meses para comparar. O mês atual é atualizado em tempo real.
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+      ${todosMeses.map(m=>{
+        const ativo=trimestreMesesSel.has(m.mes);
+        return `<button onclick="toggleMesTrim('${m.mes}')" style="padding:6px 12px;border-radius:6px;border:1px solid ${ativo?'var(--safra-accent)':'var(--safra-border)'};background:${ativo?'var(--safra-accent)':'#fff'};color:${ativo?'#fff':'var(--safra-text)'};font-size:11px;font-weight:${ativo?'600':'500'};font-family:'DM Sans',sans-serif;cursor:pointer;">${m.label}</button>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  if(selecionados.length===0){
+    html+='<div class="empty">Selecione pelo menos um mês para comparar.</div>';
+    el.innerHTML=html;
+    return;
+  }
+
+  // Tabela comparativa: linhas = agências, colunas = meses (contas | credenc)
+  const agList=Object.keys(agencias).sort();
+
+  html+=`
+  <div class="card" style="overflow-x:auto;">
+    <div class="card-title">🟢 Contas abertas por agência</div>
+    <table class="rtable" style="font-size:12px;">
+      <thead>
+        <tr style="background:var(--safra-light);">
+          <th style="text-align:left;">Agência</th>
+          ${selecionados.map(m=>`<th style="text-align:center;">${m.label}</th>`).join('')}
+          ${selecionados.length>=2?`<th style="text-align:center;color:var(--safra-text-3);">Δ</th>`:''}
+        </tr>
+      </thead>
+      <tbody>
+        ${agList.map(ag=>{
+          const valores=selecionados.map(m=>m.agencias[ag]?.contas||0);
+          const ultimo=valores[valores.length-1];
+          const penultimo=valores.length>=2?valores[valores.length-2]:0;
+          const delta=ultimo-penultimo;
+          const deltaStr=delta>0?`<span style="color:#1A7A52;">▲ +${delta}</span>`:delta<0?`<span style="color:#B02020;">▼ ${delta}</span>`:'<span style="color:var(--safra-text-3);">—</span>';
+          return `<tr>
+            <td style="font-weight:600;color:var(--safra-navy);">${ag}</td>
+            ${valores.map((v,i)=>{
+              const ehUltimo=i===valores.length-1;
+              return `<td style="text-align:center;${ehUltimo?'background:#F0FAF5;font-weight:700;color:var(--green);':''}">${v||'-'}</td>`;
+            }).join('')}
+            ${selecionados.length>=2?`<td style="text-align:center;font-weight:600;">${deltaStr}</td>`:''}
+          </tr>`;
+        }).join('')}
+      </tbody>
+      <tfoot><tr style="background:var(--safra-light);font-weight:700;">
+        <td>TOTAL</td>
+        ${selecionados.map(m=>{
+          const tot=agList.reduce((a,ag)=>a+(m.agencias[ag]?.contas||0),0);
+          return `<td style="text-align:center;color:var(--green);">${tot}</td>`;
+        }).join('')}
+        ${selecionados.length>=2?`<td></td>`:''}
+      </tr></tfoot>
+    </table>
+  </div>
+
+  <div class="card" style="overflow-x:auto;">
+    <div class="card-title">🔵 Credenciamentos por agência</div>
+    <table class="rtable" style="font-size:12px;">
+      <thead>
+        <tr style="background:var(--safra-light);">
+          <th style="text-align:left;">Agência</th>
+          ${selecionados.map(m=>`<th style="text-align:center;">${m.label}</th>`).join('')}
+          ${selecionados.length>=2?`<th style="text-align:center;color:var(--safra-text-3);">Δ</th>`:''}
+        </tr>
+      </thead>
+      <tbody>
+        ${agList.map(ag=>{
+          const valores=selecionados.map(m=>m.agencias[ag]?.credenciamentos||0);
+          const ultimo=valores[valores.length-1];
+          const penultimo=valores.length>=2?valores[valores.length-2]:0;
+          const delta=ultimo-penultimo;
+          const deltaStr=delta>0?`<span style="color:#1A7A52;">▲ +${delta}</span>`:delta<0?`<span style="color:#B02020;">▼ ${delta}</span>`:'<span style="color:var(--safra-text-3);">—</span>';
+          return `<tr>
+            <td style="font-weight:600;color:var(--safra-navy);">${ag}</td>
+            ${valores.map((v,i)=>{
+              const ehUltimo=i===valores.length-1;
+              return `<td style="text-align:center;${ehUltimo?'background:#DDEAF8;font-weight:700;color:var(--safra-blue);':''}">${v||'-'}</td>`;
+            }).join('')}
+            ${selecionados.length>=2?`<td style="text-align:center;font-weight:600;">${deltaStr}</td>`:''}
+          </tr>`;
+        }).join('')}
+      </tbody>
+      <tfoot><tr style="background:var(--safra-light);font-weight:700;">
+        <td>TOTAL</td>
+        ${selecionados.map(m=>{
+          const tot=agList.reduce((a,ag)=>a+(m.agencias[ag]?.credenciamentos||0),0);
+          return `<td style="text-align:center;color:var(--safra-blue);">${tot}</td>`;
+        }).join('')}
+        ${selecionados.length>=2?`<td></td>`:''}
+      </tr></tfoot>
+    </table>
+  </div>`;
+
+  el.innerHTML=html;
+}
+
+function toggleMesTrim(mes){
+  if(trimestreMesesSel.has(mes)) trimestreMesesSel.delete(mes);
+  else trimestreMesesSel.add(mes);
+  renderTrimestre();
+}
+
+// Dados carregados após login via carregarDados()
 </script>
