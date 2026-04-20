@@ -848,8 +848,6 @@ async function fazerLogin(){
   }
 }
 
-// Verifica cache ao carregar a página
-verificarCacheLogin();
 
 // Lista padrão de agências e gerentes (usada quando não há dados salvos)
 const agenciasPadrao = {
@@ -1037,6 +1035,9 @@ const SUPABASE_KEY = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
 let regs=[],lvOn=false,viabSel='';
 let historico=[];
 let bloqueioLeitura=false;
+
+// Verifica cache ao carregar a página
+verificarCacheLogin();
 document.getElementById('f-data').value=today;
 
 function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
