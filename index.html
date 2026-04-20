@@ -438,6 +438,29 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 #login-input{text-align:center;font-size:16px;letter-spacing:0.1em;margin-bottom:8px;}
 #login-erro{font-size:12px;color:#B02020;margin-bottom:8px;display:none;}
 #login-btn{width:100%;padding:12px;font-size:14px;}
+
+/* MODAL EDIÇÃO */
+#edit-modal-overlay{
+  position:fixed;inset:0;z-index:9998;
+  background:rgba(13,43,85,0.55);
+  display:none;align-items:center;justify-content:center;padding:1rem;
+}
+#edit-modal-overlay.open{display:flex;}
+#edit-modal{
+  background:#fff;border-radius:12px;width:100%;max-width:520px;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:0 8px 40px rgba(0,0,0,0.25);
+}
+#edit-modal-header{
+  background:var(--safra-navy);border-radius:12px 12px 0 0;
+  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+}
+#edit-modal-header span{color:#fff;font-weight:600;font-size:14px;}
+#edit-modal-close{background:none;border:none;color:rgba(255,255,255,0.7);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;}
+#edit-modal-body{padding:1.25rem;}
+#edit-modal-footer{padding:0 1.25rem 1.25rem;display:flex;gap:8px;justify-content:flex-end;}
+.edit-del-btn{background:#B02020;color:#fff;border:none;border-radius:7px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.edit-del-btn:hover{background:#8B1010;}
 </style>
 
 <h2 class="sr-only">Painel de acompanhamento de gerentes por agência — Banco Safra</h2>
@@ -450,6 +473,55 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <input type="password" id="login-input" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')fazerLogin()">
     <div id="login-erro">Senha incorreta. Tente novamente.</div>
     <button class="btn btn-primary" id="login-btn" onclick="fazerLogin()">Entrar</button>
+  </div>
+</div>
+<div id="edit-modal-overlay">
+  <div id="edit-modal">
+    <div id="edit-modal-header">
+      <span>✏️ Editar registro</span>
+      <button id="edit-modal-close" onclick="fecharEditModal()">✕</button>
+    </div>
+    <div id="edit-modal-body">
+      <div class="frow">
+        <div><label>Agência</label>
+          <select id="em-agencia" onchange="emAtualizaGerentes()">
+            <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+            <option>JK</option><option>Lapa</option><option>Osasco</option>
+            <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+            <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
+          </select>
+        </div>
+        <div><label>Data</label><input type="date" id="em-data"></div>
+      </div>
+      <div><label>Gerente</label>
+        <select id="em-gerente"></select>
+      </div>
+      <div class="frow3" style="margin-top:4px;">
+        <div><label>Contatos</label><input type="number" id="em-contatos" min="0"></div>
+        <div><label>Efetivos</label><input type="number" id="em-efetivos" min="0"></div>
+        <div><label>E-mails</label><input type="number" id="em-emails" min="0"></div>
+      </div>
+      <div class="frow">
+        <div><label>Visitas</label><input type="number" id="em-visitas" min="0"></div>
+        <div><label>Agendamentos</label><input type="text" id="em-agendamentos"></div>
+      </div>
+      <div class="frow3">
+        <div><label>Contas abertas</label><input type="number" id="em-contas" min="0"></div>
+        <div><label>Credenciamentos</label><input type="number" id="em-credenciamentos" min="0"></div>
+        <div><label>Ag. docs</label><input type="number" id="em-aguardando" min="0"></div>
+      </div>
+      <div class="frow">
+        <div><label>Empresa (retorno)</label><input type="text" id="em-ret-empresa"></div>
+        <div><label>Data retorno</label><input type="date" id="em-ret-data"></div>
+      </div>
+      <div><label>Obs. retorno</label><textarea id="em-ret-obs" style="min-height:44px;"></textarea></div>
+      <div id="em-save-erro" style="display:none;color:#B02020;font-size:12px;margin-top:8px;font-weight:600;"></div>
+    </div>
+    <div id="edit-modal-footer">
+      <button class="edit-del-btn" onclick="excluirRegistroEdit()">🗑 Excluir</button>
+      <button class="btn" onclick="fecharEditModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarEdicao()">Salvar alterações</button>
+    </div>
   </div>
 </div>
 <div style="padding:0.5rem 0 0.75rem;">
@@ -1432,6 +1504,8 @@ function renderGG(){
       const s=stats[ger];
       const temContas=s.contasAbertas&&s.contasAbertas.length>0;
       const temRet=s.retornos.length>0;
+      // Lista registros individuais do gerente para botões de edição
+      const regsGer = gerentes[ger] || [];
       html+=`<div class="card">
         <div class="g-header">
           <div class="avatar">${initials(ger)}</div>
@@ -1445,6 +1519,18 @@ function renderGG(){
             <div class="agencia-tag">${ag} · ${periodoLabel} · <b>${s.contas}</b> conta${s.contas!==1?'s':''} · ${s.credenciamentos} credenc. · ${s.retornos.length} retorno${s.retornos.length!==1?'s':''}</div>
           </div>
         </div>
+        ${regsGer.length>0?`<div class="stitle" style="margin-top:0;margin-bottom:6px;">📋 Registros do período</div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px;">
+          ${regsGer.slice().sort((a,b)=>a.data.localeCompare(b.data)).map(r=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--safra-light);border:1px solid var(--safra-border);border-radius:7px;padding:6px 10px;gap:8px;flex-wrap:wrap;">
+              <div style="font-size:12px;color:var(--safra-text);">
+                <span style="font-family:'DM Mono',monospace;color:var(--safra-text-3);font-size:11px;">${fmt(r.data)}</span>
+                <span style="margin:0 6px;color:var(--safra-border-dark);">·</span>
+                <span>${r.contatos} contatos · ${r.efetivos} efet. · ${r.contas} conta${r.contas!==1?'s':''} · ${r.credenciamentos} cred.</span>
+              </div>
+              <button onclick="abrirEditModal('${r._id}')" style="background:var(--safra-white);border:1px solid var(--safra-border);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;color:var(--safra-text-2);font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;">✏️ Editar</button>
+            </div>`).join('')}
+        </div>`:''}
 
         ${temContas?`
         <div class="stitle" style="margin-top:0;">🟢 Contas abertas (${s.contasAbertas.length})</div>
@@ -2221,4 +2307,116 @@ function toggleMesTrim(mes){
 }
 
 // Dados carregados após login via carregarDados()
+
+let _editRegId = null; // ID do registro sendo editado
+
+function abrirEditModal(regId){
+  const r = regs.find(x => x._id === regId);
+  if(!r){ alert('Registro não encontrado.'); return; }
+  _editRegId = regId;
+
+  // Preenche campos
+  document.getElementById('em-agencia').value = r.agencia;
+  emAtualizaGerentes(r.gerente);
+  document.getElementById('em-data').value = r.data;
+  document.getElementById('em-contatos').value = r.contatos||0;
+  document.getElementById('em-efetivos').value = r.efetivos||0;
+  document.getElementById('em-emails').value = r.emails||0;
+  document.getElementById('em-visitas').value = r.visitas||0;
+  document.getElementById('em-agendamentos').value = r.agendamentos||'';
+  document.getElementById('em-contas').value = r.contas||0;
+  document.getElementById('em-credenciamentos').value = r.credenciamentos||0;
+  document.getElementById('em-aguardando').value = r.aguardando||0;
+  document.getElementById('em-ret-empresa').value = r.retEmpresa||'';
+  document.getElementById('em-ret-data').value = r.retData||'';
+  document.getElementById('em-ret-obs').value = r.retObs||'';
+  document.getElementById('em-save-erro').style.display='none';
+  document.getElementById('edit-modal-overlay').classList.add('open');
+}
+
+function fecharEditModal(){
+  document.getElementById('edit-modal-overlay').classList.remove('open');
+  _editRegId = null;
+}
+
+function emAtualizaGerentes(selecionado){
+  const ag = document.getElementById('em-agencia').value;
+  const sel = document.getElementById('em-gerente');
+  const lista = agencias[ag]||[];
+  sel.innerHTML = lista.map(g=>`<option${g===selecionado?' selected':''}>${g}</option>`).join('');
+}
+
+async function salvarEdicao(){
+  if(!_editRegId) return;
+  const erroEl = document.getElementById('em-save-erro');
+  erroEl.style.display='none';
+  const body = {
+    agencia: document.getElementById('em-agencia').value,
+    gerente: document.getElementById('em-gerente').value,
+    data: document.getElementById('em-data').value,
+    contatos: parseInt(document.getElementById('em-contatos').value)||0,
+    efetivos: parseInt(document.getElementById('em-efetivos').value)||0,
+    emails: parseInt(document.getElementById('em-emails').value)||0,
+    visitas: parseInt(document.getElementById('em-visitas').value)||0,
+    agendamentos: document.getElementById('em-agendamentos').value,
+    contas: parseInt(document.getElementById('em-contas').value)||0,
+    credenciamentos: parseInt(document.getElementById('em-credenciamentos').value)||0,
+    aguardando: parseInt(document.getElementById('em-aguardando').value)||0,
+    ret_empresa: document.getElementById('em-ret-empresa').value||null,
+    ret_data: document.getElementById('em-ret-data').value||null,
+    ret_obs: document.getElementById('em-ret-obs').value||null,
+  };
+  try{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${_editRegId}`,{
+      method:'PATCH',
+      headers:{
+        'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
+        'Content-Type':'application/json','Prefer':'return=minimal'
+      },
+      body:JSON.stringify(body)
+    });
+    if(!res.ok){ erroEl.textContent='Erro ao salvar. Tente novamente.'; erroEl.style.display='block'; return; }
+    fecharEditModal();
+    setSyncStatus('✅ Editado','#90EE90');
+    await lerDados();
+  }catch(e){
+    erroEl.textContent='Erro de conexão.'; erroEl.style.display='block';
+  }
+}
+
+async function excluirRegistroEdit(){
+  if(!_editRegId) return;
+  const confirmBox = document.createElement('div');
+  confirmBox.style.cssText='background:#FDEAEA;border:2px solid #B02020;padding:14px;border-radius:8px;margin-top:10px;';
+  confirmBox.innerHTML=`
+    <div style="font-weight:600;color:#B02020;margin-bottom:10px;font-size:13px;">Excluir este registro?</div>
+    <div style="display:flex;gap:8px;">
+      <button id="excl-sim" style="background:#B02020;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Sim, excluir</button>
+      <button id="excl-nao" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Cancelar</button>
+    </div>`;
+  document.getElementById('em-save-erro').after(confirmBox);
+
+  const ok = await new Promise(resolve=>{
+    document.getElementById('excl-sim').onclick=()=>{confirmBox.remove();resolve(true);};
+    document.getElementById('excl-nao').onclick=()=>{confirmBox.remove();resolve(false);};
+  });
+  if(!ok) return;
+
+  try{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${_editRegId}`,{
+      method:'DELETE',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
+    });
+    if(!res.ok){ alert('Erro ao excluir.'); return; }
+    fecharEditModal();
+    setSyncStatus('✅ Excluído','#90EE90');
+    await lerDados();
+  }catch(e){ alert('Erro de conexão.'); }
+}
+
+// Fecha modal ao clicar fora
+document.getElementById('edit-modal-overlay').addEventListener('click',function(e){
+  if(e.target===this) fecharEditModal();
+});
+
 </script>
