@@ -1543,7 +1543,7 @@ function renderGG(){
             <td style="color:var(--green);font-weight:700;">${s.contas||'-'}</td>
             <td>${s.credenciamentos||'-'}</td>
             <td>${s.aguardando>0?`<span style="color:var(--amber);font-weight:600;">${s.aguardando}</span>`:'-'}</td>
-            <td><button onclick="abrirEditTotal('${ag}','${g.replace(/'/g,"\\'")}',gerentes['${g.replace(/'/g,"\\'")}'])" style="background:var(--safra-white);border:1px solid var(--safra-border);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--safra-text-2);font-family:'DM Sans',sans-serif;white-space:nowrap;">✏️</button></td>
+            <td><button onclick="abrirEditTotal('${ag}','${g.replace(/'/g,"&#39;")}')" style="background:var(--safra-white);border:1px solid var(--safra-border);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--safra-text-2);font-family:'DM Sans',sans-serif;white-space:nowrap;">✏️</button></td>
           </tr>`;}).join('')}
         </tbody>
         <tfoot><tr style="background:var(--safra-light);">
@@ -2484,7 +2484,9 @@ document.getElementById('edit-modal-overlay').addEventListener('click',function(
 
 // ── EDIÇÃO TOTAL DO GERENTE (pela tabela do Dashboard) ──
 // Abre modal com totais somados; ao salvar, deleta registros antigos e cria um único novo
-async function abrirEditTotal(ag, ger, regsGer){
+async function abrirEditTotal(ag, ger){
+  // Busca registros do gerente direto da variável global regs
+  const regsGer = regs.filter(r => r.agencia === ag && r.gerente === ger);
   if(!regsGer || regsGer.length === 0){ alert('Nenhum registro encontrado para este gerente.'); return; }
 
   // Soma totais
