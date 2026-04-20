@@ -1522,6 +1522,7 @@ function renderGG(){
           <th>Total contas</th>
           <th>Credenc.</th>
           <th>Ag. docs</th>
+          <th style="width:60px;"></th>
         </tr></thead>
         <tbody>
           ${nomes.map(g=>{const s=stats[g];return`<tr>
@@ -1541,6 +1542,7 @@ function renderGG(){
             <td style="color:var(--green);font-weight:700;">${s.contas||'-'}</td>
             <td>${s.credenciamentos||'-'}</td>
             <td>${s.aguardando>0?`<span style="color:var(--amber);font-weight:600;">${s.aguardando}</span>`:'-'}</td>
+            <td><button onclick="abrirEditTotal('${ag}','${g.replace(/'/g,"\\'")}',gerentes['${g.replace(/'/g,"\\'")}'])" style="background:var(--safra-white);border:1px solid var(--safra-border);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--safra-text-2);font-family:'DM Sans',sans-serif;white-space:nowrap;">✏️</button></td>
           </tr>`;}).join('')}
         </tbody>
         <tfoot><tr style="background:var(--safra-light);">
@@ -1552,6 +1554,7 @@ function renderGG(){
           <td style="color:var(--green);font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].contas,0)||'-'}</td>
           <td style="font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].credenciamentos,0)||'-'}</td>
           <td style="color:var(--amber);font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].aguardando,0)||'-'}</td>
+          <td></td>
         </tr></tfoot>
       </table>
     </div>`;
@@ -2476,5 +2479,161 @@ async function excluirRegistroEdit(){
 document.getElementById('edit-modal-overlay').addEventListener('click',function(e){
   if(e.target===this) fecharEditModal();
 });
+
+
+// ── EDIÇÃO TOTAL DO GERENTE (pela tabela do Dashboard) ──
+// Abre modal com totais somados; ao salvar, deleta registros antigos e cria um único novo
+async function abrirEditTotal(ag, ger, regsGer){
+  if(!regsGer || regsGer.length === 0){ alert('Nenhum registro encontrado para este gerente.'); return; }
+
+  // Soma totais
+  const total = {
+    contatos:        regsGer.reduce((a,r)=>a+r.contatos,0),
+    efetivos:        regsGer.reduce((a,r)=>a+r.efetivos,0),
+    emails:          regsGer.reduce((a,r)=>a+r.emails,0),
+    visitas:         regsGer.reduce((a,r)=>a+r.visitas,0),
+    agendamentos:    regsGer.map(r=>r.agendamentos).filter(Boolean).join(', '),
+    contas:          regsGer.reduce((a,r)=>a+r.contas,0),
+    credenciamentos: regsGer.reduce((a,r)=>a+r.credenciamentos,0),
+    aguardando:      regsGer.reduce((a,r)=>a+r.aguardando,0),
+    retEmpresa:      regsGer[regsGer.length-1]?.retEmpresa||'',
+    retData:         regsGer[regsGer.length-1]?.retData||'',
+    retObs:          regsGer[regsGer.length-1]?.retObs||'',
+    data:            regsGer[regsGer.length-1]?.data||today,
+  };
+
+  // Guarda os IDs para deletar depois
+  _editTotalIds = regsGer.map(r=>r._id).filter(Boolean);
+  _editTotalAg  = ag;
+  _editTotalGer = ger;
+  _editTotalData = total.data;
+
+  // Reutiliza o modal existente
+  document.getElementById('edit-modal-header').querySelector('span').textContent = `✏️ Editar total · ${ger}`;
+  document.getElementById('em-agencia').value = ag;
+  emAtualizaGerentes(ger);
+  document.getElementById('em-data').value = total.data;
+  document.getElementById('em-contatos').value = total.contatos;
+  document.getElementById('em-efetivos').value = total.efetivos;
+  document.getElementById('em-emails').value = total.emails;
+  document.getElementById('em-visitas').value = total.visitas;
+  document.getElementById('em-agendamentos').value = total.agendamentos;
+  document.getElementById('em-contas').value = total.contas;
+  document.getElementById('em-credenciamentos').value = total.credenciamentos;
+  document.getElementById('em-aguardando').value = total.aguardando;
+  document.getElementById('em-ret-empresa').value = total.retEmpresa;
+  document.getElementById('em-ret-data').value = total.retData;
+  document.getElementById('em-ret-obs').value = total.retObs;
+  document.getElementById('em-save-erro').style.display='none';
+
+  // Troca o comportamento dos botões para modo "total"
+  _editRegId = null; // garante que salvarEdicao() não seja chamado no modo antigo
+  _editTotalMode = true;
+
+  // Aviso no modal
+  let avisoEl = document.getElementById('em-aviso-total');
+  if(!avisoEl){
+    avisoEl = document.createElement('div');
+    avisoEl.id = 'em-aviso-total';
+    avisoEl.style.cssText = 'background:#FEF3DC;border:1px solid #D4A030;border-radius:6px;padding:8px 12px;font-size:11px;color:#633806;margin-bottom:8px;';
+    document.getElementById('em-save-erro').before(avisoEl);
+  }
+  avisoEl.style.display = 'block';
+  avisoEl.textContent = `⚠️ Editando total consolidado de ${regsGer.length} registro(s). Ao salvar, os registros anteriores serão substituídos por um único registro com os valores informados.`;
+
+  document.getElementById('edit-modal-overlay').classList.add('open');
+}
+
+let _editTotalMode = false;
+let _editTotalIds  = [];
+let _editTotalAg   = '';
+let _editTotalGer  = '';
+let _editTotalData = '';
+
+// Sobrescreve salvarEdicao para suportar modo total
+const _salvarEdicaoOriginal = salvarEdicao;
+async function salvarEdicao(){
+  if(_editTotalMode){
+    await salvarEdicaoTotal();
+    return;
+  }
+  await _salvarEdicaoOriginal();
+}
+
+async function salvarEdicaoTotal(){
+  const erroEl = document.getElementById('em-save-erro');
+  erroEl.style.display='none';
+
+  const novoReg = {
+    agencia:         document.getElementById('em-agencia').value,
+    gerente:         document.getElementById('em-gerente').value,
+    data:            document.getElementById('em-data').value,
+    contatos:        parseInt(document.getElementById('em-contatos').value)||0,
+    efetivos:        parseInt(document.getElementById('em-efetivos').value)||0,
+    emails:          parseInt(document.getElementById('em-emails').value)||0,
+    visitas:         parseInt(document.getElementById('em-visitas').value)||0,
+    agendamentos:    document.getElementById('em-agendamentos').value,
+    contas:          parseInt(document.getElementById('em-contas').value)||0,
+    credenciamentos: parseInt(document.getElementById('em-credenciamentos').value)||0,
+    aguardando:      parseInt(document.getElementById('em-aguardando').value)||0,
+    ret_empresa:     document.getElementById('em-ret-empresa').value||null,
+    ret_data:        document.getElementById('em-ret-data').value||null,
+    ret_obs:         document.getElementById('em-ret-obs').value||null,
+    contas_lv:       0,
+    contas_sem:      parseInt(document.getElementById('em-contas').value)||0,
+    lista_verde:     false,
+    viabilizado:     null,
+    contas_detalhe:  [],
+  };
+
+  try{
+    // 1. Deleta todos os registros anteriores do gerente (em paralelo)
+    await Promise.all(_editTotalIds.map(id =>
+      fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`,{
+        method:'DELETE',
+        headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
+      })
+    ));
+
+    // 2. Cria o novo registro consolidado
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/registros`,{
+      method:'POST',
+      headers:{
+        'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
+        'Content-Type':'application/json','Prefer':'return=minimal'
+      },
+      body:JSON.stringify(novoReg)
+    });
+    if(!res.ok){ erroEl.textContent='Erro ao salvar. Tente novamente.'; erroEl.style.display='block'; return; }
+
+    _editTotalMode = false;
+    fecharEditTotal();
+    setSyncStatus('✅ Total editado','#90EE90');
+    await lerDados();
+  }catch(e){
+    erroEl.textContent='Erro de conexão.'; erroEl.style.display='block';
+  }
+}
+
+function fecharEditTotal(){
+  _editTotalMode = false;
+  const aviso = document.getElementById('em-aviso-total');
+  if(aviso) aviso.style.display='none';
+  document.getElementById('edit-modal-header').querySelector('span').textContent = '✏️ Editar registro';
+  fecharEditModal();
+}
+
+// Sobrescreve fecharEditModal para limpar modo total também
+const _fecharOriginal = fecharEditModal;
+function fecharEditModal(){
+  if(_editTotalMode){
+    _editTotalMode = false;
+    const aviso = document.getElementById('em-aviso-total');
+    if(aviso) aviso.style.display='none';
+    document.getElementById('edit-modal-header').querySelector('span').textContent = '✏️ Editar registro';
+  }
+  document.getElementById('edit-modal-overlay').classList.remove('open');
+  _editRegId = null;
+}
 
 </script>
