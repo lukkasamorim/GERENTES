@@ -435,7 +435,22 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 }
 #login-title{font-size:16px;font-weight:700;color:#0D2B55;margin-bottom:4px;}
 #login-sub{font-size:12px;color:#6B83A4;margin-bottom:1.5rem;}
-#login-input{text-align:center;font-size:16px;letter-spacing:0.1em;margin-bottom:8px;}
+#login-input-wrap{position:relative;margin-bottom:8px;}
+#login-input{text-align:center;font-size:16px;letter-spacing:0.1em;margin-bottom:0;padding-right:40px;}
+#login-toggle-senha{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:var(--safra-text-3);font-size:16px;padding:4px;line-height:1;
+}
+#login-toggle-senha:hover{color:var(--safra-navy);}
+#login-lembrar{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:14px;margin-top:4px;
+  font-size:12px;color:#3A5278;cursor:pointer;user-select:none;
+}
+#login-lembrar input[type=checkbox]{
+  width:15px;height:15px;cursor:pointer;accent-color:#0D2B55;margin:0;
+}
 #login-erro{font-size:12px;color:#B02020;margin-bottom:8px;display:none;}
 #login-btn{width:100%;padding:12px;font-size:14px;}
 
@@ -470,7 +485,13 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <div id="login-logo">SF</div>
     <div id="login-title">Painel de Gerentes</div>
     <div id="login-sub">Banco Safra · Acesso restrito</div>
-    <input type="password" id="login-input" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+    <div id="login-input-wrap">
+      <input type="password" id="login-input" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+      <button id="login-toggle-senha" type="button" onclick="toggleVerSenha()" title="Mostrar/ocultar senha">👁</button>
+    </div>
+    <label id="login-lembrar">
+      <input type="checkbox" id="login-remember"> Lembrar senha neste dispositivo
+    </label>
     <div id="login-erro">Senha incorreta. Tente novamente.</div>
     <button class="btn btn-primary" id="login-btn" onclick="fazerLogin()">Entrar</button>
   </div>
@@ -766,6 +787,34 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 </div>
 
 <script>
+// ── LOGIN COM CACHE ──
+const LOGIN_CACHE_KEY = 'safra_login_ok';
+
+function toggleVerSenha(){
+  const inp = document.getElementById('login-input');
+  const btn = document.getElementById('login-toggle-senha');
+  if(inp.type === 'password'){
+    inp.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function verificarCacheLogin(){
+  try{
+    const cached = localStorage.getItem(LOGIN_CACHE_KEY);
+    if(cached === 'true'){
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('login-remember').checked = true;
+      carregarDados();
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
 async function fazerLogin(){
   const val=document.getElementById('login-input').value;
   if(!val) return;
@@ -778,6 +827,12 @@ async function fazerLogin(){
     const data=await res.json();
     const senhaCorreta=(data?.[0]?.valor||'').replace(/^"|"$/g,'');
     if(val===senhaCorreta){
+      // Salva no cache se checkbox marcado
+      const lembrar = document.getElementById('login-remember').checked;
+      try{
+        if(lembrar) localStorage.setItem(LOGIN_CACHE_KEY,'true');
+        else localStorage.removeItem(LOGIN_CACHE_KEY);
+      }catch(e){}
       document.getElementById('login-screen').style.display='none';
       carregarDados();
     } else {
@@ -792,6 +847,9 @@ async function fazerLogin(){
     btn.textContent='Entrar'; btn.disabled=false;
   }
 }
+
+// Verifica cache ao carregar a página
+verificarCacheLogin();
 
 // Lista padrão de agências e gerentes (usada quando não há dados salvos)
 const agenciasPadrao = {
