@@ -803,14 +803,14 @@ async function fazerLogin(){
   try{
     // Busca senha na tabela painel_meta (id=1, campo senha_painel)
     const res = await fetch(
-      `https://umiwqmslqalanjwupdlh.supabase.co/rest/v1/painel_meta?id=eq.1&select=senha_painel`,
+      `https://umiwqmslqalanjwupdlh.supabase.co/rest/v1/app_config?chave=eq.senha_app&select=valor`,
       { headers:{
           'apikey':'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO',
           'Authorization':'Bearer sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO'
       }}
     );
     const data = await res.json();
-    const senhaCorreta = (data?.[0]?.senha_painel||'').replace(/^"|"$/g,'');
+    const senhaCorreta = (data?.[0]?.valor||'').replace(/^"|"$/g,'');
     if(val === senhaCorreta){
       const lembrar = document.getElementById('login-remember').checked;
       try{
