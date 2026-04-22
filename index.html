@@ -413,6 +413,27 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   white-space:nowrap;
 }
 
+/* Tags de origem do retorno */
+.tag-origem{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:10px;
+  letter-spacing:0.03em;
+  white-space:nowrap;
+  border:1px solid transparent;
+}
+.tag-origem.tipo-prospeccao{background:#E6F0FF;color:#1A4A8A;border-color:#7AAAD8;}
+.tag-origem.tipo-base     {background:#E0F0EA;color:#1A5A52;border-color:#5AAA8A;}
+.tag-origem.tipo-fgi      {background:#F3E6FF;color:#5A1A8A;border-color:#B07ACE;}
+.tag-origem.tipo-altobacen{background:#FFE6F0;color:#8A1A4A;border-color:#D87AAA;}
+.tag-origem.tipo-viabilizamais{background:#FEF3DC;color:#A0620D;border-color:#D4A030;}
+.tag-origem.tipo-retorno  {background:#EEF2F8;color:#2A3B5F;border-color:#9DB0CC;}
+.tag-origem.tipo-agendamento{background:#E0F2E9;color:#1A5A52;border-color:#5AAA8A;}
+
+/* Badge "Virou conta" */
+.badge-conta-sim{background:#E6F5EE;color:#1A7A52;border:1px solid #A8D4BF;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
+.badge-conta-nao{background:#F1F3F7;color:#6B7280;border:1px solid #C9D0DD;font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
+
 /* LOGIN SCREEN */
 #login-screen{
   position:fixed;inset:0;z-index:9999;
@@ -453,29 +474,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 }
 #login-erro{font-size:12px;color:#B02020;margin-bottom:8px;display:none;}
 #login-btn{width:100%;padding:12px;font-size:14px;}
-
-/* MODAL EDIÇÃO */
-#edit-modal-overlay{
-  position:fixed;inset:0;z-index:9998;
-  background:rgba(13,43,85,0.55);
-  display:none;align-items:center;justify-content:center;padding:1rem;
-}
-#edit-modal-overlay.open{display:flex;}
-#edit-modal{
-  background:#fff;border-radius:12px;width:100%;max-width:520px;
-  max-height:90vh;overflow-y:auto;
-  box-shadow:0 8px 40px rgba(0,0,0,0.25);
-}
-#edit-modal-header{
-  background:var(--safra-navy);border-radius:12px 12px 0 0;
-  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
-}
-#edit-modal-header span{color:#fff;font-weight:600;font-size:14px;}
-#edit-modal-close{background:none;border:none;color:rgba(255,255,255,0.7);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;}
-#edit-modal-body{padding:1.25rem;}
-#edit-modal-footer{padding:0 1.25rem 1.25rem;display:flex;gap:8px;justify-content:flex-end;}
-.edit-del-btn{background:#B02020;color:#fff;border:none;border-radius:7px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.edit-del-btn:hover{background:#8B1010;}
 </style>
 
 <h2 class="sr-only">Painel de acompanhamento de gerentes por agência — Banco Safra</h2>
@@ -494,55 +492,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     </label>
     <div id="login-erro">Senha incorreta. Tente novamente.</div>
     <button class="btn btn-primary" id="login-btn" onclick="fazerLogin()">Entrar</button>
-  </div>
-</div>
-<div id="edit-modal-overlay">
-  <div id="edit-modal">
-    <div id="edit-modal-header">
-      <span>✏️ Editar registro</span>
-      <button id="edit-modal-close" onclick="fecharEditModal()">✕</button>
-    </div>
-    <div id="edit-modal-body">
-      <div class="frow">
-        <div><label>Agência</label>
-          <select id="em-agencia" onchange="emAtualizaGerentes()">
-            <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
-            <option>JK</option><option>Lapa</option><option>Osasco</option>
-            <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
-            <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
-          </select>
-        </div>
-        <div><label>Data</label><input type="date" id="em-data"></div>
-      </div>
-      <div><label>Gerente</label>
-        <select id="em-gerente"></select>
-      </div>
-      <div class="frow3" style="margin-top:4px;">
-        <div><label>Contatos</label><input type="number" id="em-contatos" min="0"></div>
-        <div><label>Efetivos</label><input type="number" id="em-efetivos" min="0"></div>
-        <div><label>E-mails</label><input type="number" id="em-emails" min="0"></div>
-      </div>
-      <div class="frow">
-        <div><label>Visitas</label><input type="number" id="em-visitas" min="0"></div>
-        <div><label>Agendamentos</label><input type="text" id="em-agendamentos"></div>
-      </div>
-      <div class="frow3">
-        <div><label>Contas abertas</label><input type="number" id="em-contas" min="0"></div>
-        <div><label>Credenciamentos</label><input type="number" id="em-credenciamentos" min="0"></div>
-        <div><label>Ag. docs</label><input type="number" id="em-aguardando" min="0"></div>
-      </div>
-      <div class="frow">
-        <div><label>Empresa (retorno)</label><input type="text" id="em-ret-empresa"></div>
-        <div><label>Data retorno</label><input type="date" id="em-ret-data"></div>
-      </div>
-      <div><label>Obs. retorno</label><textarea id="em-ret-obs" style="min-height:44px;"></textarea></div>
-      <div id="em-save-erro" style="display:none;color:#B02020;font-size:12px;margin-top:8px;font-weight:600;"></div>
-    </div>
-    <div id="edit-modal-footer">
-      <button class="edit-del-btn" onclick="excluirRegistroEdit()">🗑 Excluir</button>
-      <button class="btn" onclick="fecharEditModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="salvarEdicao()">Salvar alterações</button>
-    </div>
   </div>
 </div>
 <div style="padding:0.5rem 0 0.75rem;">
@@ -626,9 +575,38 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <div><label>Efetivos</label><input type="number" id="f-efetivos" placeholder="0" min="0"></div>
     <div><label>E-mails enviados</label><input type="number" id="f-emails" placeholder="0" min="0"></div>
   </div>
-  <div class="frow">
-    <div><label>Visitas abertura</label><input type="number" id="f-visitas" placeholder="0" min="0"></div>
-    <div><label>Agendamentos</label><input type="text" id="f-agendamentos" placeholder="Ex: Empório Pão de Queijo"></div>
+  <div>
+    <label>Agendamentos <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(digite o nome e pressione Enter ou clique em +)</span></label>
+    <div style="display:flex;gap:6px;">
+      <input type="text" id="f-agendamentos-nome" placeholder="Ex: Empório Pão de Queijo" style="margin:0;" onkeypress="if(event.key==='Enter'){event.preventDefault();adicionarAgendamento();}">
+      <button type="button" class="btn btn-primary" onclick="adicionarAgendamento()" style="white-space:nowrap;padding:8px 14px;">+ Adicionar</button>
+    </div>
+    <div id="agendamentos-lista" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
+
+  <div class="stitle" style="margin-top:10px;">Ação realizada</div>
+  <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:8px;">Preencha a quantidade de cada ação. Ao digitar, abrem campos pra detalhar cada uma.</div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:#FAFCFF;">
+    <div style="font-size:11px;font-weight:700;color:var(--safra-navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">🚪 Visitas</div>
+    <div class="frow">
+      <div><label style="margin-top:0;">Prospecção</label><input type="number" id="f-acao-prospeccao" placeholder="0" min="0" oninput="atualizaDetalheAcao('prospeccao')"></div>
+      <div><label style="margin-top:0;">Base</label><input type="number" id="f-acao-base" placeholder="0" min="0" oninput="atualizaDetalheAcao('base')"></div>
+    </div>
+    <div id="detalhe-acao-prospeccao"></div>
+    <div id="detalhe-acao-base"></div>
+  </div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
+    <div style="font-size:11px;font-weight:700;color:var(--safra-navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">🧭 Bússola</div>
+    <div class="frow3">
+      <div><label style="margin-top:0;">FGI</label><input type="number" id="f-acao-fgi" placeholder="0" min="0" oninput="atualizaDetalheAcao('fgi')"></div>
+      <div><label style="margin-top:0;">Alto Bacen</label><input type="number" id="f-acao-altobacen" placeholder="0" min="0" oninput="atualizaDetalheAcao('altobacen')"></div>
+      <div><label style="margin-top:0;">Viabiliza+</label><input type="number" id="f-acao-viabilizamais" placeholder="0" min="0" oninput="atualizaDetalheAcao('viabilizamais')"></div>
+    </div>
+    <div id="detalhe-acao-fgi"></div>
+    <div id="detalhe-acao-altobacen"></div>
+    <div id="detalhe-acao-viabilizamais"></div>
   </div>
 
   <div class="stitle">Resultados</div>
@@ -653,7 +631,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <button class="viab-btn" onclick="selectViab('credito',this,'ret')">Crédito</button>
     <button class="viab-btn" onclick="selectViab('safrapay',this,'ret')">SafraPay</button>
     <button class="viab-btn" onclick="selectViab('cobranca',this,'ret')">Cobrança</button>
-    <button class="viab-btn" onclick="selectViab('ativos',this,'ret')">Ativos</button>
+    <button class="viab-btn" onclick="selectViab('ativos',this,'ret')">Passivo</button>
     <button class="viab-btn" onclick="selectViab('margem',this,'ret')">Margem</button>
   </div>
   <div><label>Observação</label><textarea id="f-ret-obs" placeholder="Descreva o que foi tratado..."></textarea></div>
@@ -695,7 +673,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       <div style="font-size:32px;margin-bottom:0.75rem;">🔒</div>
       <div class="card-title" style="justify-content:center;">Acesso restrito</div>
       <p style="font-size:13px;color:var(--safra-text-3);margin-bottom:1rem;">Digite a senha para acessar a aba Regional.</p>
-      <input type="password" id="regional-senha" placeholder="Senha" style="margin-bottom:10px;text-align:center;font-size:15px;" onkeydown="if(event.key==='Enter')verificarSenhaRegional()">
+      <div style="position:relative;margin-bottom:10px;">
+        <input type="password" id="regional-senha" placeholder="Senha" style="margin:0;text-align:center;font-size:15px;padding-right:40px;" onkeydown="if(event.key==='Enter')verificarSenhaRegional()">
+        <button type="button" onclick="toggleSenha('regional-senha',this)" aria-label="Mostrar/ocultar senha" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--safra-text-3);font-size:16px;padding:4px 6px;line-height:1;">👁️</button>
+      </div>
       <div id="regional-senha-erro" style="display:none;font-size:12px;color:#B02020;margin-bottom:8px;">Senha incorreta. Tente novamente.</div>
       <button class="btn btn-primary" onclick="verificarSenhaRegional()" style="width:100%;padding:12px;">Entrar</button>
     </div>
@@ -726,7 +707,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       A visão trimestral exige senha de autorização.
     </p>
     <label style="font-size:12px;color:var(--safra-text-2);font-weight:500;">Senha</label>
-    <input type="password" id="trimestre-senha" placeholder="Digite a senha" style="margin:4px 0 8px;" onkeypress="if(event.key==='Enter')verificarSenhaTrimestre()">
+    <div style="position:relative;margin:4px 0 8px;">
+      <input type="password" id="trimestre-senha" placeholder="Digite a senha" style="margin:0;padding-right:40px;" onkeypress="if(event.key==='Enter')verificarSenhaTrimestre()">
+      <button type="button" onclick="toggleSenha('trimestre-senha',this)" aria-label="Mostrar/ocultar senha" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--safra-text-3);font-size:16px;padding:4px 6px;line-height:1;">👁️</button>
+    </div>
     <div id="trimestre-senha-erro" style="display:none;color:#B02020;font-size:11px;margin-bottom:8px;">❌ Senha incorreta.</div>
     <div style="display:flex;gap:8px;justify-content:flex-end;">
       <button class="btn btn-primary" onclick="verificarSenhaTrimestre()">Desbloquear</button>
@@ -774,7 +758,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
     <div style="background:#FDEAEA;border:1px solid #CC4444;border-radius:8px;padding:12px 14px;margin-bottom:1rem;">
       <label style="font-weight:600;color:#B02020;font-size:12px;display:block;margin-bottom:6px;">🔒 Senha de autorização</label>
-      <input type="password" id="novomes-senha" placeholder="Digite a senha" style="margin:0;" onkeypress="if(event.key==='Enter')confirmarNovoMes()">
+      <div style="position:relative;">
+        <input type="password" id="novomes-senha" placeholder="Digite a senha" style="margin:0;padding-right:40px;" onkeypress="if(event.key==='Enter')confirmarNovoMes()">
+        <button type="button" onclick="toggleSenha('novomes-senha',this)" aria-label="Mostrar/ocultar senha" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--safra-text-3);font-size:16px;padding:4px 6px;line-height:1;">👁️</button>
+      </div>
       <div id="novomes-senha-erro" style="display:none;color:#B02020;font-size:11px;margin-top:6px;">❌ Senha incorreta.</div>
     </div>
 
@@ -793,22 +780,15 @@ const LOGIN_CACHE_KEY = 'safra_login_ok';
 function toggleVerSenha(){
   const inp = document.getElementById('login-input');
   const btn = document.getElementById('login-toggle-senha');
-  if(inp.type === 'password'){
-    inp.type = 'text';
-    btn.textContent = '🙈';
-  } else {
-    inp.type = 'password';
-    btn.textContent = '👁';
-  }
+  if(inp.type === 'password'){ inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
 }
 
 function verificarCacheLogin(){
   try{
-    const cached = localStorage.getItem(LOGIN_CACHE_KEY);
-    if(cached === 'true'){
+    if(localStorage.getItem(LOGIN_CACHE_KEY) === 'true'){
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('login-remember').checked = true;
-      carregarDados();
       return true;
     }
   }catch(e){}
@@ -816,38 +796,41 @@ function verificarCacheLogin(){
 }
 
 async function fazerLogin(){
-  const val=document.getElementById('login-input').value;
+  const val = document.getElementById('login-input').value;
   if(!val) return;
-  const btn=document.getElementById('login-btn');
-  btn.textContent='...'; btn.disabled=true;
+  const btn = document.getElementById('login-btn');
+  btn.textContent = '...'; btn.disabled = true;
   try{
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/config?chave=eq.senha_painel&select=valor`,{
-      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
-    });
-    const data=await res.json();
-    const senhaCorreta=(data?.[0]?.valor||'').replace(/^"|"$/g,'');
-    if(val===senhaCorreta){
-      // Salva no cache se checkbox marcado
+    // Busca senha na tabela painel_meta (id=1, campo senha_painel)
+    const res = await fetch(
+      `https://umiwqmslqalanjwupdlh.supabase.co/rest/v1/painel_meta?id=eq.1&select=senha_painel`,
+      { headers:{
+          'apikey':'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO',
+          'Authorization':'Bearer sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO'
+      }}
+    );
+    const data = await res.json();
+    const senhaCorreta = (data?.[0]?.senha_painel||'').replace(/^"|"$/g,'');
+    if(val === senhaCorreta){
       const lembrar = document.getElementById('login-remember').checked;
       try{
         if(lembrar) localStorage.setItem(LOGIN_CACHE_KEY,'true');
         else localStorage.removeItem(LOGIN_CACHE_KEY);
       }catch(e){}
-      document.getElementById('login-screen').style.display='none';
+      document.getElementById('login-screen').style.display = 'none';
       carregarDados();
     } else {
-      document.getElementById('login-erro').style.display='block';
-      document.getElementById('login-input').value='';
+      document.getElementById('login-erro').style.display = 'block';
+      document.getElementById('login-input').value = '';
       document.getElementById('login-input').focus();
     }
   }catch(e){
-    document.getElementById('login-erro').textContent='Erro de conexão. Tente novamente.';
-    document.getElementById('login-erro').style.display='block';
+    document.getElementById('login-erro').textContent = 'Erro de conexão. Tente novamente.';
+    document.getElementById('login-erro').style.display = 'block';
   } finally {
-    btn.textContent='Entrar'; btn.disabled=false;
+    btn.textContent = 'Entrar'; btn.disabled = false;
   }
 }
-
 
 // Lista padrão de agências e gerentes (usada quando não há dados salvos)
 const agenciasPadrao = {
@@ -893,7 +876,7 @@ function badgeNovo(ag,nome){
 }
 
 const viabColors={credito:'b-blue',safrapay:'b-purple',cobranca:'b-amber',ativos:'b-green',margem:'b-coral'};
-const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Ativos',margem:'Margem'};
+const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
 
 // Normaliza viab: aceita string (formato antigo) ou array (novo) → sempre retorna array
 function normViab(v){
@@ -973,32 +956,25 @@ function qFlagAgencia(contas,ngers){
   return `<span class="q-flag ${q}">${q.toUpperCase()}</span>`;
 }
 
-// Relógio / gauge — ritmo atual vs ritmo necessário
-// Lógica: quanto deveria ter até HOJE (meta × % do mês decorrido) vs quanto tem
+// Relógio / gauge semanal da agência
+// contasSemana = contas abertas NA semana atual
+// contasMes    = contas abertas NO MÊS atual (acumulado)
 function relogioAgencia(ag,contasSemana,contasMes){
   const metaMes=metaMensal(ag);
   if(metaMes<=0){
     return `<div style="font-size:10px;color:var(--safra-text-3);font-style:italic;">Sem meta configurada</div>`;
   }
-  // Calcula % do mês que já passou
+  // Ritmo do mês: realizado vs esperado até hoje (meta × % do mês decorrido)
   const d=new Date(today+'T00:00:00');
   const diasNoMes=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
   const diaAtual=d.getDate();
-  const pctMesDecorrido=diaAtual/diasNoMes; // ex: dia 20 de 30 = 0.667
-
-  // Meta esperada até hoje
-  const metaEsperada=Math.round(metaMes*pctMesDecorrido*10)/10;
-
-  // % do ritmo: realizado ÷ esperado até hoje
+  const metaEsperada=Math.round(metaMes*diaAtual/diasNoMes*10)/10;
   const pctRitmo=metaEsperada>0?Math.min(Math.round(contasMes/metaEsperada*100),150):0;
-  // % do mês total (informativo)
   const pctMes=Math.min(Math.round(contasMes/metaMes*100),100);
-
   const cor=pctRitmo>=100?'#1A7A52':pctRitmo>=60?'#C8922A':'#B02020';
   const raio=32;
   const circ=Math.PI*raio;
   const dash=(Math.min(pctRitmo,100)/100)*circ;
-
   return `<div style="display:flex;align-items:center;gap:10px;">
     <svg width="80" height="48" viewBox="0 0 80 48" style="flex-shrink:0;">
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="#E0E8F4" stroke-width="7" stroke-linecap="round"/>
@@ -1039,14 +1015,25 @@ function contasMesAtual(ag,regs){
 
 const today=new Date().toISOString().split('T')[0];
 
-// ── SUPABASE CONFIG ──
-const SUPABASE_URL = 'https://umiwqmslqalanjwupdlh.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
+// ═══════════════════════════════════════════════
+// BACKEND: SUPABASE (estrutura relacional)
+// ═══════════════════════════════════════════════
+const SUPABASE_URL    = 'https://umiwqmslqalanjwupdlh.supabase.co';
+const SUPABASE_KEY    = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
+const TABELA_REGISTROS = 'registros';   // linhas de atividade diária
+const TABELA_META      = 'painel_meta'; // linha única com agencias/historico/gerentes_novos
+const SUPABASE_HEADERS = {
+  'Content-Type':'application/json',
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer '+SUPABASE_KEY,
+  'Prefer':'return=representation',
+};
+
 let regs=[],lvOn=false,viabSel='';
-let historico=[];
+let historico=[]; // snapshots mensais
 let bloqueioLeitura=false;
 
-// Verifica cache ao carregar a página
+// Verifica cache do login ao iniciar
 verificarCacheLogin();
 document.getElementById('f-data').value=today;
 
@@ -1061,113 +1048,213 @@ function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
   el.textContent=msg; el.style.color=cor;
 }
 
-async function carregarDados(){
-  setSyncStatus('⏳ Carregando...');
-  await lerDados();
-  setInterval(()=>{if(!bloqueioLeitura)lerDados();},30000);
+// ─── CONVERSORES: linha Supabase ↔ objeto JS ────
+function linhaParaReg(row){
+  return {
+    id: row.id, // UUID — usado pra editar/excluir
+    agencia: row.agencia,
+    gerente: row.gerente,
+    data: row.data,
+    contatos: row.contatos||0,
+    efetivos: row.efetivos||0,
+    emails: row.emails||0,
+    visitas: row.visitas||0,
+    agendamentos: row.agendamentos||'',
+    contas: row.contas||0,
+    contasLV: row.contas_lv||0,
+    contasSem: row.contas_sem||0,
+    contasDetalhe: Array.isArray(row.contas_detalhe)?row.contas_detalhe:[],
+    credenciamentos: row.credenciamentos||0,
+    aguardando: row.aguardando||0,
+    retEmpresa: row.ret_empresa||'',
+    retData: row.ret_data||'',
+    retObs: row.ret_obs||'',
+    retVirouConta: !!row.ret_virou_conta,
+    listaVerde: !!row.lista_verde,
+    // viabilizado: lê do campo JSONB novo; se não tiver, tenta o TEXT antigo
+    viabilizado: Array.isArray(row.viabilizado_lista)
+      ? row.viabilizado_lista
+      : (row.viabilizado ? [row.viabilizado] : []),
+    acoes: row.acoes||null,
+    acoesDetalhe: Array.isArray(row.acoes_detalhe)?row.acoes_detalhe:[],
+  };
 }
 
-async function lerDados(){
+function regParaLinha(reg){
+  // Normaliza campos pro formato do banco (snake_case + tipos corretos)
+  const viabArr = Array.isArray(reg.viabilizado) ? reg.viabilizado : (reg.viabilizado?[reg.viabilizado]:[]);
+  return {
+    agencia: reg.agencia,
+    gerente: reg.gerente,
+    data: reg.data,
+    contatos: reg.contatos||0,
+    efetivos: reg.efetivos||0,
+    emails: reg.emails||0,
+    visitas: reg.visitas||0,
+    agendamentos: reg.agendamentos||'',
+    contas: reg.contas||0,
+    contas_lv: reg.contasLV||0,
+    contas_sem: reg.contasSem||0,
+    contas_detalhe: reg.contasDetalhe||[],
+    credenciamentos: reg.credenciamentos||0,
+    aguardando: reg.aguardando||0,
+    ret_empresa: reg.retEmpresa||'',
+    ret_data: reg.retData||null,
+    ret_obs: reg.retObs||'',
+    ret_virou_conta: !!reg.retVirouConta,
+    lista_verde: !!reg.listaVerde,
+    viabilizado: viabArr[0]||null,        // compat com campo TEXT antigo
+    viabilizado_lista: viabArr,           // array completo no campo JSONB novo
+    acoes: reg.acoes||null,
+    acoes_detalhe: reg.acoesDetalhe||[],
+  };
+}
+
+// ─── CARREGAMENTO INICIAL ────
+async function carregarDados(){
+  setSyncStatus('⏳ Carregando...');
+  await Promise.all([lerRegistros(), lerMeta()]);
+}
+
+// Lê todos os registros da tabela
+async function lerRegistros(){
   if(bloqueioLeitura) return;
   try{
-    const resRegs=await fetch(`${SUPABASE_URL}/rest/v1/registros?select=*&order=created_at.asc`,{
-      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),10000);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?select=*&order=data.desc`,{
+      headers:SUPABASE_HEADERS,signal:ctrl.signal
     });
-    if(!resRegs.ok){setSyncStatus('⚠️ Erro','#ff6666');return;}
-    const dataRegs=await resRegs.json();
-    regs=dataRegs.map(r=>({
-      _id:r.id,
-      agencia:r.agencia, gerente:r.gerente, data:r.data,
-      contatos:r.contatos||0, efetivos:r.efetivos||0,
-      emails:r.emails||0, visitas:r.visitas||0,
-      agendamentos:r.agendamentos||'',
-      contas:r.contas||0, credenciamentos:r.credenciamentos||0, aguardando:r.aguardando||0,
-      contasLV:r.contas_lv||0, contasSem:r.contas_sem||0,
-      contasDetalhe:r.contas_detalhe||[],
-      retEmpresa:r.ret_empresa||'', retData:r.ret_data||'', retObs:r.ret_obs||'',
-      listaVerde:r.lista_verde||false, viabilizado:r.viabilizado||[],
-    }));
-
-    const resCfg=await fetch(`${SUPABASE_URL}/rest/v1/config?select=chave,valor`,{
-      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
-    });
-    if(resCfg.ok){
-      const cfgRows=await resCfg.json();
-      cfgRows.forEach(row=>{
-        try{
-          if(row.chave==='agencias'&&row.valor){
-            const ag=JSON.parse(row.valor);
-            if(typeof ag==='object') agencias=ag;
-          }
-          if(row.chave==='gerentes_novos'&&row.valor){
-            gerentesNovos=new Set(JSON.parse(row.valor));
-          }
-          if(row.chave==='historico'&&row.valor){
-            historico=JSON.parse(row.valor);
-          }
-        }catch(e){}
-      });
-    }
-
+    clearTimeout(timer);
+    if(!res.ok) throw new Error('HTTP '+res.status+': '+(await res.text()));
+    const rows=await res.json();
+    regs=rows.map(linhaParaReg);
     setSyncStatus('✅ '+regs.length+' reg.','#90EE90');
     renderGG();renderRegional();renderRetornos();renderTrimestre();
+  }catch(e){
+    console.error('lerRegistros erro:',e);
+    setSyncStatus('⚠️ Erro leitura','#ff6666');
+  }
+}
+
+// Lê a linha única de metadados (agências, histórico, gerentes novos)
+async function lerMeta(){
+  if(bloqueioLeitura) return;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),10000);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_META}?id=eq.1&select=*`,{
+      headers:SUPABASE_HEADERS,signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    if(!res.ok) throw new Error('HTTP '+res.status+': '+(await res.text()));
+    const rows=await res.json();
+    const data=rows[0]||{};
+    historico=Array.isArray(data.historico)?data.historico:[];
+    if(data.agencias&&typeof data.agencias==='object'&&Object.keys(data.agencias).length>0){
+      agencias=data.agencias;
+      try{localStorage.setItem('safra_agencias',JSON.stringify(agencias));}catch(e){}
+    }
+    if(Array.isArray(data.gerentes_novos)){
+      gerentesNovos=new Set(data.gerentes_novos);
+      try{localStorage.setItem('safra_gerentes_novos',JSON.stringify([...gerentesNovos]));}catch(e){}
+    }
     const tabGer=document.getElementById('tab-gerentes');
     if(tabGer&&tabGer.classList.contains('active')) renderGerList();
   }catch(e){
-    console.error(e);
-    setSyncStatus('⚠️ Erro','#ff6666');
+    console.error('lerMeta erro:',e);
   }
 }
 
-async function _upsertConfig(chave,valor){
-  await fetch(`${SUPABASE_URL}/rest/v1/config`,{
-    method:'POST',
-    headers:{
-      'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
-      'Content-Type':'application/json',
-      'Prefer':'resolution=merge-duplicates'
-    },
-    body:JSON.stringify({chave,valor:JSON.stringify(valor)})
-  });
+// Recarrega tudo (leitura completa)
+async function lerDados(){ await Promise.all([lerRegistros(), lerMeta()]); }
+
+// ─── SALVAR META (agências, histórico, gerentes novos) ────
+async function salvarMeta(){
+  try{localStorage.setItem('safra_agencias',JSON.stringify(agencias));}catch(e){}
+  try{localStorage.setItem('safra_gerentes_novos',JSON.stringify([...gerentesNovos]));}catch(e){}
+  try{
+    const payload={
+      agencias, historico,
+      gerentes_novos:[...gerentesNovos],
+      atualizado_em:new Date().toISOString(),
+    };
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_META}?id=eq.1`,{
+      method:'PATCH', headers:SUPABASE_HEADERS,
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok){console.error('salvarMeta falhou:',res.status,await res.text());return false;}
+    return true;
+  }catch(e){console.error('salvarMeta erro:',e);return false;}
 }
 
-async function salvarNuvem(novoReg){
+// ─── INSERIR UM NOVO REGISTRO ────
+async function inserirRegistro(reg){
   setSyncStatus('⏳ Salvando...','#ffcc00');
   try{
-    if(novoReg){
-      const body={
-        agencia:novoReg.agencia, gerente:novoReg.gerente, data:novoReg.data,
-        contatos:novoReg.contatos, efetivos:novoReg.efetivos,
-        emails:novoReg.emails, visitas:novoReg.visitas,
-        agendamentos:novoReg.agendamentos,
-        contas:novoReg.contas, credenciamentos:novoReg.credenciamentos, aguardando:novoReg.aguardando,
-        contas_lv:novoReg.contasLV, contas_sem:novoReg.contasSem,
-        contas_detalhe:novoReg.contasDetalhe,
-        ret_empresa:novoReg.retEmpresa||null, ret_data:novoReg.retData||null, ret_obs:novoReg.retObs||null,
-        lista_verde:novoReg.listaVerde, viabilizado:novoReg.viabilizado||null,
-      };
-      const res=await fetch(`${SUPABASE_URL}/rest/v1/registros`,{
-        method:'POST',
-        headers:{
-          'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
-          'Content-Type':'application/json','Prefer':'return=minimal'
-        },
-        body:JSON.stringify(body)
-      });
-      if(!res.ok){setSyncStatus('⚠️ Erro ao salvar','#ff6666');return false;}
+    const linha=regParaLinha(reg);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}`,{
+      method:'POST', headers:SUPABASE_HEADERS,
+      body:JSON.stringify(linha)
+    });
+    if(!res.ok){
+      const txt=await res.text();
+      setSyncStatus('⚠️ Erro '+res.status,'#ff6666');
+      console.error('inserirRegistro falhou:',res.status,txt);
+      return null;
     }
-    await _upsertConfig('agencias',agencias);
-    await _upsertConfig('gerentes_novos',[...gerentesNovos]);
-    await _upsertConfig('historico',historico);
+    const novas=await res.json();
     setSyncStatus('✅ Salvo','#90EE90');
-    if(novoReg) await lerDados();
+    return novas[0]?linhaParaReg(novas[0]):null;
+  }catch(e){
+    setSyncStatus('⚠️ Erro rede','#ff6666');
+    console.error('inserirRegistro erro:',e);
+    return null;
+  }
+}
+
+// ─── ATUALIZAR UM REGISTRO EXISTENTE (por id) ────
+async function atualizarRegistro(id, reg){
+  setSyncStatus('⏳ Atualizando...','#ffcc00');
+  try{
+    const linha=regParaLinha(reg);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?id=eq.${id}`,{
+      method:'PATCH', headers:SUPABASE_HEADERS,
+      body:JSON.stringify(linha)
+    });
+    if(!res.ok){
+      setSyncStatus('⚠️ Erro '+res.status,'#ff6666');
+      console.error('atualizarRegistro falhou:',res.status,await res.text());
+      return false;
+    }
+    setSyncStatus('✅ Atualizado','#90EE90');
     return true;
   }catch(e){
-    console.error(e);
-    setSyncStatus('⚠️ Erro','#ff6666');
+    setSyncStatus('⚠️ Erro rede','#ff6666');
+    console.error('atualizarRegistro erro:',e);
     return false;
   }
 }
+
+// ─── EXCLUIR UM REGISTRO ────
+async function excluirRegistroDB(id){
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?id=eq.${id}`,{
+      method:'DELETE', headers:SUPABASE_HEADERS
+    });
+    if(!res.ok){console.error('excluirRegistroDB falhou:',res.status,await res.text());return false;}
+    return true;
+  }catch(e){console.error('excluirRegistroDB erro:',e);return false;}
+}
+
+// ─── COMPATIBILIDADE com código antigo ────
+// Várias partes do código ainda chamam `salvarNuvem()` esperando que persista tudo.
+// Agora essa função salva só a META. Quem mexe em registros deve chamar
+// `inserirRegistro`, `atualizarRegistro` ou `excluirRegistroDB` explicitamente.
+async function salvarNuvem(){ return await salvarMeta(); }
+
+// carregarDados() chamado após login
+setInterval(()=>{if(document.getElementById("login-screen").style.display==="none")lerDados();},30000);
 
 function atualizaGerentes(){
   const ag=document.getElementById('f-agencia').value;
@@ -1211,6 +1298,100 @@ function selectViab(v,el,ctx){
   }
 }
 
+// Dicionário de tipos de ação (para labels e tags)
+const tiposAcao={
+  prospeccao:   {grupo:'visita',  label:'Visita Prospecção', icone:'🚪', css:'tipo-prospeccao'},
+  base:         {grupo:'visita',  label:'Visita Base',       icone:'🚪', css:'tipo-base'},
+  fgi:          {grupo:'bussola', label:'FGI',               icone:'🧭', css:'tipo-fgi'},
+  altobacen:    {grupo:'bussola', label:'Alto Bacen',        icone:'🧭', css:'tipo-altobacen'},
+  viabilizamais:{grupo:'bussola', label:'Viabiliza+',        icone:'🧭', css:'tipo-viabilizamais'},
+  agendamento:  {grupo:'agendamento', label:'Agendamento',   icone:'📅', css:'tipo-agendamento'},
+};
+
+// Seleção de viabilização nas ações da Bússola (chave composta tipo+índice)
+const viabSelAcao={}; // { 'fgi_0': ['credito','safrapay'], ... }
+
+// Lista de agendamentos do formulário (recomeça a cada registro)
+let agendamentosLista=[];
+function renderAgendamentos(){
+  const el=document.getElementById('agendamentos-lista');
+  if(!el) return;
+  if(!agendamentosLista.length){ el.innerHTML=''; return; }
+  el.innerHTML=agendamentosLista.map((nome,i)=>`
+    <div style="display:inline-flex;align-items:center;gap:6px;background:#DDEAF8;color:#1A4A8A;border:1px solid #7AAAD8;padding:4px 8px 4px 10px;border-radius:14px;font-size:12px;font-weight:500;">
+      ${nome}
+      <button type="button" data-rem-agend="${i}" style="background:none;border:none;cursor:pointer;color:#1A4A8A;font-size:14px;padding:0;line-height:1;" title="Remover">✕</button>
+    </div>`).join('');
+  el.querySelectorAll('button[data-rem-agend]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const i=parseInt(btn.getAttribute('data-rem-agend'));
+      agendamentosLista.splice(i,1);
+      renderAgendamentos();
+    });
+  });
+}
+function adicionarAgendamento(){
+  const inp=document.getElementById('f-agendamentos-nome');
+  const nome=(inp?.value||'').trim();
+  if(!nome) return;
+  agendamentosLista.push(nome);
+  inp.value='';
+  inp.focus();
+  renderAgendamentos();
+}
+
+function selectViabAcao(v,el,tipo,idx){
+  const k=`${tipo}_${idx}`;
+  if(!viabSelAcao[k]) viabSelAcao[k]=[];
+  const i=viabSelAcao[k].indexOf(v);
+  if(i>=0){viabSelAcao[k].splice(i,1); el.className='viab-btn';}
+  else {viabSelAcao[k].push(v); el.className=`viab-btn sel-${v}`;}
+}
+
+// Quando o gerente digita >0 em uma ação, abre N sub-formulários de detalhe
+function atualizaDetalheAcao(tipo){
+  const n=parseInt(document.getElementById(`f-acao-${tipo}`).value)||0;
+  const wrap=document.getElementById(`detalhe-acao-${tipo}`);
+  if(!wrap) return;
+  if(n<=0){wrap.innerHTML='';return;}
+  const info=tiposAcao[tipo];
+  const atual=wrap.querySelectorAll('.acao-item').length;
+  if(n>atual){
+    for(let i=atual;i<n;i++){
+      const div=document.createElement('div');
+      div.className='acao-item';
+      div.style.cssText='border:1px dashed var(--safra-border);border-radius:7px;padding:8px 10px;margin-top:6px;background:#fff;';
+      if(info.grupo==='visita'){
+        div.innerHTML=`
+          <div style="font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">${info.icone} ${info.label} ${i+1}</div>
+          <div class="frow">
+            <div><label style="margin-top:0;">Empresa visitada</label><input type="text" id="acao-${tipo}-emp-${i}" placeholder="Nome da empresa"></div>
+            <div><label style="margin-top:0;">Agendamento abertura</label><input type="date" id="acao-${tipo}-data-${i}"></div>
+          </div>
+          <label style="margin-top:0;">Observação</label>
+          <textarea id="acao-${tipo}-obs-${i}" placeholder="Opcional — detalhes da visita"></textarea>`;
+      } else {
+        div.innerHTML=`
+          <div style="font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">${info.icone} ${info.label} ${i+1}</div>
+          <div><label style="margin-top:0;">Empresa</label><input type="text" id="acao-${tipo}-emp-${i}" placeholder="Nome da empresa"></div>
+          <label style="margin-top:6px;">Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
+          <div class="viab-grid" id="viab-acao-${tipo}-${i}">
+            <button type="button" class="viab-btn" onclick="selectViabAcao('credito',this,'${tipo}',${i})">Crédito</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('safrapay',this,'${tipo}',${i})">SafraPay</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('cobranca',this,'${tipo}',${i})">Cobrança</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('ativos',this,'${tipo}',${i})">Passivo</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('margem',this,'${tipo}',${i})">Margem</button>
+          </div>
+          <label style="margin-top:6px;">Observação</label>
+          <textarea id="acao-${tipo}-obs-${i}" placeholder="Opcional — detalhes da ação"></textarea>`;
+      }
+      wrap.appendChild(div);
+    }
+  } else {
+    while(wrap.querySelectorAll('.acao-item').length>n) wrap.removeChild(wrap.lastChild);
+  }
+}
+
 function atualizaContasDetalhe(){
   const n=parseInt(document.getElementById('f-contas').value)||0;
   const wrap=document.getElementById('contas-detalhe-wrap');
@@ -1236,7 +1417,7 @@ function atualizaContasDetalhe(){
           <button class="viab-btn" onclick="selectViab('credito',this,${i})">Crédito</button>
           <button class="viab-btn" onclick="selectViab('safrapay',this,${i})">SafraPay</button>
           <button class="viab-btn" onclick="selectViab('cobranca',this,${i})">Cobrança</button>
-          <button class="viab-btn" onclick="selectViab('ativos',this,${i})">Ativos</button>
+          <button class="viab-btn" onclick="selectViab('ativos',this,${i})">Passivo</button>
           <button class="viab-btn" onclick="selectViab('margem',this,${i})">Margem</button>
         </div>`;
       lista.appendChild(div);
@@ -1249,8 +1430,8 @@ function atualizaContasDetalhe(){
 let regionalDesbloqueado=false;
 
 function verificarSenhaRegional(){
-  const senha=document.getElementById('regional-senha').value;
-  if(senha==='Tais26'){
+  const senha=(document.getElementById('regional-senha').value||'').trim();
+  if(senha==='Tais2026'){
     regionalDesbloqueado=true;
     document.getElementById('regional-lock').style.display='none';
     document.getElementById('regional-desbloqueado').style.display='block';
@@ -1279,7 +1460,7 @@ function showTab(t,el){
   if(t==='regional'){
     if(regionalDesbloqueado) renderRegional();
   }
-  if(t==='retornos') renderRetornos();
+  if(t==='retornos'){ atualizaFiltroRetGer(); renderRetornos(); }
   if(t==='trimestre') renderTrimestre();
   if(t==='gerentes') renderGerList();
   if(t==='novomes') renderNovoMesResumo();
@@ -1336,7 +1517,7 @@ function gerarSnapshot(){
 async function confirmarNovoMes(){
   const senha=document.getElementById('novomes-senha').value;
   const erroEl=document.getElementById('novomes-senha-erro');
-  if(senha!=='Tais26'){
+  if(senha!=='Tais2026'){
     erroEl.style.display='block';
     document.getElementById('novomes-senha').value='';
     document.getElementById('novomes-senha').focus();
@@ -1348,35 +1529,68 @@ async function confirmarNovoMes(){
   // Salvar snapshot do mês atual no histórico
   if(regs.length>0){
     const snap=gerarSnapshot();
-    // Remove snapshot anterior do mesmo mês (se existir) e adiciona o novo
     historico=historico.filter(h=>h.mes!==snap.mes);
     historico.push(snap);
-    // Mantém só os últimos 12 meses no histórico (pra não crescer infinito)
     historico.sort((a,b)=>a.mes.localeCompare(b.mes));
     if(historico.length>12) historico=historico.slice(-12);
   }
 
+  bloqueioLeitura=true;
+  setSyncStatus('⏳ Zerando mês...','#ffcc00');
+
+  // Apaga TODOS os registros do Supabase
   try{
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/registros?id=neq.00000000-0000-0000-0000-000000000000`,{
-      method:'DELETE',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?id=neq.00000000-0000-0000-0000-000000000000`,{
+      method:'DELETE',headers:SUPABASE_HEADERS
     });
-    if(!res.ok){alert('Erro ao limpar registros. Tente novamente.');return;}
-  }catch(e){alert('Erro ao limpar registros.');return;}
+    if(!res.ok){
+      const txt=await res.text();
+      console.error('Zerar registros falhou:',res.status,txt);
+      alert('⚠️ Erro ao apagar os registros no banco: '+res.status);
+      bloqueioLeitura=false;
+      return;
+    }
+  }catch(e){
+    console.error('Zerar registros erro:',e);
+    alert('⚠️ Erro de rede ao apagar os registros. Tente novamente.');
+    bloqueioLeitura=false;
+    return;
+  }
+
+  // Salva o histórico atualizado na meta
+  await salvarMeta();
+
   regs=[];
-  await salvarNuvem();
+  bloqueioLeitura=false;
+
   document.getElementById('novomes-senha').value='';
   renderGG();renderRegional();renderRetornos();renderTrimestre();
   const tabBtn=document.querySelector('.tab');
   showTab('registrar',tabBtn);
+  setSyncStatus('✅ Mês zerado','#90EE90');
   alert('✅ Painel zerado! Histórico salvo no Trimestre. Bom início de mês!');
 }
 
 function fmt(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
+
+// Alterna exibição de senha (mostrar/ocultar) nos campos protegidos
+function toggleSenha(inputId, btn){
+  const inp=document.getElementById(inputId);
+  if(!inp) return;
+  if(inp.type==='password'){
+    inp.type='text';
+    btn.textContent='🙈';
+    btn.setAttribute('aria-label','Ocultar senha');
+  } else {
+    inp.type='password';
+    btn.textContent='👁️';
+    btn.setAttribute('aria-label','Mostrar senha');
+  }
+}
 function initials(s){return s.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 
 function gerarReportWpp(r){
-  const vl={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Ativos',margem:'Margem'};
+  const vl={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
   const vlist=v=>normViab(v).map(x=>vl[x]||x).join(' + ');
   const dd=r.data?r.data.split('-').reverse().join('/'):'';
   let txt=`📋 *REPORT DO DIA — ${r.agencia.toUpperCase()}*\n`;
@@ -1384,7 +1598,21 @@ function gerarReportWpp(r){
   txt+=`─────────────────────\n`;
   txt+=`📞 *Contatos*\n• Total: *${r.contatos}* | Efetivos: *${r.efetivos}*\n`;
   if(r.emails)       txt+=`• E-mails: *${r.emails}*\n`;
-  if(r.visitas)      txt+=`• Visitas abertura: *${r.visitas}*\n`;
+  // Ações realizadas (novo formato) ou Visitas abertura (formato antigo)
+  if(r.acoes){
+    const a=r.acoes;
+    const temAcao=a.prospeccao||a.base||a.fgi||a.altoBacen||a.viabilizaMais;
+    if(temAcao){
+      txt+=`\n🎯 *Ação realizada*\n`;
+      if(a.prospeccao)   txt+=`• 🚪 Visita Prospecção: *${a.prospeccao}*\n`;
+      if(a.base)         txt+=`• 🚪 Visita Base: *${a.base}*\n`;
+      if(a.fgi)          txt+=`• 🧭 FGI: *${a.fgi}*\n`;
+      if(a.altoBacen)    txt+=`• 🧭 Alto Bacen: *${a.altoBacen}*\n`;
+      if(a.viabilizaMais)txt+=`• 🧭 Viabiliza+: *${a.viabilizaMais}*\n`;
+    }
+  } else if(r.visitas){
+    txt+=`• Visitas abertura: *${r.visitas}*\n`;
+  }
   if(r.agendamentos) txt+=`• Agendamento: *${r.agendamentos}*\n`;
   txt+=`\n📊 *Resultados*\n`;
   txt+=`• Contas abertas: *${r.contas}* (✅ LV: ${r.contasLV} | Sem LV: ${r.contasSem})\n`;
@@ -1407,7 +1635,7 @@ function gerarReportWpp(r){
   return txt;
 }
 
-function salvar(){
+async function salvar(){
   const agencia=document.getElementById('f-agencia').value;
   const gerente=document.getElementById('f-gerente').value;
   const data=document.getElementById('f-data').value;
@@ -1432,12 +1660,58 @@ function salvar(){
     return;
   }
   const nContasLV=contasDetalhe.filter(c=>c.lv).length;
+  // Novos campos de Ação realizada
+  const acoes={
+    prospeccao:parseInt(document.getElementById('f-acao-prospeccao').value)||0,
+    base:parseInt(document.getElementById('f-acao-base').value)||0,
+    fgi:parseInt(document.getElementById('f-acao-fgi').value)||0,
+    altoBacen:parseInt(document.getElementById('f-acao-altobacen').value)||0,
+    viabilizaMais:parseInt(document.getElementById('f-acao-viabilizamais').value)||0,
+  };
+  const totalAcoes=acoes.prospeccao+acoes.base+acoes.fgi+acoes.altoBacen+acoes.viabilizaMais;
+
+  // Coleta detalhes de cada ação preenchida
+  const acoesDetalhe=[];
+  const tiposMap={prospeccao:'prospeccao',base:'base',fgi:'fgi',altoBacen:'altobacen',viabilizaMais:'viabilizamais'};
+  Object.entries(tiposMap).forEach(([chave,tipo])=>{
+    const n=acoes[chave]||0;
+    for(let i=0;i<n;i++){
+      const emp=document.getElementById(`acao-${tipo}-emp-${i}`)?.value?.trim()||'';
+      const obs=document.getElementById(`acao-${tipo}-obs-${i}`)?.value?.trim()||'';
+      const info=tiposAcao[tipo];
+      if(info.grupo==='visita'){
+        const agend=document.getElementById(`acao-${tipo}-data-${i}`)?.value||'';
+        acoesDetalhe.push({tipo,empresa:emp,agendamento:agend,obs,virouConta:false});
+      } else {
+        const viab=[...(viabSelAcao[`${tipo}_${i}`]||[])];
+        acoesDetalhe.push({tipo,empresa:emp,viab,obs,virouConta:false});
+      }
+    }
+  });
+
+  // Coleta a lista de agendamentos e inclui cada um como item tipo 'agendamento'
+  const listaAgend=(function(){
+    const inp=document.getElementById('f-agendamentos-nome');
+    const extra=(inp?.value||'').trim();
+    const lista=[...agendamentosLista];
+    if(extra) lista.push(extra);
+    return lista;
+  })();
+  listaAgend.forEach(nome=>{
+    if(nome.trim()){
+      acoesDetalhe.push({tipo:'agendamento',empresa:nome.trim(),obs:'',virouConta:false});
+    }
+  });
+
   const reg={agencia,gerente,data,
     contatos:parseInt(document.getElementById('f-contatos').value)||0,
     efetivos:parseInt(document.getElementById('f-efetivos').value)||0,
     emails:parseInt(document.getElementById('f-emails').value)||0,
-    visitas:parseInt(document.getElementById('f-visitas').value)||0,
-    agendamentos:document.getElementById('f-agendamentos').value,
+    visitas:totalAcoes,
+    acoes,
+    acoesDetalhe,
+    // Mantém o campo texto pra compatibilidade com relatórios antigos
+    agendamentos: listaAgend.join('; '),
     contas:nContas, contasLV:nContasLV, contasSem:nContas-nContasLV, contasDetalhe,
     credenciamentos:parseInt(document.getElementById('f-credenciamentos').value)||0,
     aguardando:parseInt(document.getElementById('f-aguardando').value)||0,
@@ -1446,26 +1720,44 @@ function salvar(){
     retObs:document.getElementById('f-ret-obs').value,
     listaVerde:nContasLV>0, viabilizado:[...viabSelRet],
   };
+
+  // Insere no Supabase — retorna o reg com id gerado
+  bloqueioLeitura=true;
+  const salvo=await inserirRegistro(reg);
+  bloqueioLeitura=false;
+  if(!salvo){
+    alert('⚠️ Não foi possível salvar o registro no banco. Verifique sua conexão e tente novamente.');
+    return;
+  }
+  regs.unshift(salvo); // adiciona no começo (mais recente)
   const msgEl=document.getElementById('msg');
   msgEl.style.display='block';
   setTimeout(()=>msgEl.style.display='none',2500);
-  setSyncStatus('⏳ Salvando...','#ffcc00');
-  salvarNuvem(reg);
   renderGG();renderRegional();renderRetornos();
-  window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(reg)),'_blank');
+  window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(salvo)),'_blank');
   limpar();
 }
 
 function limpar(){
-  ['f-contatos','f-efetivos','f-emails','f-visitas','f-agendamentos','f-contas','f-credenciamentos','f-aguardando','f-ret-empresa','f-ret-data','f-ret-obs'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['f-contatos','f-efetivos','f-emails','f-acao-prospeccao','f-acao-base','f-acao-fgi','f-acao-altobacen','f-acao-viabilizamais','f-agendamentos-nome','f-contas','f-credenciamentos','f-aguardando','f-ret-empresa','f-ret-data','f-ret-obs'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('f-data').value=today;
   document.getElementById('f-agencia').value='';
   document.getElementById('f-gerente').innerHTML='<option value="">Selecione a agência primeiro</option>';
   document.getElementById('hint-gerente').textContent='';
-  viabSelRet.length=0; Object.keys(viabSelContas).forEach(k=>delete viabSelContas[k]);
+  viabSelRet.length=0;
+  Object.keys(viabSelContas).forEach(k=>delete viabSelContas[k]);
+  Object.keys(viabSelAcao).forEach(k=>delete viabSelAcao[k]);
   document.querySelectorAll('.viab-btn').forEach(b=>b.className='viab-btn');
   document.getElementById('contas-detalhe-wrap').style.display='none';
   document.getElementById('contas-detalhe-lista').innerHTML='';
+  // Limpa sub-formulários das ações
+  ['prospeccao','base','fgi','altobacen','viabilizamais'].forEach(t=>{
+    const w=document.getElementById(`detalhe-acao-${t}`);
+    if(w) w.innerHTML='';
+  });
+  // Limpa lista de agendamentos
+  agendamentosLista=[];
+  renderAgendamentos();
 }
 
 function calcGerente(rlist){
@@ -1533,7 +1825,6 @@ function renderGG(){
           <th>Total contas</th>
           <th>Credenc.</th>
           <th>Ag. docs</th>
-          <th style="width:60px;"></th>
         </tr></thead>
         <tbody>
           ${nomes.map(g=>{const s=stats[g];return`<tr>
@@ -1553,7 +1844,6 @@ function renderGG(){
             <td style="color:var(--green);font-weight:700;">${s.contas||'-'}</td>
             <td>${s.credenciamentos||'-'}</td>
             <td>${s.aguardando>0?`<span style="color:var(--amber);font-weight:600;">${s.aguardando}</span>`:'-'}</td>
-            <td><button onclick="abrirEditTotal('${ag}','${g.replace(/'/g,"&#39;")}')" style="background:var(--safra-white);border:1px solid var(--safra-border);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--safra-text-2);font-family:'DM Sans',sans-serif;white-space:nowrap;">✏️</button></td>
           </tr>`;}).join('')}
         </tbody>
         <tfoot><tr style="background:var(--safra-light);">
@@ -1565,7 +1855,6 @@ function renderGG(){
           <td style="color:var(--green);font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].contas,0)||'-'}</td>
           <td style="font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].credenciamentos,0)||'-'}</td>
           <td style="color:var(--amber);font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].aguardando,0)||'-'}</td>
-          <td></td>
         </tr></tfoot>
       </table>
     </div>`;
@@ -1576,8 +1865,6 @@ function renderGG(){
       const s=stats[ger];
       const temContas=s.contasAbertas&&s.contasAbertas.length>0;
       const temRet=s.retornos.length>0;
-      // Lista registros individuais do gerente para botões de edição
-      const regsGer = gerentes[ger] || [];
       html+=`<div class="card">
         <div class="g-header">
           <div class="avatar">${initials(ger)}</div>
@@ -1591,18 +1878,6 @@ function renderGG(){
             <div class="agencia-tag">${ag} · ${periodoLabel} · <b>${s.contas}</b> conta${s.contas!==1?'s':''} · ${s.credenciamentos} credenc. · ${s.retornos.length} retorno${s.retornos.length!==1?'s':''}</div>
           </div>
         </div>
-        ${regsGer.length>0?`<div class="stitle" style="margin-top:0;margin-bottom:6px;">📋 Registros do período</div>
-        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px;">
-          ${regsGer.slice().sort((a,b)=>a.data.localeCompare(b.data)).map(r=>`
-            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--safra-light);border:1px solid var(--safra-border);border-radius:7px;padding:6px 10px;gap:8px;flex-wrap:wrap;">
-              <div style="font-size:12px;color:var(--safra-text);">
-                <span style="font-family:'DM Mono',monospace;color:var(--safra-text-3);font-size:11px;">${fmt(r.data)}</span>
-                <span style="margin:0 6px;color:var(--safra-border-dark);">·</span>
-                <span>${r.contatos} contatos · ${r.efetivos} efet. · ${r.contas} conta${r.contas!==1?'s':''} · ${r.credenciamentos} cred.</span>
-              </div>
-              <button onclick="abrirEditModal('${r._id}')" style="background:var(--safra-white);border:1px solid var(--safra-border);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;color:var(--safra-text-2);font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;">✏️ Editar</button>
-            </div>`).join('')}
-        </div>`:''}
 
         ${temContas?`
         <div class="stitle" style="margin-top:0;">🟢 Contas abertas (${s.contasAbertas.length})</div>
@@ -1845,16 +2120,58 @@ function renderRegional(){
   const byGer={};
   dadosReg.forEach(r=>{
     const key=r.agencia+'||'+r.gerente;
-    if(!byGer[key])byGer[key]={agencia:r.agencia,gerente:r.gerente,contatos:0,efetivos:0,contas:0,credenciamentos:0,dias:new Set()};
+    if(!byGer[key])byGer[key]={agencia:r.agencia,gerente:r.gerente,contatos:0,efetivos:0,contas:0,credenciamentos:0,agendamentos:0,dias:new Set()};
     byGer[key].contatos+=r.contatos;
     byGer[key].efetivos+=r.efetivos;
     byGer[key].contas+=r.contas;
     byGer[key].credenciamentos+=r.credenciamentos;
+    // Conta agendamentos: prioriza acoesDetalhe (formato novo), senão quebra o texto antigo
+    let nAgend=0;
+    if(Array.isArray(r.acoesDetalhe)){
+      nAgend=r.acoesDetalhe.filter(a=>a.tipo==='agendamento'&&a.empresa).length;
+    }
+    if(nAgend===0 && r.agendamentos && typeof r.agendamentos==='string'){
+      nAgend=r.agendamentos.split(/[;,\n]/).map(s=>s.trim()).filter(Boolean).length;
+    }
+    byGer[key].agendamentos+=nAgend;
     byGer[key].dias.add(r.data);
   });
   const todos=Object.values(byGer).map(g=>({...g,dias:g.dias.size})).filter(g=>g.contatos>0);
 
   todos.forEach(g=>{g.efetividade=g.contatos>0?Math.round(g.efetivos/g.contatos*100):0;});
+
+  // ────── NOVO RANKING: Score baseado em CONTAS vs RELÓGIO + EFETIVIDADE ──────
+  // Meta por gerente = 5 contas/mês ÷ 22 dias úteis = 0.227 contas/dia útil
+  // Dias úteis corridos do mês até hoje (seg–sex, excluindo hoje se for fds)
+  function diasUteisDecorridos(){
+    const hoje=new Date();
+    hoje.setHours(0,0,0,0);
+    const primeiroDiaMes=new Date(hoje.getFullYear(),hoje.getMonth(),1);
+    let dias=0;
+    const cur=new Date(primeiroDiaMes);
+    while(cur<=hoje){
+      const wd=cur.getDay();
+      if(wd>=1&&wd<=5) dias++;
+      cur.setDate(cur.getDate()+1);
+    }
+    return Math.max(1,dias);
+  }
+  const diasUteisHoje=diasUteisDecorridos();
+  const META_MES_GER=5;
+  const DIAS_UTEIS_MES=22;
+  const ritmoDiario=META_MES_GER/DIAS_UTEIS_MES; // ~0.227
+  const metaRelogioHoje=ritmoDiario*diasUteisHoje; // fração esperada até hoje
+
+  todos.forEach(g=>{
+    // % de agendamentos sobre contatos
+    g.pctAgend = g.contatos>0 ? (g.agendamentos/g.contatos*100) : 0;
+    // % de meta atingida no relógio (contas realizadas / contas esperadas até hoje)
+    g.pctRelogio = metaRelogioHoje>0 ? (g.contas/metaRelogioHoje*100) : 0;
+    // No relógio? (>= 100% do esperado até hoje)
+    g.noRelogio = g.pctRelogio>=100;
+    // SCORE = % relógio (peso maior) + % agend/contatos + contas absolutas (normalizadas *5)
+    g.score = g.pctRelogio + g.pctAgend + (g.contas*5);
+  });
 
   // Metas:
   // contatos: 15/dia → meta = 15 * dias
@@ -1888,7 +2205,29 @@ function renderRegional(){
     todosporAg[g.agencia].push(g);
   });
 
-  // Rankings piores
+  // ────── NOVOS RANKINGS — baseados no score (contas vs relógio + efetividade) ──────
+  const TOP_MELHORES=10;
+  const TOP_PIORES=15;
+
+  // MELHORES: maior score, priorizando quem está NO relógio
+  const melhoresScore=[...todos]
+    .sort((a,b)=>{
+      // Quem está no relógio vem primeiro (tiebreaker)
+      if(a.noRelogio!==b.noRelogio) return b.noRelogio-a.noRelogio;
+      return b.score-a.score;
+    })
+    .slice(0,TOP_MELHORES);
+
+  // PIORES: menor score, priorizando quem está FORA do relógio
+  const pioresScore=[...todos]
+    .sort((a,b)=>{
+      // Fora do relógio vem primeiro
+      if(a.noRelogio!==b.noRelogio) return a.noRelogio-b.noRelogio;
+      return a.score-b.score;
+    })
+    .slice(0,TOP_PIORES);
+
+  // Mantém rankings antigos (usados em outras seções)
   const TOP=5;
   const pioresEfetiv=[...todos].sort((a,b)=>a.efetividade-b.efetividade).slice(0,TOP);
   const pioresContas=[...todos].sort((a,b)=>a.contas-b.contas).slice(0,TOP);
@@ -1964,15 +2303,15 @@ function renderRegional(){
 
   <!-- 🕐 RELÓGIOS DE META SEMANAL POR AGÊNCIA -->
   <div class="card" style="margin-bottom:1rem;">
-    <div class="card-title">🕐 Ritmo do mês · Contas abertas</div>
+    <div class="card-title">🕐 Meta da semana · Contas abertas ${filtroAg?`· <span style="color:var(--safra-navy);">${filtroAg}</span>`:''}</div>
     <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:10px;">
-      Relógio = <b>ritmo atual</b>: realizado ÷ esperado até hoje (meta × % do mês decorrido). Verde ≥100% · Amarelo ≥60% · Vermelho &lt;60%.
+      Relógio = <b>% da semana atual</b> (seg a dom). Linha de baixo = acumulado do mês. Meta semanal = meta mensal ÷ ${semanasDoMes(today).toFixed(2)} semanas do mês.
       <span style="color:#1A7A52;font-weight:600;margin-left:6px;">■ ≥100%</span>
       <span style="color:#C8922A;font-weight:600;margin-left:6px;">■ 60–99%</span>
       <span style="color:#B02020;font-weight:600;margin-left:6px;">■ &lt;60%</span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
-      ${Object.keys(agencias).map(ag=>{
+      ${(filtroAg?[filtroAg]:Object.keys(agencias)).map(ag=>{
         const cs=contasSemanaAtual(ag,regs);
         const cm=contasMesAtual(ag,regs);
         const ng=(agencias[ag]||[]).length;
@@ -2042,15 +2381,15 @@ function renderRegional(){
       <span class="q-flag q3">Q3</span><span>2 contas</span>
       <span class="q-flag q4">Q4</span><span>0 a 1 conta</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;">
+    <div style="display:grid;grid-template-columns:${filtroAg?'1fr':'repeat(auto-fit,minmax(260px,1fr))'};gap:10px;">
       <div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
-        <div class="card-title" style="color:#1A7A52;">🥇 Top gerentes · Contas abertas</div>
+        <div class="card-title" style="color:#1A7A52;">🥇 Top gerentes · Contas abertas${filtroAg?` — ${filtroAg}`:''}</div>
         ${melhoresContas.length>0?`<table class="rtable">
           <thead><tr><th>Gerente</th><th>Contas</th><th>Base</th></tr></thead>
           <tbody>${melhoresContas.map((g,i)=>melhorRow(g,g.contas,'',i)).join('')}</tbody>
         </table>`:'<div class="empty" style="padding:0.6rem 0;">Nenhuma conta aberta no período.</div>'}
       </div>
-      <div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
+      ${!filtroAg?`<div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
         <div class="card-title" style="color:#1A7A52;">🏢 Top agências · Contas abertas</div>
         ${topAgContas.length>0?`<table class="rtable">
           <thead><tr><th>#</th><th>Agência</th><th>Contas</th></tr></thead>
@@ -2060,96 +2399,179 @@ function renderRegional(){
             <td style="font-weight:700;color:#1A7A52;font-size:14px;">${v.contas}</td>
           </tr>`}).join('')}</tbody>
         </table>`:'<div class="empty" style="padding:0.6rem 0;">Nenhuma conta aberta no período.</div>'}
-      </div>
+      </div>`:''}
     </div>
   </div>`:''}
 
-  <!-- 🥇 DESTAQUES POR ÁREA -->
+  <!-- 🥇 TOP 10 MELHORES GERENTES (score: contas vs relógio + efetividade) -->
   ${todos.length>=2?`
-  <div class="card-title" style="margin-bottom:0.75rem;">🥇 Destaques — Melhores desempenhos</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem;">
-    <div class="card" style="border-color:#A8D4BF;">
-      <div class="card-title" style="color:#1A7A52;">Maior efetividade</div>
-      <table class="rtable">
-        <thead><tr><th>Gerente</th><th>Efetividade</th><th>Base</th></tr></thead>
-        <tbody>${melhoresEfetiv.map((g,i)=>melhorRow(g,g.efetividade,'%',i)).join('')}</tbody>
-      </table>
-    </div>
-    <div class="card" style="border-color:#A8D4BF;">
-      <div class="card-title" style="color:#1A7A52;">Mais credenciamentos</div>
-      <table class="rtable">
-        <thead><tr><th>Gerente</th><th>Credenc.</th><th>Base</th></tr></thead>
-        <tbody>${melhoresCred.map((g,i)=>melhorRow(g,g.credenciamentos,'',i)).join('')}</tbody>
-      </table>
-    </div>
-  </div>`:''}
-
-  <!-- DASH PIORES GERENTES -->
-  ${todos.length>=2?`
-  <div class="card-title" style="margin-bottom:0.75rem;">⚠️ Atenção — Piores desempenhos</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem;">
-    <div class="card" style="border-color:#F5C6C6;">
-      <div class="card-title" style="color:#B02020;">Menor efetividade</div>
-      <table class="rtable">
-        <thead><tr><th>Gerente</th><th>Efetividade</th><th>Base</th></tr></thead>
-        <tbody>${pioresEfetiv.map(g=>piorRow(g,g.efetividade,'%')).join('')}</tbody>
-      </table>
-    </div>
-    <div class="card" style="border-color:#F5C6C6;">
-      <div class="card-title" style="color:#B02020;">Menos contas abertas</div>
-      <table class="rtable">
-        <thead><tr><th>Gerente</th><th>Contas</th><th>Base</th></tr></thead>
-        <tbody>${pioresContas.map(g=>piorRow(g,g.contas,'')).join('')}</tbody>
-      </table>
-    </div>
-    <div class="card" style="border-color:#F5C6C6;">
-      <div class="card-title" style="color:#B02020;">Menos credenciamentos</div>
-      <table class="rtable">
-        <thead><tr><th>Gerente</th><th>Credenc.</th><th>Base</th></tr></thead>
-        <tbody>${pioresCred.map(g=>piorRow(g,g.credenciamentos,'')).join('')}</tbody>
-      </table>
-    </div>
-  </div>`:`<div class="empty" style="margin-bottom:1rem;">Registre pelo menos 2 gerentes para ver o comparativo de desempenho.</div>`}
-
-  <!-- RANKING POR AGÊNCIA -->
-  <div class="card">
-    <div class="card-title">Ranking por agência <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(ordenado por contas abertas · Q calculado por média de contas/gerente)</span></div>
+  <div class="card-title" style="margin-bottom:0.35rem;">🥇 Top 10 — Melhores gerentes</div>
+  <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:0.75rem;line-height:1.5;">
+    Score combinado: <strong>contas abertas vs relógio</strong> (meta 5/mês ÷ 22 dias úteis = ${ritmoDiario.toFixed(3)}/dia · esperado até hoje: <strong>${metaRelogioHoje.toFixed(2)} contas</strong>) + <strong>% agendamentos/contatos</strong> + contas.
+    <br>Quem está <strong style="color:#1A7A52;">✓ no relógio</strong> tem prioridade.
+  </div>
+  <div class="card" style="border-color:#A8D4BF;margin-bottom:1rem;">
     <table class="rtable">
-      <tr><th>#</th><th>Agência</th><th>Q</th><th>Contatos</th><th>Efetivos</th><th style="background:#E6F5EE;color:#1A7A52;">Contas ⭐</th><th>Credenc.</th><th>Ag.docs</th><th>LV</th></tr>`;
+      <thead><tr>
+        <th>#</th><th>Gerente</th><th>Agência</th>
+        <th style="text-align:center;">Contas</th>
+        <th style="text-align:center;">Relógio</th>
+        <th style="text-align:center;">Agend.%</th>
+        <th style="text-align:center;">Score</th>
+      </tr></thead>
+      <tbody>${melhoresScore.map((g,i)=>{
+        const statusRelogio=g.noRelogio
+          ?`<span style="background:#E6F5EE;color:#1A7A52;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;">✓ ${Math.round(g.pctRelogio)}%</span>`
+          :`<span style="background:#FDEAEA;color:#B02020;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;">${Math.round(g.pctRelogio)}%</span>`;
+        return`<tr>
+          <td style="width:32px;"><span style="font-size:${i<3?'16px':'12px'};font-weight:700;">${medalha(i)}</span></td>
+          <td><strong>${g.gerente}</strong> ${badgeNovo(g.agencia,g.gerente)}</td>
+          <td style="font-size:11px;color:var(--safra-text-3);">${g.agencia}</td>
+          <td style="text-align:center;font-weight:700;color:#1A7A52;">${g.contas}</td>
+          <td style="text-align:center;">${statusRelogio}</td>
+          <td style="text-align:center;font-weight:600;">${g.pctAgend.toFixed(1)}%</td>
+          <td style="text-align:center;font-weight:700;color:var(--safra-navy);">${Math.round(g.score)}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+  </div>
+  `:''}
 
-  sortedAg.forEach(([ag,v],i)=>{
-    const ng=(agencias[ag]||[]).length;
-    html+=`<tr>
-      <td class="rank-num ${i<3?'top':''}">${i+1}</td>
-      <td><strong>${ag}</strong> <span style="font-size:10px;color:var(--safra-text-3);">· ${ng} ger</span></td>
-      <td>${qFlagAgencia(v.contas,ng)}</td>
-      <td>${v.contatos}</td>
-      <td style="color:var(--safra-mid);font-weight:500;">${v.efetivos}</td>
-      <td style="background:#F0FAF5;color:var(--green);font-weight:700;font-size:13px;">${v.contas}</td>
-      <td>${v.credenciamentos}</td>
-      <td>${v.aguardando}</td>
-      <td>${v.lv>0?`<span class="lv-flag">${v.lv}</span>`:'-'}</td>
-    </tr>`;
-  });
+  <!-- ⚠️ 15 PIORES GERENTES -->
+  ${todos.length>=2?`
+  <div class="card-title" style="margin-bottom:0.35rem;">⚠️ Atenção — 15 piores gerentes</div>
+  <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:0.75rem;">Fora do relógio + baixa efetividade (score baixo).</div>
+  <div class="card" style="border-color:#F5C6C6;margin-bottom:1rem;">
+    <table class="rtable">
+      <thead><tr>
+        <th>#</th><th>Gerente</th><th>Agência</th>
+        <th style="text-align:center;">Contas</th>
+        <th style="text-align:center;">Relógio</th>
+        <th style="text-align:center;">Agend.%</th>
+        <th style="text-align:center;">Score</th>
+      </tr></thead>
+      <tbody>${pioresScore.map((g,i)=>{
+        const statusRelogio=g.noRelogio
+          ?`<span style="background:#E6F5EE;color:#1A7A52;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;">✓ ${Math.round(g.pctRelogio)}%</span>`
+          :`<span style="background:#FDEAEA;color:#B02020;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;">${Math.round(g.pctRelogio)}%</span>`;
+        return`<tr>
+          <td style="width:32px;color:#B02020;font-weight:600;">${i+1}</td>
+          <td><strong>${g.gerente}</strong> ${badgeNovo(g.agencia,g.gerente)}</td>
+          <td style="font-size:11px;color:var(--safra-text-3);">${g.agencia}</td>
+          <td style="text-align:center;font-weight:600;color:${g.contas>0?'var(--safra-text)':'#B02020'};">${g.contas}</td>
+          <td style="text-align:center;">${statusRelogio}</td>
+          <td style="text-align:center;font-weight:600;">${g.pctAgend.toFixed(1)}%</td>
+          <td style="text-align:center;font-weight:700;color:#B02020;">${Math.round(g.score)}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+  </div>
+  `:`<div class="empty" style="margin-bottom:1rem;">Registre pelo menos 2 gerentes para ver o comparativo de desempenho.</div>`}
+  `;
 
-  html+=`</table></div>`;
+  // RANKING POR AGÊNCIA (só em visão geral, sem filtro de agência)
+  if(!filtroAg){
+    html+=`<div class="card">
+      <div class="card-title">Ranking por agência <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(ordenado por contas abertas · Q calculado por média de contas/gerente)</span></div>
+      <table class="rtable">
+        <tr><th>#</th><th>Agência</th><th>Q</th><th>Contatos</th><th>Efetivos</th><th style="background:#E6F5EE;color:#1A7A52;">Contas ⭐</th><th>Credenc.</th><th>Ag.docs</th><th>LV</th></tr>`;
+
+    sortedAg.forEach(([ag,v],i)=>{
+      const ng=(agencias[ag]||[]).length;
+      html+=`<tr>
+        <td class="rank-num ${i<3?'top':''}">${i+1}</td>
+        <td><strong>${ag}</strong> <span style="font-size:10px;color:var(--safra-text-3);">· ${ng} ger</span></td>
+        <td>${qFlagAgencia(v.contas,ng)}</td>
+        <td>${v.contatos}</td>
+        <td style="color:var(--safra-mid);font-weight:500;">${v.efetivos}</td>
+        <td style="background:#F0FAF5;color:var(--green);font-weight:700;font-size:13px;">${v.contas}</td>
+        <td>${v.credenciamentos}</td>
+        <td>${v.aguardando}</td>
+        <td>${v.lv>0?`<span class="lv-flag">${v.lv}</span>`:'-'}</td>
+      </tr>`;
+    });
+
+    html+=`</table></div>`;
+  }
   el.innerHTML=html;
+}
+
+// Coleta TODOS os itens de retorno (tradicionais + de cada ação) e devolve uma lista plana
+// Cada item: {regIdx, tipo:'retorno'|'prospeccao'|'base'|'fgi'|'altobacen'|'viabilizamais',
+//             indice(acoesDetalhe), empresa, data, viab, obs, virouConta, agencia, gerente, listaVerde, dataReg}
+function coletarItensRetorno(){
+  const itens=[];
+  regs.forEach((r,regIdx)=>{
+    // Retorno tradicional (campo retEmpresa)
+    if(r.retEmpresa){
+      itens.push({
+        regIdx, subIdx:-1, tipo:'retorno',
+        agencia:r.agencia, gerente:r.gerente, dataReg:r.data,
+        empresa:r.retEmpresa, data:r.retData||'', viab:r.viabilizado||[],
+        obs:r.retObs||'', virouConta:!!r.retVirouConta,
+        listaVerde:!!r.listaVerde,
+      });
+    }
+    // Detalhe de cada ação (acoesDetalhe) — inclui agendamentos tipo 'agendamento'
+    const temAgendNoDetalhe=Array.isArray(r.acoesDetalhe)&&r.acoesDetalhe.some(a=>a.tipo==='agendamento');
+    if(Array.isArray(r.acoesDetalhe)){
+      r.acoesDetalhe.forEach((a,subIdx)=>{
+        if(!a.empresa||!a.empresa.trim()) return;
+        itens.push({
+          regIdx, subIdx, tipo:a.tipo,
+          agencia:r.agencia, gerente:r.gerente, dataReg:r.data,
+          empresa:a.empresa, data:a.agendamento||'', viab:a.viab||[],
+          obs:a.obs||'', virouConta:!!a.virouConta,
+          listaVerde:false,
+        });
+      });
+    }
+    // COMPATIBILIDADE: registros antigos com agendamentos só como string (sem acoesDetalhe)
+    // Criamos pseudo-itens com subIdx negativo especial pra identificar
+    if(!temAgendNoDetalhe && r.agendamentos && typeof r.agendamentos==='string'){
+      const nomes=r.agendamentos.split(/[;,\n]/).map(s=>s.trim()).filter(s=>s);
+      nomes.forEach((nome,idx)=>{
+        itens.push({
+          regIdx, subIdx:-2-idx, // subIdx=-2,-3,-4... indica agendamento "legado" no texto
+          tipo:'agendamento',
+          agencia:r.agencia, gerente:r.gerente, dataReg:r.data,
+          empresa:nome, data:'', viab:[], obs:'', virouConta:false,
+          listaVerde:false,
+          legadoTexto:true, legadoIdx:idx, // marca pra tratamento especial
+        });
+      });
+    }
+  });
+  return itens;
 }
 
 function renderRetornos(){
   const el=document.getElementById('retornos-content');
-  const filtroAg  = document.getElementById('filtro-ret-ag').value;
-  const filtroGer = document.getElementById('filtro-ret-ger').value;
+  const filtroAgEl=document.getElementById('filtro-ret-ag');
+  const filtroGerEl=document.getElementById('filtro-ret-ger');
+  if(!el||!filtroAgEl||!filtroGerEl) return;
+  const filtroAg  = filtroAgEl.value;
+  const filtroGer = filtroGerEl.value;
 
-  let com=regs.filter(r=>r.retEmpresa);
-  if(filtroAg)  com=com.filter(r=>r.agencia===filtroAg);
-  if(filtroGer) com=com.filter(r=>r.gerente===filtroGer);
+  // Só mostra os retornos DEPOIS que uma agência for selecionada
+  if(!filtroAg){
+    el.innerHTML=`<div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:10px;padding:2rem;text-align:center;margin-top:1rem;">
+      <div style="font-size:28px;margin-bottom:8px;">👆</div>
+      <div style="font-size:14px;font-weight:600;color:#A0620D;margin-bottom:4px;">Selecione uma agência</div>
+      <div style="font-size:12px;color:#A0620D;">Escolha a agência no filtro acima para ver os retornos daquela agência.</div>
+    </div>`;
+    return;
+  }
 
-  if(!com.length){el.innerHTML='<div class="empty">Nenhum retorno encontrado.</div>';return;}
+  let itens=coletarItensRetorno();
+  itens=itens.filter(r=>r.agencia===filtroAg);
+  if(filtroGer) itens=itens.filter(r=>r.gerente===filtroGer);
+
+  if(!itens.length){el.innerHTML='<div class="empty">Nenhum retorno encontrado para esta agência.</div>';return;}
 
   // Agrupa por agência → gerente
   const byAg={};
-  com.forEach(r=>{
+  itens.forEach(r=>{
     if(!byAg[r.agencia])byAg[r.agencia]={};
     if(!byAg[r.agencia][r.gerente])byAg[r.agencia][r.gerente]=[];
     byAg[r.agencia][r.gerente].push(r);
@@ -2159,7 +2581,7 @@ function renderRetornos(){
   for(const[ag,gerentes]of Object.entries(byAg)){
     html+=`<div class="ag-label">${ag}</div>`;
     for(const[ger,lista]of Object.entries(gerentes)){
-      const sorted=lista.slice().sort((a,b)=>a.retData.localeCompare(b.retData));
+      const sorted=lista.slice().sort((a,b)=>(a.data||a.dataReg).localeCompare(b.data||b.dataReg));
       html+=`<div class="card">
         <div class="g-header">
           <div class="avatar">${initials(ger)}</div>
@@ -2168,22 +2590,35 @@ function renderRetornos(){
               <div class="g-name">${ger}</div>
               ${badgeNovo(ag,ger)}
             </div>
-            <div class="agencia-tag">${ag} · ${sorted.length} retorno${sorted.length>1?'s':''}</div>
+            <div class="agencia-tag">${ag} · ${sorted.length} registro${sorted.length>1?'s':''}</div>
           </div>
         </div>
         ${sorted.map(r=>{
-          const venc=r.retData&&r.retData<today;
+          const venc=r.data&&r.data<today&&!r.virouConta;
+          const info=tiposAcao[r.tipo]||{label:'Retorno',css:'tipo-retorno',icone:'🔁'};
+          const dataExib=r.data?fmt(r.data):fmt(r.dataReg);
+          let labelData='Data';
+          if(r.tipo==='retorno') labelData='Retorno';
+          else if(info.grupo==='visita') labelData='Agend.';
+          else if(info.grupo==='agendamento') labelData='Registrado';
           return`<div class="retorno-item${r.listaVerde?' lv-border':''}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
-              <div>
+              <div style="flex:1;min-width:0;">
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                  <span style="font-weight:600;color:var(--safra-navy);">${r.retEmpresa}</span>
+                  <span class="tag-origem ${info.css}">${info.icone} ${info.label}</span>
+                  <span style="font-weight:600;color:var(--safra-navy);">${r.empresa}</span>
                   ${r.listaVerde?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
-                  ${renderViabBadges(r.viabilizado)}
+                  ${renderViabBadges(r.viab)}
+                  ${r.virouConta?'<span class="badge-conta-sim">✓ Virou conta</span>':''}
                 </div>
-                ${r.retObs?`<div class="ret-date" style="margin-top:3px;">${r.retObs}</div>`:''}
+                ${r.obs?`<div class="ret-date" style="margin-top:3px;">${r.obs}</div>`:''}
               </div>
-              <span class="tag-ret ${venc?'venc':''}">${fmt(r.retData)}</span>
+              <span class="tag-ret ${venc?'venc':''}" style="white-space:nowrap;">${labelData}: ${dataExib}</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+              <button type="button" onclick="toggleVirouConta(${r.regIdx},${r.subIdx})" style="background:${r.virouConta?'#E6F5EE':'#fff'};color:${r.virouConta?'#1A7A52':'var(--safra-text-2)'};border:1px solid ${r.virouConta?'#A8D4BF':'var(--safra-border)'};padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">${r.virouConta?'✓ Virou conta':'Marcar como conta'}</button>
+              <button type="button" onclick="editarRetorno(${r.regIdx},${r.subIdx})" style="background:var(--safra-light);color:var(--safra-text);border:1px solid var(--safra-border);padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">✏️ Editar</button>
+              <button type="button" onclick="excluirRetorno(${r.regIdx},${r.subIdx})" style="background:#FDEAEA;color:#B02020;border:1px solid #CC4444;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🗑 Excluir</button>
             </div>
           </div>`;
         }).join('')}
@@ -2193,18 +2628,271 @@ function renderRetornos(){
   el.innerHTML=html;
 }
 
+// Alterna o flag "virou conta" em um retorno/ação
+// Converte os agendamentos de r.agendamentos (texto) em itens acoesDetalhe tipo 'agendamento'
+// Retorna o subIdx real do item `legadoIdx` dentro do acoesDetalhe depois da migração.
+function migrarAgendamentosLegados(r,legadoIdx){
+  if(!Array.isArray(r.acoesDetalhe)) r.acoesDetalhe=[];
+  const jaTem=r.acoesDetalhe.some(a=>a.tipo==='agendamento');
+  if(jaTem) return -1; // já foi migrado, não precisa
+  const nomes=(r.agendamentos||'').split(/[;,\n]/).map(s=>s.trim()).filter(s=>s);
+  const primeiroIdx=r.acoesDetalhe.length;
+  nomes.forEach(nome=>{
+    r.acoesDetalhe.push({tipo:'agendamento',empresa:nome,obs:'',virouConta:false});
+  });
+  return primeiroIdx+legadoIdx;
+}
+
+async function toggleVirouConta(regIdx,subIdx){
+  const r=regs[regIdx];
+  if(!r||!r.id) return;
+  bloqueioLeitura=true;
+  if(subIdx===-1){
+    // Retorno tradicional
+    r.retVirouConta=!r.retVirouConta;
+  } else if(subIdx<=-2){
+    // Agendamento legado (só texto) → migra pra acoesDetalhe e aplica o toggle
+    const legadoIdx=-(subIdx+2); // -2 → idx 0, -3 → idx 1, ...
+    const realIdx=migrarAgendamentosLegados(r,legadoIdx);
+    if(realIdx>=0) r.acoesDetalhe[realIdx].virouConta=!r.acoesDetalhe[realIdx].virouConta;
+  } else {
+    if(Array.isArray(r.acoesDetalhe)&&r.acoesDetalhe[subIdx]){
+      r.acoesDetalhe[subIdx].virouConta=!r.acoesDetalhe[subIdx].virouConta;
+    }
+  }
+  renderRetornos();
+  await atualizarRegistro(r.id,r);
+  bloqueioLeitura=false;
+}
+
+// Exclui um item de retorno (tradicional ou ação) com confirmação inline
+async function excluirRetorno(regIdx,subIdx){
+  const r=regs[regIdx];
+  if(!r||!r.id) return;
+
+  // Determina o nome do item pra mostrar na confirmação
+  let nomeItem='item';
+  if(subIdx===-1){
+    nomeItem=r.retEmpresa||'retorno';
+  } else if(subIdx<=-2){
+    // Agendamento legado — pega do array de nomes
+    const legadoIdx=-(subIdx+2);
+    const nomes=(r.agendamentos||'').split(/[;,\n]/).map(s=>s.trim()).filter(s=>s);
+    nomeItem=nomes[legadoIdx]||'agendamento';
+  } else {
+    nomeItem=r.acoesDetalhe?.[subIdx]?.empresa||'item';
+  }
+
+  const confirmado=await confirmarInline(`Excluir "${nomeItem}"?`,'Sim, excluir','Cancelar','#B02020');
+  if(!confirmado) return;
+
+  bloqueioLeitura=true;
+  if(subIdx===-1){
+    r.retEmpresa='';
+    r.retData='';
+    r.retObs='';
+    r.viabilizado=[];
+    r.retVirouConta=false;
+  } else if(subIdx<=-2){
+    // Migra texto → acoesDetalhe, depois remove o item
+    const legadoIdx=-(subIdx+2);
+    const realIdx=migrarAgendamentosLegados(r,legadoIdx);
+    if(realIdx>=0){
+      r.acoesDetalhe.splice(realIdx,1);
+      // Atualiza o texto agendamentos removendo o nome correspondente
+      const restantes=r.acoesDetalhe.filter(a=>a.tipo==='agendamento').map(a=>a.empresa);
+      r.agendamentos=restantes.join('; ');
+    }
+  } else {
+    if(Array.isArray(r.acoesDetalhe)&&r.acoesDetalhe[subIdx]){
+      const item=r.acoesDetalhe[subIdx];
+      const tipoExcluido=item.tipo;
+      r.acoesDetalhe.splice(subIdx,1);
+      // Se era um agendamento, atualiza o texto também
+      if(tipoExcluido==='agendamento'){
+        const restantes=r.acoesDetalhe.filter(a=>a.tipo==='agendamento').map(a=>a.empresa);
+        r.agendamentos=restantes.join('; ');
+      } else if(r.acoes){
+        const mapa={prospeccao:'prospeccao',base:'base',fgi:'fgi',altobacen:'altoBacen',viabilizamais:'viabilizaMais'};
+        const chave=mapa[tipoExcluido];
+        if(chave&&r.acoes[chave]>0) r.acoes[chave]--;
+        r.visitas=r.acoes.prospeccao+r.acoes.base+r.acoes.fgi+r.acoes.altoBacen+r.acoes.viabilizaMais;
+      }
+    }
+  }
+  renderRetornos();
+  renderGG();
+  if(regionalDesbloqueado) renderRegional();
+  await atualizarRegistro(r.id,r);
+  bloqueioLeitura=false;
+}
+
+// Edita um item de retorno (tradicional ou ação) com modal inline
+async function editarRetorno(regIdx,subIdx){
+  const r=regs[regIdx];
+  if(!r) return;
+
+  // Se for agendamento legado (subIdx <= -2), migra pro acoesDetalhe e usa o novo índice
+  let idxReal=subIdx;
+  if(subIdx<=-2){
+    const legadoIdx=-(subIdx+2);
+    idxReal=migrarAgendamentosLegados(r,legadoIdx);
+    // Se já estava migrado, procura o índice atual
+    if(idxReal<0){
+      const nomes=(r.agendamentos||'').split(/[;,\n]/).map(s=>s.trim()).filter(s=>s);
+      const nomeAlvo=nomes[legadoIdx];
+      idxReal=(r.acoesDetalhe||[]).findIndex(a=>a.tipo==='agendamento'&&a.empresa===nomeAlvo);
+    }
+    if(idxReal<0) return;
+  }
+
+  const ehRetorno=idxReal===-1;
+  const item=ehRetorno
+    ? {empresa:r.retEmpresa||'',data:r.retData||'',obs:r.retObs||'',viab:r.viabilizado||[],tipo:'retorno'}
+    : r.acoesDetalhe?.[idxReal];
+  if(!item) return;
+  const info=tiposAcao[item.tipo]||{label:'Retorno',grupo:'retorno',icone:'🔁'};
+  const ehVisita=info.grupo==='visita';
+  const ehAgendamento=info.grupo==='agendamento';
+
+  // Modal overlay
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+  const modalId='modal-edit-'+Date.now();
+
+  const viabAtual=new Set(ehRetorno?(r.viabilizado||[]):(item.viab||[]));
+  const viabButtonsHtml=['credito','safrapay','cobranca','ativos','margem'].map(v=>{
+    const labels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
+    const sel=viabAtual.has(v);
+    return `<button type="button" class="viab-btn${sel?' sel-'+v:''}" data-v="${v}" style="font-family:'DM Sans',sans-serif;">${labels[v]}</button>`;
+  }).join('');
+
+  const dataValor=ehRetorno?(r.retData||''):(item.agendamento||'');
+  const labelData=ehRetorno?'Data do retorno':(ehVisita?'Agendamento abertura':'Data');
+
+  overlay.innerHTML=`
+    <div id="${modalId}" style="background:#fff;border-radius:10px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <span class="tag-origem ${info.css||'tipo-retorno'}">${info.icone} ${info.label}</span>
+        <h3 style="margin:0;font-size:16px;color:var(--safra-navy);">Editar item</h3>
+      </div>
+
+      <label>Empresa</label>
+      <input type="text" id="ed-empresa" value="${(item.empresa||'').replace(/"/g,'&quot;')}" style="margin:0 0 10px;" />
+
+      ${(ehVisita||ehRetorno)&&!ehAgendamento?`<label>${labelData}</label>
+      <input type="date" id="ed-data" value="${dataValor}" style="margin:0 0 10px;" />`:''}
+
+      ${(!ehVisita&&!ehAgendamento)?`<label>Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
+      <div class="viab-grid" id="ed-viab" style="margin-bottom:10px;">${viabButtonsHtml}</div>`:''}
+
+      <label>Observação</label>
+      <textarea id="ed-obs" placeholder="Opcional" style="margin:0 0 14px;min-height:70px;">${item.obs||r.retObs||''}</textarea>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" id="ed-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
+        <button type="button" id="ed-save" style="background:var(--safra-accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Salvar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  // Liga os botões de viabilização (toggle)
+  const viabSelEdit=new Set(viabAtual);
+  overlay.querySelectorAll('#ed-viab .viab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const v=btn.getAttribute('data-v');
+      if(viabSelEdit.has(v)){viabSelEdit.delete(v); btn.className='viab-btn';}
+      else {viabSelEdit.add(v); btn.className='viab-btn sel-'+v;}
+    });
+  });
+
+  const resultado=await new Promise(resolve=>{
+    overlay.querySelector('#ed-cancel').addEventListener('click',()=>{overlay.remove();resolve(null);});
+    overlay.querySelector('#ed-save').addEventListener('click',()=>{
+      const dados={
+        empresa:overlay.querySelector('#ed-empresa').value.trim(),
+        data:overlay.querySelector('#ed-data')?.value||'',
+        obs:overlay.querySelector('#ed-obs').value.trim(),
+        viab:[...viabSelEdit],
+      };
+      overlay.remove();
+      resolve(dados);
+    });
+  });
+
+  if(!resultado) return;
+
+  if(!r.id){
+    alert('Esse registro ainda não foi salvo no banco. Recarregue a página.');
+    return;
+  }
+
+  bloqueioLeitura=true;
+  if(ehRetorno){
+    r.retEmpresa=resultado.empresa;
+    r.retData=resultado.data;
+    r.retObs=resultado.obs;
+    r.viabilizado=resultado.viab;
+  } else {
+    item.empresa=resultado.empresa;
+    if(ehVisita) item.agendamento=resultado.data;
+    else if(!ehAgendamento) item.viab=resultado.viab;
+    item.obs=resultado.obs;
+    // Se é agendamento, sincroniza o campo texto r.agendamentos
+    if(ehAgendamento){
+      const nomes=(r.acoesDetalhe||[]).filter(a=>a.tipo==='agendamento').map(a=>a.empresa);
+      r.agendamentos=nomes.join('; ');
+    }
+  }
+  renderRetornos();
+  renderGG();
+  if(regionalDesbloqueado) renderRegional();
+  await atualizarRegistro(r.id,r);
+  bloqueioLeitura=false;
+}
+
+// Helper genérico de confirmação inline (modal)
+function confirmarInline(pergunta,textoOk='Confirmar',textoCancel='Cancelar',corOk='#1A7A52'){
+  return new Promise(resolve=>{
+    const overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+    overlay.innerHTML=`
+      <div style="background:#fff;border-radius:10px;max-width:400px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="font-size:14px;color:var(--safra-navy);margin-bottom:14px;font-weight:600;">${pergunta}</div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button type="button" id="ci-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">${textoCancel}</button>
+          <button type="button" id="ci-ok" style="background:${corOk};color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">${textoOk}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#ci-cancel').addEventListener('click',()=>{overlay.remove();resolve(false);});
+    overlay.querySelector('#ci-ok').addEventListener('click',()=>{overlay.remove();resolve(true);});
+  });
+}
+
 function atualizaFiltroRetGer(){
   const ag=document.getElementById('filtro-ret-ag').value;
   const sel=document.getElementById('filtro-ret-ger');
+  const valorAtual=sel.value; // guarda o que estava selecionado
+  // Só lista gerentes APÓS selecionar a agência
   const lista=ag?(agencias[ag]||[]):[];
-  sel.innerHTML='<option value="">Todos os gerentes</option>'+lista.map(g=>`<option>${g}</option>`).join('');
+  const placeholder=ag?'Todos os gerentes':'Selecione a agência primeiro';
+  sel.innerHTML=`<option value="">${placeholder}</option>`+lista.map(g=>`<option>${g}</option>`).join('');
+  // Mantém a seleção anterior SOMENTE se o gerente ainda existe na nova lista
+  if(valorAtual&&lista.includes(valorAtual)){
+    sel.value=valorAtual;
+  } else {
+    sel.value=''; // reseta
+  }
+  // Se agência estiver vazia, desabilita o select pra deixar claro
+  sel.disabled=!ag;
 }
 
 let trimestreDesbloqueado=false;
 
 function verificarSenhaTrimestre(){
   const senha=document.getElementById('trimestre-senha').value;
-  if(senha==='Tais26'){
+  if(senha==='Tais2026'){
     trimestreDesbloqueado=true;
     document.getElementById('trimestre-lock').style.display='none';
     document.getElementById('trimestre-desbloqueado').style.display='block';
@@ -2378,275 +3066,9 @@ function toggleMesTrim(mes){
   renderTrimestre();
 }
 
-// Dados carregados após login via carregarDados()
-
-let _editRegId = null; // ID do registro sendo editado
-
-function abrirEditModal(regId){
-  const r = regs.find(x => x._id === regId);
-  if(!r){ alert('Registro não encontrado.'); return; }
-  _editRegId = regId;
-
-  // Preenche campos
-  document.getElementById('em-agencia').value = r.agencia;
-  emAtualizaGerentes(r.gerente);
-  document.getElementById('em-data').value = r.data;
-  document.getElementById('em-contatos').value = r.contatos||0;
-  document.getElementById('em-efetivos').value = r.efetivos||0;
-  document.getElementById('em-emails').value = r.emails||0;
-  document.getElementById('em-visitas').value = r.visitas||0;
-  document.getElementById('em-agendamentos').value = r.agendamentos||'';
-  document.getElementById('em-contas').value = r.contas||0;
-  document.getElementById('em-credenciamentos').value = r.credenciamentos||0;
-  document.getElementById('em-aguardando').value = r.aguardando||0;
-  document.getElementById('em-ret-empresa').value = r.retEmpresa||'';
-  document.getElementById('em-ret-data').value = r.retData||'';
-  document.getElementById('em-ret-obs').value = r.retObs||'';
-  document.getElementById('em-save-erro').style.display='none';
-  document.getElementById('edit-modal-overlay').classList.add('open');
-}
-
-function fecharEditModal(){
-  document.getElementById('edit-modal-overlay').classList.remove('open');
-  _editRegId = null;
-}
-
-function emAtualizaGerentes(selecionado){
-  const ag = document.getElementById('em-agencia').value;
-  const sel = document.getElementById('em-gerente');
-  const lista = agencias[ag]||[];
-  sel.innerHTML = lista.map(g=>`<option${g===selecionado?' selected':''}>${g}</option>`).join('');
-}
-
-async function salvarEdicao(){
-  if(!_editRegId) return;
-  const erroEl = document.getElementById('em-save-erro');
-  erroEl.style.display='none';
-  const body = {
-    agencia: document.getElementById('em-agencia').value,
-    gerente: document.getElementById('em-gerente').value,
-    data: document.getElementById('em-data').value,
-    contatos: parseInt(document.getElementById('em-contatos').value)||0,
-    efetivos: parseInt(document.getElementById('em-efetivos').value)||0,
-    emails: parseInt(document.getElementById('em-emails').value)||0,
-    visitas: parseInt(document.getElementById('em-visitas').value)||0,
-    agendamentos: document.getElementById('em-agendamentos').value,
-    contas: parseInt(document.getElementById('em-contas').value)||0,
-    credenciamentos: parseInt(document.getElementById('em-credenciamentos').value)||0,
-    aguardando: parseInt(document.getElementById('em-aguardando').value)||0,
-    ret_empresa: document.getElementById('em-ret-empresa').value||null,
-    ret_data: document.getElementById('em-ret-data').value||null,
-    ret_obs: document.getElementById('em-ret-obs').value||null,
-  };
-  try{
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${_editRegId}`,{
-      method:'PATCH',
-      headers:{
-        'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
-        'Content-Type':'application/json','Prefer':'return=minimal'
-      },
-      body:JSON.stringify(body)
-    });
-    if(!res.ok){ erroEl.textContent='Erro ao salvar. Tente novamente.'; erroEl.style.display='block'; return; }
-    fecharEditModal();
-    setSyncStatus('✅ Editado','#90EE90');
-    await lerDados();
-  }catch(e){
-    erroEl.textContent='Erro de conexão.'; erroEl.style.display='block';
-  }
-}
-
-async function excluirRegistroEdit(){
-  if(!_editRegId) return;
-  const confirmBox = document.createElement('div');
-  confirmBox.style.cssText='background:#FDEAEA;border:2px solid #B02020;padding:14px;border-radius:8px;margin-top:10px;';
-  confirmBox.innerHTML=`
-    <div style="font-weight:600;color:#B02020;margin-bottom:10px;font-size:13px;">Excluir este registro?</div>
-    <div style="display:flex;gap:8px;">
-      <button id="excl-sim" style="background:#B02020;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Sim, excluir</button>
-      <button id="excl-nao" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Cancelar</button>
-    </div>`;
-  document.getElementById('em-save-erro').after(confirmBox);
-
-  const ok = await new Promise(resolve=>{
-    document.getElementById('excl-sim').onclick=()=>{confirmBox.remove();resolve(true);};
-    document.getElementById('excl-nao').onclick=()=>{confirmBox.remove();resolve(false);};
-  });
-  if(!ok) return;
-
-  try{
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${_editRegId}`,{
-      method:'DELETE',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
-    });
-    if(!res.ok){ alert('Erro ao excluir.'); return; }
-    fecharEditModal();
-    setSyncStatus('✅ Excluído','#90EE90');
-    await lerDados();
-  }catch(e){ alert('Erro de conexão.'); }
-}
-
-// Fecha modal ao clicar fora
-document.getElementById('edit-modal-overlay').addEventListener('click',function(e){
-  if(e.target===this) fecharEditModal();
-});
-
-
-// ── EDIÇÃO TOTAL DO GERENTE (pela tabela do Dashboard) ──
-// Abre modal com totais somados; ao salvar, deleta registros antigos e cria um único novo
-async function abrirEditTotal(ag, ger){
-  // Busca registros do gerente direto da variável global regs
-  const regsGer = regs.filter(r => r.agencia === ag && r.gerente === ger);
-  if(!regsGer || regsGer.length === 0){ alert('Nenhum registro encontrado para este gerente.'); return; }
-
-  // Soma totais
-  const total = {
-    contatos:        regsGer.reduce((a,r)=>a+r.contatos,0),
-    efetivos:        regsGer.reduce((a,r)=>a+r.efetivos,0),
-    emails:          regsGer.reduce((a,r)=>a+r.emails,0),
-    visitas:         regsGer.reduce((a,r)=>a+r.visitas,0),
-    agendamentos:    regsGer.map(r=>r.agendamentos).filter(Boolean).join(', '),
-    contas:          regsGer.reduce((a,r)=>a+r.contas,0),
-    credenciamentos: regsGer.reduce((a,r)=>a+r.credenciamentos,0),
-    aguardando:      regsGer.reduce((a,r)=>a+r.aguardando,0),
-    retEmpresa:      regsGer[regsGer.length-1]?.retEmpresa||'',
-    retData:         regsGer[regsGer.length-1]?.retData||'',
-    retObs:          regsGer[regsGer.length-1]?.retObs||'',
-    data:            regsGer[regsGer.length-1]?.data||today,
-  };
-
-  // Guarda os IDs para deletar depois
-  _editTotalIds = regsGer.map(r=>r._id).filter(Boolean);
-  _editTotalAg  = ag;
-  _editTotalGer = ger;
-  _editTotalData = total.data;
-
-  // Reutiliza o modal existente
-  document.getElementById('edit-modal-header').querySelector('span').textContent = `✏️ Editar total · ${ger}`;
-  document.getElementById('em-agencia').value = ag;
-  emAtualizaGerentes(ger);
-  document.getElementById('em-data').value = total.data;
-  document.getElementById('em-contatos').value = total.contatos;
-  document.getElementById('em-efetivos').value = total.efetivos;
-  document.getElementById('em-emails').value = total.emails;
-  document.getElementById('em-visitas').value = total.visitas;
-  document.getElementById('em-agendamentos').value = total.agendamentos;
-  document.getElementById('em-contas').value = total.contas;
-  document.getElementById('em-credenciamentos').value = total.credenciamentos;
-  document.getElementById('em-aguardando').value = total.aguardando;
-  document.getElementById('em-ret-empresa').value = total.retEmpresa;
-  document.getElementById('em-ret-data').value = total.retData;
-  document.getElementById('em-ret-obs').value = total.retObs;
-  document.getElementById('em-save-erro').style.display='none';
-
-  // Troca o comportamento dos botões para modo "total"
-  _editRegId = null; // garante que salvarEdicao() não seja chamado no modo antigo
-  _editTotalMode = true;
-
-  // Aviso no modal
-  let avisoEl = document.getElementById('em-aviso-total');
-  if(!avisoEl){
-    avisoEl = document.createElement('div');
-    avisoEl.id = 'em-aviso-total';
-    avisoEl.style.cssText = 'background:#FEF3DC;border:1px solid #D4A030;border-radius:6px;padding:8px 12px;font-size:11px;color:#633806;margin-bottom:8px;';
-    document.getElementById('em-save-erro').before(avisoEl);
-  }
-  avisoEl.style.display = 'block';
-  avisoEl.textContent = `⚠️ Editando total consolidado de ${regsGer.length} registro(s). Ao salvar, os registros anteriores serão substituídos por um único registro com os valores informados.`;
-
-  document.getElementById('edit-modal-overlay').classList.add('open');
-}
-
-let _editTotalMode = false;
-let _editTotalIds  = [];
-let _editTotalAg   = '';
-let _editTotalGer  = '';
-let _editTotalData = '';
-
-// Sobrescreve salvarEdicao para suportar modo total
-const _salvarEdicaoOriginal = salvarEdicao;
-async function salvarEdicao(){
-  if(_editTotalMode){
-    await salvarEdicaoTotal();
-    return;
-  }
-  await _salvarEdicaoOriginal();
-}
-
-async function salvarEdicaoTotal(){
-  const erroEl = document.getElementById('em-save-erro');
-  erroEl.style.display='none';
-
-  const novoReg = {
-    agencia:         document.getElementById('em-agencia').value,
-    gerente:         document.getElementById('em-gerente').value,
-    data:            document.getElementById('em-data').value,
-    contatos:        parseInt(document.getElementById('em-contatos').value)||0,
-    efetivos:        parseInt(document.getElementById('em-efetivos').value)||0,
-    emails:          parseInt(document.getElementById('em-emails').value)||0,
-    visitas:         parseInt(document.getElementById('em-visitas').value)||0,
-    agendamentos:    document.getElementById('em-agendamentos').value,
-    contas:          parseInt(document.getElementById('em-contas').value)||0,
-    credenciamentos: parseInt(document.getElementById('em-credenciamentos').value)||0,
-    aguardando:      parseInt(document.getElementById('em-aguardando').value)||0,
-    ret_empresa:     document.getElementById('em-ret-empresa').value||null,
-    ret_data:        document.getElementById('em-ret-data').value||null,
-    ret_obs:         document.getElementById('em-ret-obs').value||null,
-    contas_lv:       0,
-    contas_sem:      parseInt(document.getElementById('em-contas').value)||0,
-    lista_verde:     false,
-    viabilizado:     null,
-    contas_detalhe:  [],
-  };
-
-  try{
-    // 1. Deleta todos os registros anteriores do gerente (em paralelo)
-    await Promise.all(_editTotalIds.map(id =>
-      fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`,{
-        method:'DELETE',
-        headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
-      })
-    ));
-
-    // 2. Cria o novo registro consolidado
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/registros`,{
-      method:'POST',
-      headers:{
-        'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
-        'Content-Type':'application/json','Prefer':'return=minimal'
-      },
-      body:JSON.stringify(novoReg)
-    });
-    if(!res.ok){ erroEl.textContent='Erro ao salvar. Tente novamente.'; erroEl.style.display='block'; return; }
-
-    _editTotalMode = false;
-    fecharEditTotal();
-    setSyncStatus('✅ Total editado','#90EE90');
-    await lerDados();
-  }catch(e){
-    erroEl.textContent='Erro de conexão.'; erroEl.style.display='block';
-  }
-}
-
-function fecharEditTotal(){
-  _editTotalMode = false;
-  const aviso = document.getElementById('em-aviso-total');
-  if(aviso) aviso.style.display='none';
-  document.getElementById('edit-modal-header').querySelector('span').textContent = '✏️ Editar registro';
-  fecharEditModal();
-}
-
-// Sobrescreve fecharEditModal para limpar modo total também
-const _fecharOriginal = fecharEditModal;
-function fecharEditModal(){
-  if(_editTotalMode){
-    _editTotalMode = false;
-    const aviso = document.getElementById('em-aviso-total');
-    if(aviso) aviso.style.display='none';
-    document.getElementById('edit-modal-header').querySelector('span').textContent = '✏️ Editar registro';
-  }
-  document.getElementById('edit-modal-overlay').classList.remove('open');
-  _editRegId = null;
-}
-
+// Renderiza todas as abas com dados demo ao carregar
+renderGG();
+renderRegional();
+renderRetornos();
+renderTrimestre();
 </script>
