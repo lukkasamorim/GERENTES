@@ -1,3 +1,4 @@
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -433,67 +434,54 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 /* Badge "Virou conta" */
 .badge-conta-sim{background:#E6F5EE;color:#1A7A52;border:1px solid #A8D4BF;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
 .badge-conta-nao{background:#F1F3F7;color:#6B7280;border:1px solid #C9D0DD;font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
-
-/* LOGIN SCREEN */
-#login-screen{
-  position:fixed;inset:0;z-index:9999;
-  background:var(--safra-navy);
-  display:flex;align-items:center;justify-content:center;
-  padding:1rem;
-}
-#login-box{
-  background:#fff;border-radius:14px;padding:2rem 1.75rem;
-  width:100%;max-width:340px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.25);
-  text-align:center;
-}
-#login-logo{
-  width:52px;height:52px;border-radius:12px;
-  background:linear-gradient(135deg,#2563C0,#1A4A8A);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'DM Mono',monospace;font-size:18px;font-weight:500;
-  color:#E8B84B;margin:0 auto 1rem;
-}
-#login-title{font-size:16px;font-weight:700;color:#0D2B55;margin-bottom:4px;}
-#login-sub{font-size:12px;color:#6B83A4;margin-bottom:1.5rem;}
-#login-input-wrap{position:relative;margin-bottom:8px;}
-#login-input{text-align:center;font-size:16px;letter-spacing:0.1em;margin-bottom:0;padding-right:40px;}
-#login-toggle-senha{
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;
-  color:var(--safra-text-3);font-size:16px;padding:4px;line-height:1;
-}
-#login-toggle-senha:hover{color:var(--safra-navy);}
-#login-lembrar{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-bottom:14px;margin-top:4px;
-  font-size:12px;color:#3A5278;cursor:pointer;user-select:none;
-}
-#login-lembrar input[type=checkbox]{
-  width:15px;height:15px;cursor:pointer;accent-color:#0D2B55;margin:0;
-}
-#login-erro{font-size:12px;color:#B02020;margin-bottom:8px;display:none;}
-#login-btn{width:100%;padding:12px;font-size:14px;}
 </style>
 
 <h2 class="sr-only">Painel de acompanhamento de gerentes por agência — Banco Safra</h2>
 
-<div id="login-screen">
-  <div id="login-box">
-    <div id="login-logo">SF</div>
-    <div id="login-title">Painel de Gerentes</div>
-    <div id="login-sub">Banco Safra · Acesso restrito</div>
-    <div id="login-input-wrap">
-      <input type="password" id="login-input" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')fazerLogin()">
-      <button id="login-toggle-senha" type="button" onclick="toggleVerSenha()" title="Mostrar/ocultar senha">👁</button>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TELA DE LOGIN INICIAL                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="login-screen" style="position:fixed;inset:0;background:linear-gradient(135deg,#0B2B54 0%,#1A3D6E 50%,#2A5085 100%);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px;font-family:'DM Sans',system-ui,sans-serif;">
+  <div style="background:#fff;border-radius:14px;max-width:400px;width:100%;padding:32px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:linear-gradient(135deg,#0B2B54,#2A5085);border-radius:14px;margin-bottom:12px;box-shadow:0 8px 20px rgba(11,43,84,0.25);">
+        <span style="color:#DBA31A;font-size:22px;font-weight:700;letter-spacing:-0.02em;">SF</span>
+      </div>
+      <div style="font-size:18px;font-weight:700;color:#0B2B54;margin-bottom:4px;">Painel de Gerentes</div>
+      <div style="font-size:12px;color:#64748B;">Banco Safra · Acesso restrito</div>
     </div>
-    <label id="login-lembrar">
-      <input type="checkbox" id="login-remember"> Lembrar senha neste dispositivo
+
+    <label style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">Senha</label>
+    <div style="position:relative;margin-bottom:12px;">
+      <input type="password" id="login-senha" placeholder="Digite sua senha" style="width:100%;padding:12px 44px 12px 14px;border:1px solid #C9D0DD;border-radius:8px;font-size:15px;font-family:'DM Sans',sans-serif;box-sizing:border-box;" onkeydown="if(event.key==='Enter')fazerLogin()" autofocus>
+      <button type="button" onclick="toggleSenha('login-senha',this)" aria-label="Mostrar/ocultar senha" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94A3B8;font-size:18px;padding:4px;line-height:1;">👁️</button>
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#475569;margin-bottom:16px;cursor:pointer;user-select:none;">
+      <input type="checkbox" id="login-remember" checked style="cursor:pointer;width:16px;height:16px;accent-color:#1A3D6E;">
+      Lembrar senha neste dispositivo
     </label>
-    <div id="login-erro">Senha incorreta. Tente novamente.</div>
-    <button class="btn btn-primary" id="login-btn" onclick="fazerLogin()">Entrar</button>
+
+    <div id="login-erro" style="display:none;background:#FDEAEA;color:#B02020;border:1px solid #F5C6C6;border-radius:6px;padding:8px 12px;font-size:12px;margin-bottom:12px;">
+      ❌ Senha incorreta. Tente novamente.
+    </div>
+
+    <button type="button" onclick="fazerLogin()" style="width:100%;background:linear-gradient(135deg,#0B2B54,#2A5085);color:#fff;border:none;padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 12px rgba(11,43,84,0.2);">
+      Entrar
+    </button>
+
+    <div style="font-size:10px;color:#94A3B8;text-align:center;margin-top:16px;line-height:1.5;">
+      Ao marcar "Lembrar", a senha fica salva só neste navegador.<br>
+      Em outro computador ou navegador, será pedida novamente.
+    </div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAINEL (escondido até login)                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="painel-main" style="display:none;">
+
 <div style="padding:0.5rem 0 0.75rem;">
 
 <div class="safra-header">
@@ -772,65 +760,99 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   </div>
 </div>
 </div>
+</div><!-- /#painel-main -->
 
 <script>
-// ── LOGIN COM CACHE ──
-const LOGIN_CACHE_KEY = 'safra_login_ok';
+// ═══════════════════════════════════════════════
+// LOGIN INICIAL (senha buscada do Supabase: tabela app_config, chave=senha_app)
+// ═══════════════════════════════════════════════
+const LOGIN_CHAVE='safra_login_ok';
+// Fallback caso o Supabase esteja indisponível no momento do login
+const SENHA_FALLBACK='Safra@123';
 
-function toggleVerSenha(){
-  const inp = document.getElementById('login-input');
-  const btn = document.getElementById('login-toggle-senha');
-  if(inp.type === 'password'){ inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁'; }
-}
-
-function verificarCacheLogin(){
+async function buscarSenhaSupabase(){
   try{
-    if(localStorage.getItem(LOGIN_CACHE_KEY) === 'true'){
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('login-remember').checked = true;
-      return true;
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),8000);
+    const url='https://umiwqmslqalanjwupdlh.supabase.co/rest/v1/app_config?chave=eq.senha_app&select=valor';
+    const res=await fetch(url,{
+      headers:{
+        'apikey':'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO',
+        'Authorization':'Bearer sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO',
+      },
+      signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const rows=await res.json();
+    if(Array.isArray(rows)&&rows[0]&&rows[0].valor){
+      return rows[0].valor;
     }
-  }catch(e){}
-  return false;
+    return null;
+  }catch(e){
+    console.warn('Não conseguiu buscar senha do Supabase, usando fallback:',e);
+    return null;
+  }
 }
 
 async function fazerLogin(){
-  const val = document.getElementById('login-input').value;
-  if(!val) return;
-  const btn = document.getElementById('login-btn');
-  btn.textContent = '...'; btn.disabled = true;
-  try{
-    // Busca senha na tabela painel_meta (id=1, campo senha_painel)
-    const res = await fetch(
-      `https://umiwqmslqalanjwupdlh.supabase.co/rest/v1/app_config?chave=eq.senha_app&select=valor`,
-      { headers:{
-          'apikey':'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO',
-          'Authorization':'Bearer sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO'
-      }}
-    );
-    const data = await res.json();
-    const senhaCorreta = (data?.[0]?.valor||'').replace(/^"|"$/g,'');
-    if(val === senhaCorreta){
-      const lembrar = document.getElementById('login-remember').checked;
-      try{
-        if(lembrar) localStorage.setItem(LOGIN_CACHE_KEY,'true');
-        else localStorage.removeItem(LOGIN_CACHE_KEY);
-      }catch(e){}
-      document.getElementById('login-screen').style.display = 'none';
-      carregarDados();
+  const inp=document.getElementById('login-senha');
+  const remember=document.getElementById('login-remember');
+  const erro=document.getElementById('login-erro');
+  const btn=document.querySelector('#login-screen button[onclick="fazerLogin()"]');
+  const senha=(inp.value||'').trim();
+
+  if(!senha){
+    erro.textContent='❌ Digite a senha.';
+    erro.style.display='block';
+    inp.focus();
+    return;
+  }
+
+  // Feedback visual: desabilita botão enquanto consulta
+  if(btn){btn.disabled=true; btn.textContent='Verificando...';}
+
+  // Busca a senha do Supabase; se falhar usa fallback
+  const senhaBanco=await buscarSenhaSupabase();
+  const senhaEsperada=senhaBanco || SENHA_FALLBACK;
+
+  if(btn){btn.disabled=false; btn.textContent='Entrar';}
+
+  if(senha===senhaEsperada){
+    if(remember.checked){
+      try{localStorage.setItem(LOGIN_CHAVE,'1');}catch(e){}
     } else {
-      document.getElementById('login-erro').style.display = 'block';
-      document.getElementById('login-input').value = '';
-      document.getElementById('login-input').focus();
+      try{sessionStorage.setItem(LOGIN_CHAVE,'1');}catch(e){}
     }
-  }catch(e){
-    document.getElementById('login-erro').textContent = 'Erro de conexão. Tente novamente.';
-    document.getElementById('login-erro').style.display = 'block';
-  } finally {
-    btn.textContent = 'Entrar'; btn.disabled = false;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('painel-main').style.display='block';
+    erro.style.display='none';
+  } else {
+    erro.textContent='❌ Senha incorreta. Tente novamente.';
+    erro.style.display='block';
+    inp.value='';
+    inp.focus();
   }
 }
+
+function logout(){
+  try{localStorage.removeItem(LOGIN_CHAVE);sessionStorage.removeItem(LOGIN_CHAVE);}catch(e){}
+  location.reload();
+}
+
+// Verifica se já está logado (localStorage = permanente | sessionStorage = só na sessão)
+(function checkLogin(){
+  let logado=false;
+  try{
+    logado = localStorage.getItem(LOGIN_CHAVE)==='1' || sessionStorage.getItem(LOGIN_CHAVE)==='1';
+  }catch(e){}
+  if(logado){
+    const lg=document.getElementById('login-screen');
+    const pm=document.getElementById('painel-main');
+    if(lg) lg.style.display='none';
+    if(pm) pm.style.display='block';
+  }
+})();
 
 // Lista padrão de agências e gerentes (usada quando não há dados salvos)
 const agenciasPadrao = {
@@ -961,30 +983,27 @@ function qFlagAgencia(contas,ngers){
 // contasMes    = contas abertas NO MÊS atual (acumulado)
 function relogioAgencia(ag,contasSemana,contasMes){
   const metaMes=metaMensal(ag);
+  const metaSem=metaSemanal(ag);
   if(metaMes<=0){
     return `<div style="font-size:10px;color:var(--safra-text-3);font-style:italic;">Sem meta configurada</div>`;
   }
-  // Ritmo do mês: realizado vs esperado até hoje (meta × % do mês decorrido)
-  const d=new Date(today+'T00:00:00');
-  const diasNoMes=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
-  const diaAtual=d.getDate();
-  const metaEsperada=Math.round(metaMes*diaAtual/diasNoMes*10)/10;
-  const pctRitmo=metaEsperada>0?Math.min(Math.round(contasMes/metaEsperada*100),150):0;
+  const pctSem=Math.min(Math.round(contasSemana/metaSem*100),100);
   const pctMes=Math.min(Math.round(contasMes/metaMes*100),100);
-  const cor=pctRitmo>=100?'#1A7A52':pctRitmo>=60?'#C8922A':'#B02020';
+  const cor=pctSem>=100?'#1A7A52':pctSem>=60?'#C8922A':'#B02020';
+  // SVG gauge (semicírculo) — % da semana
   const raio=32;
   const circ=Math.PI*raio;
-  const dash=(Math.min(pctRitmo,100)/100)*circ;
+  const dash=(pctSem/100)*circ;
   return `<div style="display:flex;align-items:center;gap:10px;">
     <svg width="80" height="48" viewBox="0 0 80 48" style="flex-shrink:0;">
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="#E0E8F4" stroke-width="7" stroke-linecap="round"/>
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round"
             stroke-dasharray="${dash} ${circ}" style="transition:stroke-dasharray .4s ease;"/>
-      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pctRitmo}%</text>
+      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pctSem}%</text>
     </svg>
     <div style="font-size:11px;line-height:1.4;flex:1;min-width:0;">
-      <div style="color:${cor};font-weight:700;">${contasMes} <span style="color:var(--safra-text-3);font-weight:400;">de ${metaEsperada} esperadas</span></div>
-      <div style="color:var(--safra-text-3);font-size:10px;">meta: ${metaMes} · ${pctMes}% do mês · dia ${diaAtual}/${diasNoMes}</div>
+      <div style="color:${cor};font-weight:700;">${contasSemana}<span style="color:var(--safra-text-3);font-weight:400;"> / ${metaSem.toFixed(1)}</span> <span style="color:var(--safra-text-3);font-size:10px;font-weight:400;">sem</span></div>
+      <div style="color:var(--safra-text-2);font-weight:600;font-size:10px;">${contasMes} / ${metaMes} <span style="color:var(--safra-text-3);font-weight:400;">mês · ${pctMes}%</span></div>
     </div>
   </div>`;
 }
@@ -1032,9 +1051,6 @@ const SUPABASE_HEADERS = {
 let regs=[],lvOn=false,viabSel='';
 let historico=[]; // snapshots mensais
 let bloqueioLeitura=false;
-
-// Verifica cache do login ao iniciar
-verificarCacheLogin();
 document.getElementById('f-data').value=today;
 
 function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
@@ -1042,10 +1058,15 @@ function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
   if(!el){
     el=document.createElement('div');
     el.id='sync-status';
-    el.style.cssText='font-size:10px;white-space:nowrap;color:rgba(255,255,255,0.6);margin-left:auto;';
+    el.style.cssText='font-size:10px;white-space:nowrap;color:rgba(255,255,255,0.6);margin-left:auto;cursor:pointer;user-select:none;';
+    el.title='Clique para recarregar os dados do Supabase';
+    el.addEventListener('click',()=>{
+      setSyncStatus('⏳ Recarregando...','#ffcc00');
+      lerDados();
+    });
     document.querySelector('.safra-header').appendChild(el);
   }
-  el.textContent=msg; el.style.color=cor;
+  el.textContent=msg+' ↻'; el.style.color=cor;
 }
 
 // ─── CONVERSORES: linha Supabase ↔ objeto JS ────
@@ -1126,13 +1147,50 @@ async function lerRegistros(){
       headers:SUPABASE_HEADERS,signal:ctrl.signal
     });
     clearTimeout(timer);
-    if(!res.ok) throw new Error('HTTP '+res.status+': '+(await res.text()));
+    if(!res.ok){
+      const txt=await res.text();
+      throw new Error('HTTP '+res.status+': '+txt);
+    }
     const rows=await res.json();
     regs=rows.map(linhaParaReg);
+    // Backup local dos registros (permite recuperar se Supabase falhar)
+    try{localStorage.setItem('safra_regs_backup',JSON.stringify(rows));}catch(e){}
+    if(regs.length===0){
+      // Tenta recuperar backup local se Supabase retornou vazio
+      try{
+        const bak=localStorage.getItem('safra_regs_backup_salvos');
+        if(bak){
+          const rowsBak=JSON.parse(bak);
+          if(Array.isArray(rowsBak)&&rowsBak.length>0){
+            console.warn('Supabase retornou vazio, mas há backup local com',rowsBak.length,'registros');
+            setSyncStatus('⚠️ 0 no Supabase ('+rowsBak.length+' no backup)','#ffcc00');
+            renderGG();renderRegional();renderRetornos();renderTrimestre();
+            return;
+          }
+        }
+      }catch(e){}
+    } else {
+      // Salva backup "bom" (quando Supabase retornou dados)
+      try{localStorage.setItem('safra_regs_backup_salvos',JSON.stringify(rows));}catch(e){}
+    }
     setSyncStatus('✅ '+regs.length+' reg.','#90EE90');
     renderGG();renderRegional();renderRetornos();renderTrimestre();
   }catch(e){
     console.error('lerRegistros erro:',e);
+    // Tenta usar backup local se a chamada falhou
+    try{
+      const bak=localStorage.getItem('safra_regs_backup_salvos');
+      if(bak){
+        const rowsBak=JSON.parse(bak);
+        if(Array.isArray(rowsBak)&&rowsBak.length>0){
+          regs=rowsBak.map(linhaParaReg);
+          console.warn('Usando backup local de',regs.length,'registros (Supabase falhou)');
+          setSyncStatus('⚠️ Offline · '+regs.length+' reg. (backup)','#ffcc00');
+          renderGG();renderRegional();renderRetornos();renderTrimestre();
+          return;
+        }
+      }
+    }catch(err){}
     setSyncStatus('⚠️ Erro leitura','#ff6666');
   }
 }
@@ -1253,8 +1311,8 @@ async function excluirRegistroDB(id){
 // `inserirRegistro`, `atualizarRegistro` ou `excluirRegistroDB` explicitamente.
 async function salvarNuvem(){ return await salvarMeta(); }
 
-// carregarDados() chamado após login
-setInterval(()=>{if(document.getElementById("login-screen").style.display==="none")lerDados();},30000);
+carregarDados();
+setInterval(()=>lerDados(),30000);
 
 function atualizaGerentes(){
   const ag=document.getElementById('f-agencia').value;
@@ -1805,7 +1863,60 @@ function renderGG(){
 
   const periodoLabel = filtroDia ? `${fmt(filtroDia)}` : 'Acumulado';
 
-  let html='';
+  // ─── DASHBOARD CONSOLIDADO GG — totais de TODOS os gerentes filtrados ───
+  const totGG={contatos:0,efetivos:0,contas:0,contasLV:0,contasSem:0,credenciamentos:0,aguardando:0,gerentesAtivos:0,lvDias:0};
+  const gerSet=new Set();
+  data.forEach(r=>{
+    totGG.contatos+=r.contatos||0;
+    totGG.efetivos+=r.efetivos||0;
+    totGG.contas+=r.contas||0;
+    totGG.contasLV+=r.contasLV||0;
+    totGG.contasSem+=r.contasSem||0;
+    totGG.credenciamentos+=r.credenciamentos||0;
+    totGG.aguardando+=r.aguardando||0;
+    if(r.listaVerde) totGG.lvDias++;
+    gerSet.add(r.agencia+'||'+r.gerente);
+  });
+  totGG.gerentesAtivos=gerSet.size;
+  const pctEfet=totGG.contatos>0?Math.round(totGG.efetivos/totGG.contatos*100):0;
+  const pctLV=totGG.contas>0?Math.round(totGG.contasLV/totGG.contas*100):0;
+  const totAgencias=Object.keys(byAg).length;
+
+  let html=`
+  <!-- DASHBOARD CONSOLIDADO — soma de todos os gerentes -->
+  <div style="background:linear-gradient(135deg,#1A3D6E 0%,#2A5085 100%);border-radius:12px;padding:16px 18px;margin-bottom:1rem;color:#fff;box-shadow:0 4px 12px rgba(26,61,110,0.15);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+      <div>
+        <div style="font-size:11px;opacity:0.85;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">📊 Consolidado GG</div>
+        <div style="font-size:13px;opacity:0.9;margin-top:2px;">${periodoLabel} · ${totAgencias} agência${totAgencias>1?'s':''} · ${totGG.gerentesAtivos} gerente${totGG.gerentesAtivos>1?'s':''}${filtroAg?' · '+filtroAg:''}${filtroGer?' · '+filtroGer:''}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Contatos</div>
+        <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${totGG.contatos}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Efetivos</div>
+        <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${totGG.efetivos}</div>
+        <div style="font-size:10px;opacity:0.75;margin-top:2px;">${pctEfet}% efetividade</div>
+      </div>
+      <div style="background:rgba(168,212,191,0.2);border:1px solid rgba(168,212,191,0.4);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;opacity:0.85;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#D4F5DF;">⭐ Contas abertas</div>
+        <div style="font-size:24px;font-weight:700;line-height:1.1;margin-top:3px;color:#D4F5DF;">${totGG.contas}</div>
+        <div style="font-size:10px;opacity:0.85;margin-top:2px;color:#D4F5DF;">📗 ${pctLV}% Lista Verde</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Credenc.</div>
+        <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${totGG.credenciamentos}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Ag. docs</div>
+        <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${totGG.aguardando}</div>
+      </div>
+    </div>
+  </div>`;
+
   for(const[ag,gerentes]of Object.entries(byAg)){
     const nomes=Object.keys(gerentes);
     const stats={}; nomes.forEach(g=>stats[g]=calcGerente(gerentes[g]));
@@ -1820,28 +1931,28 @@ function renderGG(){
           <th>Gerente</th>
           <th>Contatos</th>
           <th>Efetivos</th>
-          <th>Contas LV</th>
-          <th>Contas s/ LV</th>
-          <th>Total contas</th>
+          <th style="background:#E6F5EE;color:#1A7A52;">Total contas ⭐</th>
+          <th style="background:#E6F5EE;color:#1A7A52;">% LV</th>
           <th>Credenc.</th>
           <th>Ag. docs</th>
         </tr></thead>
         <tbody>
-          ${nomes.map(g=>{const s=stats[g];return`<tr>
+          ${nomes.map(g=>{
+            const s=stats[g];
+            const pctLV=s.contas>0?Math.round(s.contasLV/s.contas*100):0;
+            return`<tr>
             <td>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <div class="avatar" style="width:28px;height:28px;font-size:10px;">${initials(g)}</div>
                 <span style="font-weight:600;color:var(--safra-navy);">${g}</span>
                 ${badgeNovo(ag,g)}
                 ${qFlag(s.contas)}
-                ${s.lvCount>0?`<span class="lv-flag">${s.lvCount}</span>`:''}
               </div>
             </td>
             <td style="font-weight:600;">${s.contatos}</td>
             <td style="color:var(--safra-mid);font-weight:500;">${s.efetivos}</td>
-            <td>${s.contasLV>0?`<span class="lv-flag">${s.contasLV}</span>`:'-'}</td>
-            <td>${s.contasSem||'-'}</td>
-            <td style="color:var(--green);font-weight:700;">${s.contas||'-'}</td>
+            <td style="background:#F0FAF5;color:var(--green);font-weight:700;">${s.contas||'-'}</td>
+            <td style="background:#F0FAF5;">${s.contas>0?`<span style="color:${pctLV>=50?'#1A7A52':'var(--safra-text-3)'};font-weight:600;font-size:11px;">${pctLV}%</span> <span style="font-size:10px;color:var(--safra-text-3);">(${s.contasLV})</span>`:'-'}</td>
             <td>${s.credenciamentos||'-'}</td>
             <td>${s.aguardando>0?`<span style="color:var(--amber);font-weight:600;">${s.aguardando}</span>`:'-'}</td>
           </tr>`;}).join('')}
@@ -1850,12 +1961,64 @@ function renderGG(){
           <td style="font-weight:700;color:var(--safra-navy);">TOTAL</td>
           <td style="font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].contatos,0)}</td>
           <td style="color:var(--safra-mid);font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].efetivos,0)}</td>
-          <td><span class="lv-flag">${nomes.reduce((a,g)=>a+stats[g].contasLV,0)}</span></td>
-          <td style="font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].contasSem,0)||'-'}</td>
-          <td style="color:var(--green);font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].contas,0)||'-'}</td>
+          <td style="color:var(--green);font-weight:700;background:#F0FAF5;">${nomes.reduce((a,g)=>a+stats[g].contas,0)||'-'}</td>
+          <td style="background:#F0FAF5;">${(()=>{
+            const totC=nomes.reduce((a,g)=>a+stats[g].contas,0);
+            const totLV=nomes.reduce((a,g)=>a+stats[g].contasLV,0);
+            return totC>0?`<span style="font-weight:700;color:${totLV/totC>=0.5?'#1A7A52':'var(--safra-text-3)'};">${Math.round(totLV/totC*100)}%</span>`:'-';
+          })()}</td>
           <td style="font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].credenciamentos,0)||'-'}</td>
           <td style="color:var(--amber);font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].aguardando,0)||'-'}</td>
         </tr></tfoot>
+      </table>
+    </div>`;
+
+    /* ── LISTA DE REGISTROS DO DIA (pra editar) ── */
+    // Monta lista de todos os registros dessa agência, agrupados por data
+    const regsAg=[];
+    nomes.forEach(g=>{
+      gerentes[g].forEach(r=>{
+        // Encontra o índice real do registro em `regs` (usando id do Supabase se existir)
+        const regIdx=regs.findIndex(x=>x.id===r.id||(x===r));
+        regsAg.push({...r,regIdx,gerente:g});
+      });
+    });
+    regsAg.sort((a,b)=>b.data.localeCompare(a.data)); // mais recente primeiro
+
+    html+=`<div class="card" style="overflow-x:auto;margin-top:-0.5rem;">
+      <div class="card-title">📝 Registros diários · ${ag} · ${periodoLabel}</div>
+      <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:8px;">Clique em ✏️ para editar os dados de um dia anterior.</div>
+      <table class="rtable" style="font-size:11.5px;">
+        <thead><tr>
+          <th style="white-space:nowrap;">Data</th>
+          <th>Gerente</th>
+          <th>Cont.</th>
+          <th>Ef.</th>
+          <th>Visit.</th>
+          <th>Agend.</th>
+          <th>Contas</th>
+          <th>Cred.</th>
+          <th style="text-align:center;">Ações</th>
+        </tr></thead>
+        <tbody>
+          ${regsAg.map(r=>{
+            const nAgend=Array.isArray(r.acoesDetalhe)?r.acoesDetalhe.filter(a=>a.tipo==='agendamento'&&a.empresa).length:(r.agendamentos?r.agendamentos.split(/[;,\n]/).filter(s=>s.trim()).length:0);
+            return`<tr>
+              <td style="white-space:nowrap;font-weight:600;color:var(--safra-navy);">${fmt(r.data)}</td>
+              <td>${r.gerente}</td>
+              <td>${r.contatos||0}</td>
+              <td>${r.efetivos||0}</td>
+              <td>${r.visitas||0}</td>
+              <td>${nAgend||'-'}</td>
+              <td style="color:${r.contas>0?'var(--green)':'var(--safra-text-3)'};font-weight:${r.contas>0?'700':'400'};">${r.contas||0}</td>
+              <td>${r.credenciamentos||0}</td>
+              <td style="text-align:center;white-space:nowrap;">
+                <button type="button" onclick="editarRegistroDia('${r.id}')" title="Editar registro" style="background:var(--safra-light);color:var(--safra-text);border:1px solid var(--safra-border);padding:4px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">✏️</button>
+                <button type="button" onclick="excluirRegistroDia('${r.id}')" title="Excluir registro" style="background:#FDEAEA;color:#B02020;border:1px solid #CC4444;padding:4px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:3px;">🗑</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
       </table>
     </div>`;
 
@@ -2241,10 +2404,11 @@ function renderRegional(){
   // Ranking por agência
   const byAg={};
   dadosReg.forEach(r=>{
-    if(!byAg[r.agencia])byAg[r.agencia]={contatos:0,efetivos:0,contas:0,credenciamentos:0,aguardando:0,lv:0};
+    if(!byAg[r.agencia])byAg[r.agencia]={contatos:0,efetivos:0,contas:0,contasLV:0,credenciamentos:0,aguardando:0,lv:0};
     byAg[r.agencia].contatos+=r.contatos;
     byAg[r.agencia].efetivos+=r.efetivos;
     byAg[r.agencia].contas+=r.contas;
+    byAg[r.agencia].contasLV+=r.contasLV||0;
     byAg[r.agencia].credenciamentos+=r.credenciamentos;
     byAg[r.agencia].aguardando+=r.aguardando;
     if(r.listaVerde)byAg[r.agencia].lv++;
@@ -2474,10 +2638,11 @@ function renderRegional(){
     html+=`<div class="card">
       <div class="card-title">Ranking por agência <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(ordenado por contas abertas · Q calculado por média de contas/gerente)</span></div>
       <table class="rtable">
-        <tr><th>#</th><th>Agência</th><th>Q</th><th>Contatos</th><th>Efetivos</th><th style="background:#E6F5EE;color:#1A7A52;">Contas ⭐</th><th>Credenc.</th><th>Ag.docs</th><th>LV</th></tr>`;
+        <tr><th>#</th><th>Agência</th><th>Q</th><th>Contatos</th><th>Efetivos</th><th style="background:#E6F5EE;color:#1A7A52;">Contas ⭐</th><th style="background:#E6F5EE;color:#1A7A52;">% LV</th><th>Credenc.</th><th>Ag.docs</th></tr>`;
 
     sortedAg.forEach(([ag,v],i)=>{
       const ng=(agencias[ag]||[]).length;
+      const pctLV=v.contas>0?Math.round(v.contasLV/v.contas*100):0;
       html+=`<tr>
         <td class="rank-num ${i<3?'top':''}">${i+1}</td>
         <td><strong>${ag}</strong> <span style="font-size:10px;color:var(--safra-text-3);">· ${ng} ger</span></td>
@@ -2485,9 +2650,9 @@ function renderRegional(){
         <td>${v.contatos}</td>
         <td style="color:var(--safra-mid);font-weight:500;">${v.efetivos}</td>
         <td style="background:#F0FAF5;color:var(--green);font-weight:700;font-size:13px;">${v.contas}</td>
+        <td style="background:#F0FAF5;">${v.contas>0?`<span style="color:${pctLV>=50?'#1A7A52':'var(--safra-text-3)'};font-weight:600;font-size:11px;">${pctLV}%</span> <span style="font-size:10px;color:var(--safra-text-3);">(${v.contasLV})</span>`:'-'}</td>
         <td>${v.credenciamentos}</td>
         <td>${v.aguardando}</td>
-        <td>${v.lv>0?`<span class="lv-flag">${v.lv}</span>`:'-'}</td>
       </tr>`;
     });
 
@@ -2641,6 +2806,162 @@ function migrarAgendamentosLegados(r,legadoIdx){
     r.acoesDetalhe.push({tipo:'agendamento',empresa:nome,obs:'',virouConta:false});
   });
   return primeiroIdx+legadoIdx;
+}
+
+// ═══════════════════════════════════════════════
+// EDITAR / EXCLUIR REGISTRO DE DIA ANTERIOR (aba Visão GG)
+// ═══════════════════════════════════════════════
+async function excluirRegistroDia(id){
+  const r=regs.find(x=>x.id===id);
+  if(!r){alert('Registro não encontrado.');return;}
+  const confirmado=await confirmarInline(
+    `Excluir o registro de <strong>${r.gerente}</strong> em <strong>${fmt(r.data)}</strong>?<br><small style="color:#666;">Todos os dados do dia serão removidos (contatos, contas, retornos, etc).</small>`,
+    'Sim, excluir','Cancelar','#B02020'
+  );
+  if(!confirmado) return;
+
+  bloqueioLeitura=true;
+  setSyncStatus('⏳ Excluindo...','#ffcc00');
+  const ok=await excluirRegistroDB(id);
+  if(ok){
+    const idx=regs.findIndex(x=>x.id===id);
+    if(idx>=0) regs.splice(idx,1);
+    setSyncStatus('✅ Excluído','#90EE90');
+    renderGG();renderRetornos();
+    if(regionalDesbloqueado) renderRegional();
+  } else {
+    alert('⚠️ Erro ao excluir no banco. Olha o console (F12) pra detalhes.');
+  }
+  bloqueioLeitura=false;
+}
+
+async function editarRegistroDia(id){
+  const r=regs.find(x=>x.id===id);
+  if(!r){alert('Registro não encontrado.');return;}
+
+  // Monta modal flutuante com TODOS os campos principais
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;overflow-y:auto;';
+
+  // Lista de agendamentos (texto)
+  const agendAtual=(r.agendamentos||'').split(/[;,\n]/).map(s=>s.trim()).filter(Boolean).join('\n');
+
+  overlay.innerHTML=`
+    <div style="background:#fff;border-radius:10px;max-width:600px;width:100%;max-height:92vh;overflow-y:auto;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--safra-border);">
+        <div style="font-size:20px;">✏️</div>
+        <div>
+          <h3 style="margin:0;font-size:15px;color:var(--safra-navy);">Editar registro</h3>
+          <div style="font-size:12px;color:var(--safra-text-3);margin-top:2px;">${r.gerente} · ${r.agencia} · ${fmt(r.data)}</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:10px;">Data</label>
+          <input type="date" id="ed-reg-data" value="${r.data||''}" style="margin:0;">
+        </div>
+        <div>
+          <label style="font-size:10px;">Contatos</label>
+          <input type="number" id="ed-reg-contatos" value="${r.contatos||0}" min="0" style="margin:0;">
+        </div>
+        <div>
+          <label style="font-size:10px;">Efetivos</label>
+          <input type="number" id="ed-reg-efetivos" value="${r.efetivos||0}" min="0" style="margin:0;">
+        </div>
+        <div>
+          <label style="font-size:10px;">E-mails</label>
+          <input type="number" id="ed-reg-emails" value="${r.emails||0}" min="0" style="margin:0;">
+        </div>
+      </div>
+
+      <label style="font-size:10px;">Agendamentos (um por linha)</label>
+      <textarea id="ed-reg-agend" placeholder="Ex: Empório Pão de Queijo" style="min-height:70px;margin:0 0 10px;">${agendAtual}</textarea>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:10px;">Total contas</label>
+          <input type="number" id="ed-reg-contas" value="${r.contas||0}" min="0" style="margin:0;">
+        </div>
+        <div>
+          <label style="font-size:10px;">Contas c/ LV</label>
+          <input type="number" id="ed-reg-contaslv" value="${r.contasLV||0}" min="0" style="margin:0;">
+        </div>
+        <div>
+          <label style="font-size:10px;">Credenciamentos</label>
+          <input type="number" id="ed-reg-cred" value="${r.credenciamentos||0}" min="0" style="margin:0;">
+        </div>
+        <div>
+          <label style="font-size:10px;">Ag. documentação</label>
+          <input type="number" id="ed-reg-agdocs" value="${r.aguardando||0}" min="0" style="margin:0;">
+        </div>
+      </div>
+
+      <div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:6px;padding:8px 10px;margin-bottom:14px;font-size:11px;color:#633806;">
+        ℹ️ Para editar os detalhes de <strong>contas abertas</strong>, <strong>retornos</strong> e <strong>ações detalhadas</strong>, use a aba <strong>Retornos</strong> (que tem botões de editar por item).
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" id="edreg-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
+        <button type="button" id="edreg-save" style="background:var(--safra-accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Salvar alterações</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const resultado=await new Promise(resolve=>{
+    overlay.querySelector('#edreg-cancel').addEventListener('click',()=>{overlay.remove();resolve(null);});
+    overlay.querySelector('#edreg-save').addEventListener('click',()=>{
+      const novosAgend=overlay.querySelector('#ed-reg-agend').value.split('\n').map(s=>s.trim()).filter(Boolean);
+      resolve({
+        data:overlay.querySelector('#ed-reg-data').value,
+        contatos:parseInt(overlay.querySelector('#ed-reg-contatos').value)||0,
+        efetivos:parseInt(overlay.querySelector('#ed-reg-efetivos').value)||0,
+        emails:parseInt(overlay.querySelector('#ed-reg-emails').value)||0,
+        agendamentosLista:novosAgend,
+        contas:parseInt(overlay.querySelector('#ed-reg-contas').value)||0,
+        contasLV:parseInt(overlay.querySelector('#ed-reg-contaslv').value)||0,
+        credenciamentos:parseInt(overlay.querySelector('#ed-reg-cred').value)||0,
+        aguardando:parseInt(overlay.querySelector('#ed-reg-agdocs').value)||0,
+      });
+      overlay.remove();
+    });
+  });
+
+  if(!resultado) return;
+  if(!r.id){alert('Registro sem ID do banco. Recarregue a página.');return;}
+
+  bloqueioLeitura=true;
+  // Aplica alterações no registro local
+  r.data=resultado.data;
+  r.contatos=resultado.contatos;
+  r.efetivos=resultado.efetivos;
+  r.emails=resultado.emails;
+  r.contas=resultado.contas;
+  r.contasLV=resultado.contasLV;
+  r.contasSem=Math.max(0,resultado.contas-resultado.contasLV);
+  r.credenciamentos=resultado.credenciamentos;
+  r.aguardando=resultado.aguardando;
+  r.listaVerde=resultado.contasLV>0;
+
+  // Atualiza agendamentos: re-sincroniza texto e acoesDetalhe
+  r.agendamentos=resultado.agendamentosLista.join('; ');
+  // Remove agendamentos antigos do acoesDetalhe e adiciona os novos
+  if(!Array.isArray(r.acoesDetalhe)) r.acoesDetalhe=[];
+  r.acoesDetalhe=r.acoesDetalhe.filter(a=>a.tipo!=='agendamento');
+  resultado.agendamentosLista.forEach(nome=>{
+    r.acoesDetalhe.push({tipo:'agendamento',empresa:nome,obs:'',virouConta:false});
+  });
+
+  setSyncStatus('⏳ Salvando...','#ffcc00');
+  const ok=await atualizarRegistro(r.id,r);
+  if(ok){
+    setSyncStatus('✅ Atualizado','#90EE90');
+    renderGG();renderRetornos();
+    if(regionalDesbloqueado) renderRegional();
+  } else {
+    alert('⚠️ Erro ao salvar no banco. Olha o console (F12) pra detalhes.');
+  }
+  bloqueioLeitura=false;
 }
 
 async function toggleVirouConta(regIdx,subIdx){
