@@ -978,32 +978,35 @@ function qFlagAgencia(contas,ngers){
   return `<span class="q-flag ${q}">${q.toUpperCase()}</span>`;
 }
 
-// Relógio / gauge semanal da agência
-// contasSemana = contas abertas NA semana atual
-// contasMes    = contas abertas NO MÊS atual (acumulado)
-function relogioAgencia(ag,contasSemana,contasMes){
+// Relógio / gauge do MÊS da agência — fórmula: realizado ÷ esperado até hoje
+// esperado = meta × (dia atual ÷ total de dias do mês)
+function relogioAgencia(ag,contasMes){
   const metaMes=metaMensal(ag);
-  const metaSem=metaSemanal(ag);
   if(metaMes<=0){
     return `<div style="font-size:10px;color:var(--safra-text-3);font-style:italic;">Sem meta configurada</div>`;
   }
-  const pctSem=Math.min(Math.round(contasSemana/metaSem*100),100);
-  const pctMes=Math.min(Math.round(contasMes/metaMes*100),100);
-  const cor=pctSem>=100?'#1A7A52':pctSem>=60?'#C8922A':'#B02020';
-  // SVG gauge (semicírculo) — % da semana
+  const d=new Date(today+'T00:00:00');
+  const diaAtual=d.getDate();
+  const totalDias=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  const pctMesDecorrido=diaAtual/totalDias;
+  const esperadoHoje=metaMes*pctMesDecorrido;
+  const pct=esperadoHoje>0?Math.min(Math.round(contasMes/esperadoHoje*100),100):0;
+  const cor=pct>=100?'#1A7A52':pct>=60?'#C8922A':'#B02020';
+  const pctMesTxt=Math.round(pctMesDecorrido*100);
+  // SVG gauge (semicírculo) — % do ritmo
   const raio=32;
   const circ=Math.PI*raio;
-  const dash=(pctSem/100)*circ;
+  const dash=(pct/100)*circ;
   return `<div style="display:flex;align-items:center;gap:10px;">
     <svg width="80" height="48" viewBox="0 0 80 48" style="flex-shrink:0;">
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="#E0E8F4" stroke-width="7" stroke-linecap="round"/>
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round"
             stroke-dasharray="${dash} ${circ}" style="transition:stroke-dasharray .4s ease;"/>
-      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pctSem}%</text>
+      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pct}%</text>
     </svg>
     <div style="font-size:11px;line-height:1.4;flex:1;min-width:0;">
-      <div style="color:${cor};font-weight:700;">${contasSemana}<span style="color:var(--safra-text-3);font-weight:400;"> / ${metaSem.toFixed(1)}</span> <span style="color:var(--safra-text-3);font-size:10px;font-weight:400;">sem</span></div>
-      <div style="color:var(--safra-text-2);font-weight:600;font-size:10px;">${contasMes} / ${metaMes} <span style="color:var(--safra-text-3);font-weight:400;">mês · ${pctMes}%</span></div>
+      <div style="color:${cor};font-weight:700;">${contasMes} <span style="color:var(--safra-text-3);font-weight:400;">de ${esperadoHoje.toFixed(1)} esperadas</span></div>
+      <div style="color:var(--safra-text-2);font-weight:500;font-size:10px;">meta: ${metaMes} · ${pctMesTxt}% do mês · dia ${diaAtual}/${totalDias}</div>
     </div>
   </div>`;
 }
@@ -2465,18 +2468,17 @@ function renderRegional(){
     <div class="metric m-lv"><div class="mlabel">Contatos LV</div><div class="mval green">${lvTotal}</div></div>
   </div>
 
-  <!-- 🕐 RELÓGIOS DE META SEMANAL POR AGÊNCIA -->
+  <!-- 🕐 RELÓGIOS DE RITMO DO MÊS POR AGÊNCIA -->
   <div class="card" style="margin-bottom:1rem;">
-    <div class="card-title">🕐 Meta da semana · Contas abertas ${filtroAg?`· <span style="color:var(--safra-navy);">${filtroAg}</span>`:''}</div>
+    <div class="card-title">🕐 Ritmo do mês · Contas abertas ${filtroAg?`· <span style="color:var(--safra-navy);">${filtroAg}</span>`:''}</div>
     <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:10px;">
-      Relógio = <b>% da semana atual</b> (seg a dom). Linha de baixo = acumulado do mês. Meta semanal = meta mensal ÷ ${semanasDoMes(today).toFixed(2)} semanas do mês.
+      Relógio = <b>ritmo atual</b>: realizado ÷ esperado até hoje (meta × % do mês decorrido). Verde ≥100% · Amarelo ≥60% · Vermelho &lt;60%.
       <span style="color:#1A7A52;font-weight:600;margin-left:6px;">■ ≥100%</span>
       <span style="color:#C8922A;font-weight:600;margin-left:6px;">■ 60–99%</span>
       <span style="color:#B02020;font-weight:600;margin-left:6px;">■ &lt;60%</span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
       ${(filtroAg?[filtroAg]:Object.keys(agencias)).map(ag=>{
-        const cs=contasSemanaAtual(ag,regs);
         const cm=contasMesAtual(ag,regs);
         const ng=(agencias[ag]||[]).length;
         return `<div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
@@ -2484,7 +2486,7 @@ function renderRegional(){
             <div style="font-weight:700;font-size:12px;color:var(--safra-navy);">${ag}</div>
             <div style="font-size:10px;color:var(--safra-text-3);">${ng} ger</div>
           </div>
-          ${relogioAgencia(ag,cs,cm)}
+          ${relogioAgencia(ag,cm)}
         </div>`;
       }).join('')}
     </div>
